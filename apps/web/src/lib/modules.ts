@@ -184,7 +184,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Remaining useful life distributions per engine and module.",
     decision: "How many cycles can this engine safely stay on wing?",
     icon: "trending-down",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "risk",
