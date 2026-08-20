@@ -64,11 +64,13 @@ export function TaskCardConsole({
   facilities,
   skills,
   initialCardId,
+  datasetNow,
 }: {
   cards: TaskCardExecution[];
   facilities: { id: string; name: string; icao: string }[];
   skills: string[];
   initialCardId?: string;
+  datasetNow: string;
 }) {
   const [view, setView] = React.useState<ViewId>("all");
   const [facilityId, setFacilityId] = React.useState("all");
@@ -297,7 +299,11 @@ export function TaskCardConsole({
           />
         </div>
         {selected ? (
-          <TaskCardDetail key={selected.card.id} execution={selected} />
+          <TaskCardDetail
+            key={selected.card.id}
+            execution={selected}
+            datasetNow={datasetNow}
+          />
         ) : null}
       </div>
     </div>

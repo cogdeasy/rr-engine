@@ -2,6 +2,7 @@ import Link from "next/link";
 import {
   activeTaskCardExecutions,
   getDataset,
+  NOW,
   taskCardSummary,
   taskCardVarianceDrivers,
   workOrderCardProgress,
@@ -207,7 +208,7 @@ export default function TaskCardsPage() {
         </Panel>
       </div>
 
-      <TaskCardConsole cards={cards} facilities={facilities} skills={skills} initialCardId={actNow[0]?.card.id} />
+      <TaskCardConsole cards={cards} facilities={facilities} skills={skills} initialCardId={actNow[0]?.card.id} datasetNow={NOW.toISOString()} />
     </div>
   );
 }

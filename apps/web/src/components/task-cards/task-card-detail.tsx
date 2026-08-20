@@ -23,7 +23,13 @@ const STEP_STYLES: Record<string, { dot: string; label: string; text: string }> 
   pending: { dot: "bg-rr-slate/40", label: "Pending", text: "text-rr-slate" },
 };
 
-export function TaskCardDetail({ execution }: { execution: TaskCardExecution }) {
+export function TaskCardDetail({
+  execution,
+  datasetNow,
+}: {
+  execution: TaskCardExecution;
+  datasetNow: string;
+}) {
   const [recorded, setRecorded] = React.useState<Partial<Record<TaskCardSignOffRole, string>>>({});
   const [trail, setTrail] = React.useState<TaskCardTrailEntry[]>(execution.trail);
 
@@ -36,7 +42,11 @@ export function TaskCardDetail({ execution }: { execution: TaskCardExecution }) 
   function record(role: TaskCardSignOffRole) {
     const signOff = execution.signOffs.find((s) => s.role === role);
     if (!signOff || recorded[role]) return;
-    const at = new Date().toISOString();
+    // The dataset runs on its own "data as at" clock, which can be ahead of the
+    // browser clock; stamping behind it would render a negative relative age.
+    const at = new Date(
+      Math.max(Date.now(), new Date(datasetNow).getTime()),
+    ).toISOString();
     setRecorded((prev) => ({ ...prev, [role]: at }));
     setTrail((prev) => [
       {
