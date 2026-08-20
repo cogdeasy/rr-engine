@@ -194,7 +194,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Failure-mode probabilities, drivers and model confidence.",
     decision: "Which failure mode dominates the risk for this fleet segment?",
     icon: "target",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "simulation",
