@@ -1,0 +1,138 @@
+/**
+ * Rolls-Royce design tokens.
+ *
+ * Aligned to rolls-royce.com: the deep RR blue as the single dominant brand
+ * colour, near-black navy for dark surfaces, generous whitespace, and a
+ * restrained operational status palette layered on top.
+ */
+
+@theme {
+  /* Brand */
+  --color-rr-blue: #10069f;
+  --color-rr-blue-600: #0d0580;
+  --color-rr-blue-400: #3b32c2;
+  --color-rr-blue-200: #a9a5e6;
+  --color-rr-blue-50: #eeedfa;
+
+  /* Dark surfaces (the "above the clouds" hero palette) */
+  --color-rr-ink: #05061f;
+  --color-rr-navy: #0b0d33;
+  --color-rr-navy-700: #14174a;
+  --color-rr-navy-500: #232766;
+  --color-rr-slate: #4b4f77;
+  --color-rr-cloud: #c9cbe0;
+  --color-rr-mist: #f4f5fa;
+
+  /* Operational status */
+  --color-status-red: #d81e2b;
+  --color-status-red-soft: #fde8ea;
+  --color-status-amber: #f08c00;
+  --color-status-amber-soft: #fef1e0;
+  --color-status-green: #0a8754;
+  --color-status-green-soft: #e4f4ed;
+  --color-status-grey: #6b7089;
+  --color-status-grey-soft: #eef0f5;
+
+  /* Data visualisation ramp */
+  --color-viz-1: #10069f;
+  --color-viz-2: #3b32c2;
+  --color-viz-3: #00a3d3;
+  --color-viz-4: #0a8754;
+  --color-viz-5: #f08c00;
+  --color-viz-6: #d81e2b;
+  --color-viz-7: #7b4bd8;
+
+  --font-sans: var(--font-inter), "Inter", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", ui-monospace, monospace;
+
+  --radius-panel: 2px;
+  --shadow-panel: 0 1px 2px rgba(5, 6, 31, 0.06), 0 8px 24px -12px rgba(5, 6, 31, 0.18);
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* RR headings are tightly tracked and sentence case. */
+  h1,
+  h2,
+  h3,
+  h4 {
+    letter-spacing: -0.015em;
+  }
+}
+
+@layer utilities {
+  /* Classic Rolls-Royce banner: the badge blue, white type, no ornament. */
+  .rr-hero-gradient {
+    background:
+      radial-gradient(120% 120% at 85% 0%, rgba(255, 255, 255, 0.16) 0%, rgba(16, 6, 159, 0) 62%),
+      linear-gradient(150deg, #10069f 0%, #0c057a 60%, #05033f 100%);
+  }
+
+  .rr-panel {
+    background-color: #ffffff;
+    border: 1px solid rgba(5, 6, 31, 0.1);
+    border-radius: 2px;
+  }
+
+  /* A quiet blue-tinted band for editorial breaks between white panels. */
+  .rr-band {
+    background-color: #f6f7fc;
+    border-top: 1px solid rgba(5, 6, 31, 0.08);
+    border-bottom: 1px solid rgba(5, 6, 31, 0.08);
+  }
+
+  .rr-panel-dark {
+    background-color: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    backdrop-filter: blur(6px);
+  }
+
+  /* Overlaid via ::before so it composes with, rather than replaces, any
+     background the element already carries (e.g. .rr-hero-gradient). */
+  .rr-grid-lines {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .rr-grid-lines::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  /* Editorial display type, as used on rolls-royce.com. */
+  .rr-display {
+    font-size: clamp(2.25rem, 3.2vw, 3.25rem);
+    line-height: 1.06;
+    letter-spacing: -0.028em;
+    font-weight: 600;
+  }
+
+  .rr-label {
+    font-size: 0.6875rem;
+    line-height: 1rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  .rr-numeric {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+}

@@ -26,9 +26,12 @@
 
 ## Design language
 
-Rolls-Royce aligned: RR blue `#10069F`, near-black navy hero surfaces, generous whitespace,
-uppercase micro-labels, pill CTAs, restrained colour reserved for operational state, large
-numerics for the values a controller acts on.
+Rolls-Royce aligned and classic: a white canvas throughout, RR badge blue `#10069F` for banners
+(`.rr-hero-gradient`), rules and accents, near-black type, hairline borders, generous whitespace,
+uppercase micro-labels, pill CTAs, restrained colour reserved for operational state, and large
+numerics for the values a controller acts on. The 3D twin sits on a light studio grey (`#f2f3f8`)
+like Discover Engines. Never introduce dark page surfaces; use tokens (`text-rr-ink`,
+`text-rr-slate`, `rr-panel`) rather than literal hex values.
 
 ## Assets
 
