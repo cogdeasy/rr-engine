@@ -162,7 +162,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Specific fuel consumption deviation and washes' recovered margin.",
     decision: "Is a water wash worth the downtime for this engine?",
     icon: "fuel",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "telemetry-quality",
