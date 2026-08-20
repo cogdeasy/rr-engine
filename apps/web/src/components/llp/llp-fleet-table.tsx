@@ -4,7 +4,6 @@ import * as React from "react";
 import Link from "next/link";
 import type { LlpFleetRow } from "@rr/types";
 import {
-  Button,
   DataTable,
   FilterBar,
   FilterChip,
@@ -30,8 +29,6 @@ const DRIVER_FILTERS: { id: DriverFilter; label: string }[] = [
   { id: "balanced", label: "Balanced" },
 ];
 
-const PAGE_SIZE = 40;
-
 const DRIVER_LABEL: Record<LlpFleetRow["driver"], string> = {
   "llp-limited": "LLP limit",
   "condition-limited": "Condition",
@@ -43,7 +40,6 @@ export function LlpFleetTable({ rows }: { rows: LlpFleetRow[] }) {
   const [driver, setDriver] = React.useState<DriverFilter>("all");
   const [query, setQuery] = React.useState("");
   const [redOnly, setRedOnly] = React.useState(false);
-  const [showAll, setShowAll] = React.useState(false);
 
   const visible = React.useMemo(() => {
     const needle = query.trim().toLowerCase();
@@ -197,25 +193,19 @@ export function LlpFleetTable({ rows }: { rows: LlpFleetRow[] }) {
           <SearchInput value={query} onChange={setQuery} placeholder="ESN, operator or part" />
         </FilterBar>
       </div>
-      <DataTable
-        className="border-0 shadow-none"
-        columns={columns}
-        rows={showAll ? visible : visible.slice(0, PAGE_SIZE)}
-        rowKey={(row) => row.engineId}
-        rowAccent={(row) => statusStyles[row.status].dot.replace("bg-", "border-")}
-        emptyMessage="No engines match the current filters."
-        dense
-      />
-      {visible.length > PAGE_SIZE && (
-        <div className="flex items-center justify-between gap-3 border-t border-rr-ink/8 px-5 py-3">
-          <p className="text-[11px] text-rr-slate">
-            Showing {formatNumber(showAll ? visible.length : PAGE_SIZE)} of {formatNumber(visible.length)} engines
-          </p>
-          <Button size="sm" variant="secondary" onClick={() => setShowAll((value) => !value)}>
-            {showAll ? "Show top 40" : `Show all ${formatNumber(visible.length)}`}
-          </Button>
-        </div>
-      )}
+      {/* The whole filtered fleet is handed to the table so column sorting is
+          fleet-wide; the viewport scrolls rather than the page. */}
+      <div className="max-h-[46rem] overflow-y-auto">
+        <DataTable
+          className="border-0 shadow-none"
+          columns={columns}
+          rows={visible}
+          rowKey={(row) => row.engineId}
+          rowAccent={(row) => statusStyles[row.status].dot.replace("bg-", "border-")}
+          emptyMessage="No engines match the current filters."
+          dense
+        />
+      </div>
     </Panel>
   );
 }

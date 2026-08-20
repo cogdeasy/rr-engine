@@ -63,7 +63,7 @@ export interface LlpRemovalOption {
   /** Ownership value of that unflown green time. */
   greenTimeCostUsd: number;
   totalCostUsd: number;
-  /** An LLP would expire in service before this date. */
+  /** No LLP expires in service before this date and the bench buffer still fits. */
   feasible: boolean;
 }
 

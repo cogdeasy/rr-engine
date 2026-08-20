@@ -11,7 +11,9 @@ export async function registerLlpRoutes(app: FastifyInstance): Promise<void> {
   app.get<{ Querystring: { driver?: string; limit?: string } }>("/llp/stacks", async (request) => {
     const { driver, limit } = request.query;
     const stacks = driver ? llpFleetStacks().filter((s) => s.driver === driver) : llpFleetStacks();
-    return stacks.slice(0, Number(limit ?? 100));
+    const parsed = Number(limit);
+    const count = Number.isFinite(parsed) && parsed > 0 ? Math.floor(parsed) : 100;
+    return stacks.slice(0, count);
   });
 
   app.get<{ Params: { engineId: string } }>("/llp/stacks/:engineId", async (request, reply) => {
