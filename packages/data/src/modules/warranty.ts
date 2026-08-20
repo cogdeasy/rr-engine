@@ -339,7 +339,7 @@ export function warrantySummary(): WarrantySummary {
       : 0,
     slaBreaches: open.filter((c) => c.slaBreachDays > 0).length,
     evidenceGaps: open.filter((c) => !c.evidenceComplete).length,
-    expiringSoon: open.filter((c) => c.state === "draft" && c.ageDays > 20).length,
+    staleDrafts: open.filter((c) => c.state === "draft" && c.ageDays > 20).length,
   };
 }
 

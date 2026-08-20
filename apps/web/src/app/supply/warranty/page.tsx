@@ -85,11 +85,11 @@ export default function WarrantyClaimsPage() {
   const candidates = warrantyEligibilityCandidates(8);
   const trend = warrantyRecoveryTrend(12);
 
-  const interventions = claims
+  const atRisk = claims
     .filter(isWarrantyClaimOpen)
     .filter((c) => c.slaBreachDays > 0 || !c.evidenceComplete)
-    .sort((a, b) => b.slaBreachDays - a.slaBreachDays || b.claimedUsd - a.claimedUsd)
-    .slice(0, 4);
+    .sort((a, b) => b.slaBreachDays - a.slaBreachDays || b.claimedUsd - a.claimedUsd);
+  const interventions = atRisk.slice(0, 4);
 
   const stalled = ageing.find((b) => b.id === "180+");
   const recoveryStatus = summary.recoveryRatePct < 45 ? "red" : summary.recoveryRatePct < 65 ? "amber" : "green";
@@ -116,7 +116,7 @@ export default function WarrantyClaimsPage() {
                 href="#claim-register"
                 className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-rr-blue transition-colors hover:bg-rr-blue-50"
               >
-                Work {summary.slaBreaches + summary.evidenceGaps} claims needing intervention
+                Work {atRisk.length} claims needing intervention
                 <span aria-hidden>›</span>
               </Link>
               <Link
@@ -168,7 +168,7 @@ export default function WarrantyClaimsPage() {
           <PanelHeader
             title="Claims needing intervention"
             subtitle="Past the assessment SLA or blocked by an incomplete evidence pack — these are the recoveries at risk"
-            actions={<Badge variant="brand">{summary.slaBreaches + summary.evidenceGaps} open</Badge>}
+            actions={<Badge variant="brand">{atRisk.length} open</Badge>}
           />
           {interventions.length === 0 ? (
             <p className="py-8 text-center text-xs text-rr-slate">

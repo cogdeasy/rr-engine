@@ -147,6 +147,16 @@ export function EligibilityChecker({
   );
 }
 
+/** Every limit an item has already exhausted, not just the binding one. */
+function lapsedLimits(item: WarrantyCoverageItem): string {
+  const lapsed = [
+    item.hoursRemaining <= 0 ? "hours" : null,
+    item.cyclesRemaining <= 0 ? "cycles" : null,
+    item.daysRemaining <= 0 ? "calendar" : null,
+  ].filter((l): l is string => l !== null);
+  return lapsed.length > 0 ? lapsed.join(" & ") : item.limitingFactor;
+}
+
 function CoverageRow({ item, coverLabel }: { item: WarrantyCoverageItem; coverLabel: string }) {
   return (
     <tr className="border-b border-rr-ink/5 last:border-0">
@@ -184,9 +194,7 @@ function CoverageRow({ item, coverLabel }: { item: WarrantyCoverageItem; coverLa
       <td className="py-2.5 pr-6">
         <ProgressBar value={Math.min(100, item.consumedPct)} status={item.status === "grey" ? "grey" : item.status} />
         <p className="rr-numeric mt-1 text-[11px] text-rr-slate">
-          {item.covered
-            ? `${Math.min(100, item.consumedPct)}% used · ${item.limitingFactor} limits`
-            : `Lapsed on ${item.limitingFactor}`}
+          {item.covered ? `${Math.min(100, item.consumedPct)}% used · ${item.limitingFactor} limits` : `Lapsed on ${lapsedLimits(item)}`}
         </p>
       </td>
       <td className="py-2.5 text-right">

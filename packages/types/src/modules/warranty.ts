@@ -163,6 +163,6 @@ export interface WarrantySummary {
   averageSettlementDays: number;
   slaBreaches: number;
   evidenceGaps: number;
-  /** Claims whose cover expires within 30 days of the event — capture now. */
-  expiringSoon: number;
+  /** Drafts left unsubmitted for more than 20 days — capture risk. */
+  staleDrafts: number;
 }
