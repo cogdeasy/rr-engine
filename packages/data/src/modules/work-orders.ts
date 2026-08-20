@@ -62,9 +62,12 @@ function stageFor(workOrder: WorkOrder, cards: TaskCard[]): WorkOrderStage {
   if (workOrder.state === "awaiting-parts") return "awaiting-parts";
   if (workOrder.state === "draft") return "raised";
   const allSigned = cards.length > 0 && cards.every((c) => c.state === "signed-off");
-  // A released order sits in planning until the floor starts booking against it.
   if (workOrder.state === "planned") return "planned";
-  if (workOrder.state === "released") return allSigned ? "test" : "planned";
+  // A released order sits in planning until the floor starts booking against it.
+  if (workOrder.state === "released") {
+    const started = cards.some((c) => c.state !== "open");
+    return allSigned ? "test" : started ? "in-work" : "planned";
+  }
   return allSigned ? "test" : "in-work";
 }
 
@@ -121,6 +124,11 @@ function statusWeight(status: StatusLevel): number {
   return { red: 3, amber: 2, green: 1, grey: 0 }[status];
 }
 
+/** A grounded aircraft always outranks the other holds of equal severity. */
+function kindWeight(kind: WorkOrderBlockerKind): number {
+  return kind === "aog" ? 1 : 0;
+}
+
 function taskLinesFor(workOrder: WorkOrder, cards: TaskCard[]): WorkOrderTaskLine[] {
   const data = getDataset();
   const crew = data.technicians.filter((t) => t.facilityId === workOrder.facilityId);
@@ -165,7 +173,17 @@ function blockersFor(
   const rng = createRng(`wo-blockers:${workOrder.id}`);
 
   const short = partLines.filter((p) => p.onHand < p.qtyRequired);
-  if (short.length > 0) {
+  if (short.length === 0 && stage === "awaiting-parts") {
+    out.push({
+      id: `${workOrder.id}-parts`,
+      kind: "parts",
+      status: daysToPromise < 0 ? "red" : "amber",
+      title: `Material hold at ${facility?.icao ?? "base"}`,
+      detail: "Order is held for material; the demand is raised but no shortage line is confirmed against the kit yet.",
+      heldDays: Math.min(ageingDays, rand.int(rng, 1, 18)),
+      owner: "Material planning",
+    });
+  } else if (short.length > 0) {
     const worst = short.reduce((a, b) => (b.leadTimeDays > a.leadTimeDays ? b : a));
     const late = worst.leadTimeDays > Math.max(0, daysToPromise);
     out.push({
@@ -240,7 +258,12 @@ function blockersFor(
     });
   }
 
-  return out.sort((a, b) => statusWeight(b.status) - statusWeight(a.status) || b.heldDays - a.heldDays);
+  return out.sort(
+    (a, b) =>
+      statusWeight(b.status) - statusWeight(a.status) ||
+      kindWeight(b.kind) - kindWeight(a.kind) ||
+      b.heldDays - a.heldDays,
+  );
 }
 
 function recommendationFor(
