@@ -159,7 +159,7 @@ export function getSimulationBaseline(engineId: string): SimulationBaseline | un
 
   // The wash programme in force today is a property of the operator's practice;
   // derived deterministically from the engine identity so it never drifts.
-  const washIntervalDays = [0, 180, 270, 365, 540][hashString(`${engine.id}:wash`) % 5]!;
+  const washIntervalDays = [0, 180, 270, 360, 540][hashString(`${engine.id}:wash`) % 5]!;
 
   const lifeFraction = engine.cyclesSinceOverhaul / spec.overhaulIntervalCycles;
   const plannedWorkscope: WorkscopeLevel =
@@ -622,22 +622,25 @@ export function recommendScenario(baseline: SimulationBaseline): ScenarioRecomme
   }
 
   const { levers, outcome } = best;
+  // Compare like with like: candidate levers are normalised, so the as-flown
+  // profile has to be too, or an off-grid baseline reads as a change.
+  const flown = normaliseLevers(baseline, baseline.levers);
   const rationale: string[] = [];
-  if (levers.deratePct > baseline.levers.deratePct) {
+  if (levers.deratePct > flown.deratePct) {
     rationale.push(
-      `Raise average take-off derate from ${baseline.levers.deratePct}% to ${levers.deratePct}%, slowing margin decay to ${outcome.decayPerThousandCycles} °C per 1,000 cycles.`,
+      `Raise average take-off derate from ${flown.deratePct}% to ${levers.deratePct}%, slowing margin decay to ${outcome.decayPerThousandCycles} °C per 1,000 cycles.`,
     );
   }
-  if (levers.washIntervalDays !== baseline.levers.washIntervalDays) {
+  if (levers.washIntervalDays !== flown.washIntervalDays) {
     rationale.push(
       levers.washIntervalDays === 0
         ? "Stand down the wash programme — it is not paying for itself on this engine."
-        : `Wash every ${levers.washIntervalDays} days instead of ${baseline.levers.washIntervalDays === 0 ? "never" : `${baseline.levers.washIntervalDays} days`}.`,
+        : `Wash every ${levers.washIntervalDays} days instead of ${flown.washIntervalDays === 0 ? "never" : `${flown.washIntervalDays} days`}.`,
     );
   }
-  if (levers.routeSeverity < baseline.levers.routeSeverity) {
+  if (levers.routeSeverity < flown.routeSeverity) {
     rationale.push(
-      `Rotate onto a milder route mix (severity ${levers.routeSeverity} versus ${baseline.levers.routeSeverity} today).`,
+      `Rotate onto a milder route mix (severity ${levers.routeSeverity} versus ${flown.routeSeverity} today).`,
     );
   }
   if (levers.removalOffsetCycles !== 0) {
@@ -647,7 +650,7 @@ export function recommendScenario(baseline: SimulationBaseline): ScenarioRecomme
         : `Pull removal forward by ${Math.abs(levers.removalOffsetCycles)} cycles to stay clear of the limit.`,
     );
   }
-  if (levers.workscope !== baseline.levers.workscope) {
+  if (levers.workscope !== flown.workscope) {
     rationale.push(
       `Change the planned workscope to ${WORKSCOPE_LEVELS.find((w) => w.id === levers.workscope)!.label.toLowerCase()}, restoring ${Math.round(WORKSCOPE_MARGIN_RESTORED[levers.workscope] * 100)}% of new-engine margin.`,
     );

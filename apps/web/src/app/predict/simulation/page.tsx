@@ -22,8 +22,10 @@ export default async function SimulationPage({
   const { engine } = await searchParams;
   const candidates = listSimulationCandidates(CANDIDATE_LIMIT);
   const summary = simulationFleetSummary(CANDIDATE_LIMIT);
-  const selectedId = candidates.find((c) => c.engineId === engine)?.engineId ?? candidates[0]!.engineId;
-  const baseline = getSimulationBaseline(selectedId)!;
+  // Any engine in the fleet can be linked to, not just the ranked shortlist.
+  const requested = engine ? getSimulationBaseline(engine) : undefined;
+  const baseline = requested ?? getSimulationBaseline(candidates[0]!.engineId)!;
+  const selectedId = baseline.engineId;
   const baselineOutcome = simulate(baseline, baseline.levers);
   const recommendation = recommendScenario(baseline);
 

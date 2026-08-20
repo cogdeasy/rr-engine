@@ -15,9 +15,10 @@ import {
  * shows for those levers.
  */
 export async function registerSimulationRoutes(app: FastifyInstance) {
-  app.get<{ Querystring: { limit?: string } }>("/simulation/candidates", async (request) =>
-    listSimulationCandidates(Number(request.query.limit ?? 12)),
-  );
+  app.get<{ Querystring: { limit?: string } }>("/simulation/candidates", async (request) => {
+    const limit = Number(request.query.limit ?? 12);
+    return listSimulationCandidates(Number.isFinite(limit) ? Math.min(60, Math.max(1, Math.round(limit))) : 12);
+  });
 
   app.get<{ Params: { engineId: string } }>("/simulation/:engineId/baseline", async (request, reply) => {
     const baseline = getSimulationBaseline(request.params.engineId);
