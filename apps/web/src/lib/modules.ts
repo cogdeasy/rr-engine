@@ -278,7 +278,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Work order lifecycle from raise through release to sign-off.",
     decision: "What is blocking the work orders in progress today?",
     icon: "clipboard",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "task-cards",
