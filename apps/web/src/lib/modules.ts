@@ -70,7 +70,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Filterable register of every managed engine with health ranking.",
     decision: "Which engines breach thresholds and in what order do we work them?",
     icon: "list",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "engine-detail",
