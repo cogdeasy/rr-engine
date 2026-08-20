@@ -3,8 +3,8 @@ import { cn } from "@rr/ui";
 
 /**
  * Demand vs capacity across the network, month by month. Demand bars are drawn
- * against the contracted bay line; the part of the bar above the line is the
- * shortfall and is the only red on the chart.
+ * against the contracted bay line; the red cap on each bar is the per-shop
+ * shortfall — demand no capable shop can absorb — and is the only red here.
  */
 export function DemandCapacityChart({ months }: { months: NetworkMonth[] }) {
   const capacity = months[0]?.capacityBayMonths ?? 1;
@@ -45,15 +45,17 @@ export function DemandCapacityChart({ months }: { months: NetworkMonth[] }) {
           />
           <div className="absolute inset-0 flex items-end gap-2">
             {months.map((month) => {
-              const absorbed = Math.min(month.demandBayMonths, capacity);
-              const over = Math.max(0, month.demandBayMonths - capacity);
+              // Red is the per-shop shortfall reported elsewhere on the page: spare
+              // bays at a shop that cannot take the family do not absorb it.
+              const over = month.shortfallBayMonths;
+              const absorbed = Math.max(0, month.demandBayMonths - over);
               return (
                 <div key={month.month} className="group flex h-full flex-1 flex-col justify-end">
                   {over > 0 ? (
                     <div
                       className="w-full rounded-t-[2px] bg-status-red"
                       style={{ height: (over / scaleMax) * height }}
-                      title={`${month.label}: ${over.toFixed(1)} bay-months of demand cannot be absorbed`}
+                      title={`${month.label}: ${over.toFixed(1)} bay-months no capable shop can absorb`}
                     />
                   ) : null}
                   <div
