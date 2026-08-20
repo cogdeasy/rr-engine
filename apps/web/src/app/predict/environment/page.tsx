@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { environmentExposureReport } from "@rr/data";
+import { environmentExposureReport, exposureStatus } from "@rr/data";
 import {
   Badge,
   ExposureScatter,
@@ -28,7 +28,7 @@ export default function Page() {
   const rotationEngines = rotations.reduce((sum, r) => sum + r.engineCount, 0);
   const shortenEngines = shortenings.reduce((sum, r) => sum + r.engineCount, 0);
   const actionEngines = rotationEngines + shortenEngines;
-  const overdue = engines.filter((e) => e.cyclesToAdjustedRemoval <= 0);
+  const overdue = engines.filter((e) => e.sectors > 0 && e.cyclesToAdjustedRemoval <= 0);
 
   const fleetDrivers = drivers.map((driver) => {
     const share = engines.reduce((sum, engine) => sum + engine.contributions[driver.id], 0) / Math.max(1, engines.length);
@@ -95,7 +95,7 @@ export default function Page() {
         <StatTile
           label="Harshest station"
           value={summary.worstAirport?.iata ?? "—"}
-          status="red"
+          status={summary.worstAirport ? exposureStatus(summary.worstAirport.severityIndex) : "grey"}
           caption={
             summary.worstAirport
               ? `${summary.worstAirport.city} · index ${summary.worstAirport.severityIndex}`
