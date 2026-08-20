@@ -121,14 +121,14 @@ export default function Page() {
         <div className="grid gap-4 lg:grid-cols-3">
           <ActionSummary
             tone="red"
-            title={`${rotations.length} route groups to rotate`}
+            title={`${rotations.length} route group${rotations.length === 1 ? "" : "s"} to rotate`}
             value={formatNumber(rotationEngines)}
             unit="engines"
             body="Severity is high enough that the shop-visit cost being bought exceeds the cost of re-cutting the routing."
           />
           <ActionSummary
             tone="amber"
-            title={`${shortenings.length} populations need a shorter interval`}
+            title={`${shortenings.length} population${shortenings.length === 1 ? " needs" : "s need"} a shorter interval`}
             value={formatNumber(shortenEngines)}
             unit="engines"
             body="Routing is structural for these operators; bring the overhaul forward rather than re-planning the network."
