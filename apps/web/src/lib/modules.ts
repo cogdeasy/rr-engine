@@ -404,7 +404,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Service bulletin and airworthiness directive embodiment status.",
     decision: "Which mandatory actions are approaching their compliance date?",
     icon: "badge-check",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "audit",
