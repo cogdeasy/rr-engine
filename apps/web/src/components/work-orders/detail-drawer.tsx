@@ -2,8 +2,56 @@
 
 import * as React from "react";
 import Link from "next/link";
-import type { WorkOrderView } from "@rr/types";
-import { Badge, Button, ProgressBar, StatusPill, cn, formatDate, formatNumber, formatUsd, relativeTime, statusStyles } from "@rr/ui";
+import type { WorkOrderPartLine, WorkOrderView } from "@rr/types";
+import type { Column } from "@rr/ui";
+import { Badge, Button, DataTable, ProgressBar, StatusPill, cn, formatDate, formatNumber, formatUsd, relativeTime, statusStyles } from "@rr/ui";
+
+const PART_COLUMNS: Column<WorkOrderPartLine>[] = [
+  {
+    key: "part",
+    header: "Part",
+    sortValue: (part) => part.partNumber,
+    render: (part) => (
+      <div>
+        <p className="rr-numeric text-rr-ink">{part.partNumber}</p>
+        <p className="text-[11px] text-rr-slate">{part.description}</p>
+      </div>
+    ),
+  },
+  {
+    key: "required",
+    header: "Req",
+    align: "right",
+    sortValue: (part) => part.qtyRequired,
+    render: (part) => <span className="rr-numeric">{part.qtyRequired}</span>,
+  },
+  {
+    key: "on-hand",
+    header: "On hand",
+    align: "right",
+    sortValue: (part) => part.onHand,
+    render: (part) => (
+      <span className={cn("rr-numeric", part.onHand < part.qtyRequired && "text-status-red")}>{part.onHand}</span>
+    ),
+  },
+  {
+    key: "lead",
+    header: "Lead",
+    align: "right",
+    sortValue: (part) => part.leadTimeDays,
+    render: (part) => <span className="rr-numeric text-rr-slate">{part.leadTimeDays}d</span>,
+  },
+  {
+    key: "state",
+    header: "State",
+    align: "right",
+    render: (part) => (
+      <StatusPill status={part.status}>
+        {part.status === "green" ? "kitted" : part.status === "amber" ? "inbound" : "short"}
+      </StatusPill>
+    ),
+  },
+];
 
 /** Right-hand detail drawer: linked alerts, task cards, parts, labour and blockers. */
 export function WorkOrderDrawer({ view, onClose }: { view: WorkOrderView | null; onClose: () => void }) {
@@ -171,39 +219,15 @@ export function WorkOrderDrawer({ view, onClose }: { view: WorkOrderView | null;
             </ul>
           </section>
 
-          <section className="rr-panel p-4">
-            <p className="rr-label text-rr-slate">Parts</p>
-            {view.partLines.length === 0 ? (
-              <p className="mt-2 text-xs text-rr-slate">No outstanding material demand against this order.</p>
-            ) : (
-              <table className="mt-2 w-full text-[12px]">
-                <thead>
-                  <tr className="border-b border-rr-ink/8">
-                    <th className="rr-label py-1.5 text-left text-rr-slate">Part</th>
-                    <th className="rr-label py-1.5 text-right text-rr-slate">Req</th>
-                    <th className="rr-label py-1.5 text-right text-rr-slate">On hand</th>
-                    <th className="rr-label py-1.5 text-right text-rr-slate">Lead</th>
-                    <th className="rr-label py-1.5 text-right text-rr-slate">State</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {view.partLines.map((part) => (
-                    <tr key={part.partNumber} className="border-b border-rr-ink/5 last:border-0">
-                      <td className="py-1.5">
-                        <p className="rr-numeric text-rr-ink">{part.partNumber}</p>
-                        <p className="text-[11px] text-rr-slate">{part.description}</p>
-                      </td>
-                      <td className="rr-numeric py-1.5 text-right text-rr-ink">{part.qtyRequired}</td>
-                      <td className={cn("rr-numeric py-1.5 text-right", part.onHand < part.qtyRequired ? "text-status-red" : "text-rr-ink")}>{part.onHand}</td>
-                      <td className="rr-numeric py-1.5 text-right text-rr-slate">{part.leadTimeDays}d</td>
-                      <td className="py-1.5 text-right">
-                        <StatusPill status={part.status}>{part.status === "green" ? "kitted" : part.status === "amber" ? "inbound" : "short"}</StatusPill>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
+          <section>
+            <p className="rr-label mb-2 text-rr-slate">Parts</p>
+            <DataTable
+              dense
+              columns={PART_COLUMNS}
+              rows={view.partLines}
+              rowKey={(part) => part.partNumber}
+              emptyMessage="No outstanding material demand against this order."
+            />
           </section>
 
           <div className="flex items-center justify-between">

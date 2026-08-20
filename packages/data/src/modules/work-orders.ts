@@ -61,8 +61,10 @@ function stageFor(workOrder: WorkOrder, cards: TaskCard[]): WorkOrderStage {
   if (isClosed(workOrder)) return "closed";
   if (workOrder.state === "awaiting-parts") return "awaiting-parts";
   if (workOrder.state === "draft") return "raised";
-  if (workOrder.state === "planned" || workOrder.state === "released") return "planned";
   const allSigned = cards.length > 0 && cards.every((c) => c.state === "signed-off");
+  // A released order sits in planning until the floor starts booking against it.
+  if (workOrder.state === "planned") return "planned";
+  if (workOrder.state === "released") return allSigned ? "test" : "planned";
   return allSigned ? "test" : "in-work";
 }
 
