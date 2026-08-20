@@ -252,7 +252,10 @@ export function StockExplorer({
       <Tabs
         className="mb-3"
         active={tab}
-        onChange={(id) => setTab(id as TabId)}
+        onChange={(id) => {
+          setTab(id as TabId);
+          setExpanded(false);
+        }}
         tabs={[
           { id: "positions", label: "Stock positions", count: counts.positions },
           { id: "rotables", label: "Rotable pool", count: counts.rotables },

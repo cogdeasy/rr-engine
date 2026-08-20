@@ -58,16 +58,30 @@ export function partDemandLines(): PartDemandLine[] {
     else partsByModule.set(part.moduleCode, [part]);
   }
 
+  /** Only parts stocked at the executing facility can be consumed there. */
+  const stockedByFacility = new Map<string, Set<string>>();
+  for (const item of data.inventory) {
+    const bucket = stockedByFacility.get(item.facilityId);
+    if (bucket) bucket.add(item.partNumber);
+    else stockedByFacility.set(item.facilityId, new Set([item.partNumber]));
+  }
+
   const lines: PartDemandLine[] = [];
   for (const workOrder of data.workOrders) {
     if (!OPEN_WORK_ORDER_STATES.has(workOrder.state)) continue;
     const daysToNeed = daysBetween(NOW, workOrder.scheduledStart);
     if (daysToNeed > INVENTORY_HORIZON_DAYS) continue;
+    const stocked = stockedByFacility.get(workOrder.facilityId) ?? new Set<string>();
+    const stockedHere = data.parts.filter((part) => stocked.has(part.partNumber));
+    if (stockedHere.length === 0) continue;
     for (const cardId of workOrder.taskCardIds) {
       const card = data.taskCards.find((c) => c.id === cardId);
       if (!card) continue;
       const rng = createRng(`inventory:${card.id}`);
-      const candidates = (card.moduleCode ? partsByModule.get(card.moduleCode) : undefined) ?? data.parts;
+      const inModule = (card.moduleCode ? partsByModule.get(card.moduleCode) : undefined)?.filter((part) =>
+        stocked.has(part.partNumber),
+      );
+      const candidates = inModule && inModule.length > 0 ? inModule : stockedHere;
       const picks = rand.sample(rng, candidates, rand.int(rng, 1, 2));
       for (const part of picks) {
         lines.push({
@@ -136,10 +150,9 @@ export function stockPositions(): StockPosition[] {
       reason = `Short ${shortfall} with ${daysToFirstNeed}d to first need against a ${part?.leadTimeDays}d lead time`;
     } else if (shortfall > 0) {
       status = "amber";
-      reason = `Short ${shortfall} against 90-day demand, recoverable inside the ${part?.leadTimeDays}d lead time`;
-    } else if (inboundLate) {
-      status = "amber";
-      reason = `Cover holds only if the ${item.onOrder}-unit inbound lands before day ${daysToFirstNeed}`;
+      reason = inboundLate
+        ? `Short ${shortfall}; the ${item.onOrder}-unit inbound lands ${inboundDays}d out, after the day ${daysToFirstNeed} need`
+        : `Short ${shortfall} against 90-day demand, recoverable inside the ${part?.leadTimeDays}d lead time`;
     } else if (item.onHand <= item.reorderPoint) {
       status = "amber";
       reason = `On-hand ${item.onHand} at or below the reorder point of ${item.reorderPoint}`;
@@ -193,21 +206,35 @@ export function stockPositions(): StockPosition[] {
 export function shortageLines(): ShortageLine[] {
   const positions = stockPositions();
   const surplusByPart = new Map<string, StockPosition[]>();
+  /** Surplus is consumed as it is promised, so one donor is never offered twice. */
+  const remainingSurplus = new Map<string, number>();
   for (const position of positions) {
     if (position.projectedBalance <= 1) continue;
     const bucket = surplusByPart.get(position.partNumber);
     if (bucket) bucket.push(position);
     else surplusByPart.set(position.partNumber, [position]);
+    remainingSurplus.set(position.id, position.projectedBalance);
   }
 
   return positions
     .filter((position) => position.shortfall > 0)
+    .sort(
+      (a, b) =>
+        Number(b.blockingDemand > 0) - Number(a.blockingDemand > 0) ||
+        (a.daysToFirstNeed ?? 999) - (b.daysToFirstNeed ?? 999),
+    )
     .map((position) => {
       const lines = demandForPart(position.partNumber, position.facilityId);
       const donor = (surplusByPart.get(position.partNumber) ?? [])
-        .filter((candidate) => candidate.facilityId !== position.facilityId)
-        .sort((a, b) => b.projectedBalance - a.projectedBalance)[0];
-      const transferQty = donor ? Math.min(position.shortfall, donor.projectedBalance) : 0;
+        .filter(
+          (candidate) =>
+            candidate.facilityId !== position.facilityId && (remainingSurplus.get(candidate.id) ?? 0) > 0,
+        )
+        .sort((a, b) => (remainingSurplus.get(b.id) ?? 0) - (remainingSurplus.get(a.id) ?? 0))[0];
+      const transferQty = donor ? Math.min(position.shortfall, remainingSurplus.get(donor.id) ?? 0) : 0;
+      if (donor && transferQty >= position.shortfall) {
+        remainingSurplus.set(donor.id, (remainingSurplus.get(donor.id) ?? 0) - transferQty);
+      }
 
       let action: ShortageLine["action"];
       let actionLabel: string;
