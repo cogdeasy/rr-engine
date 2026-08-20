@@ -45,6 +45,10 @@ function clampLimits(policy: ThresholdPolicy, next: Limits, edited: keyof Limits
   return { amber, red };
 }
 
+function share(count: number, total: number): string {
+  return total > 0 ? `${(count / total) * 100}%` : "0%";
+}
+
 function formatLimit(policy: ThresholdPolicy, value: number): string {
   return `${formatNumber(value, policy.step < 1 ? 1 : 0)}${policy.unit}`;
 }
@@ -141,9 +145,9 @@ export function ThresholdPanel({ policies }: { policies: ThresholdPolicy[] }) {
 
               <div>
                 <div className="flex h-2.5 w-full overflow-hidden rounded-full bg-rr-mist" role="img" aria-label={`${next.red} red, ${next.amber} amber, ${next.green} nominal of ${next.total}`}>
-                  {next.red > 0 ? <div className="bg-status-red" style={{ width: `${(next.red / next.total) * 100}%` }} /> : null}
-                  {next.amber > 0 ? <div className="bg-status-amber" style={{ width: `${(next.amber / next.total) * 100}%` }} /> : null}
-                  {next.green > 0 ? <div className="bg-status-green" style={{ width: `${(next.green / next.total) * 100}%` }} /> : null}
+                  {next.red > 0 ? <div className="bg-status-red" style={{ width: share(next.red, next.total) }} /> : null}
+                  {next.amber > 0 ? <div className="bg-status-amber" style={{ width: share(next.amber, next.total) }} /> : null}
+                  {next.green > 0 ? <div className="bg-status-green" style={{ width: share(next.green, next.total) }} /> : null}
                 </div>
                 <p className="mt-1.5 text-[11px] text-rr-slate">
                   Evaluated against {formatNumber(next.total)} {policy.population} ·{" "}
