@@ -9,6 +9,7 @@ import { registerWorkscopeRoutes } from "./workscope";
 import { registerTelemetryQualityRoutes } from "./telemetry-quality";
 import { registerComplianceRoutes } from "./compliance";
 import { registerScheduleRoutes } from "./modules/schedule";
+import { registerOilDebrisRoutes } from "./oil-debris";
 
 /**
  * Feature-module routes.
@@ -31,4 +32,5 @@ export async function registerModuleRoutes(app: FastifyInstance): Promise<void> 
   await registerTelemetryQualityRoutes(app);
   await registerComplianceRoutes(app);
   await registerScheduleRoutes(app);
+  await registerOilDebrisRoutes(app);
 }

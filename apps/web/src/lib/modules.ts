@@ -142,7 +142,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Oil consumption, temperature and debris particle counts.",
     decision: "Is a bearing degrading, and does the engine need to come off wing?",
     icon: "droplet",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "hot-section",
