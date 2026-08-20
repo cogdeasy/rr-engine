@@ -360,6 +360,7 @@ interface ScopedFacts {
   flightMonths: ReportFlightMonthFact[];
   audit: ReportAuditFact[];
   scopeLabel: string;
+  familyScoped: boolean;
 }
 
 function inPeriod(at: string, period: ReportPeriod): boolean {
@@ -376,11 +377,17 @@ function monthOverlapsPeriod(month: string, period: ReportPeriod): boolean {
 
 function scopeFacts(facts: ReportFacts, scope: ReportScope): ScopedFacts {
   const period = resolveReportPeriod(scope.periodId, facts.generatedAt);
-  const operators = scope.operatorId === "all" ? facts.operators : facts.operators.filter((o) => o.id === scope.operatorId);
-  const operatorIds = new Set(operators.map((o) => o.id));
+  const selected = scope.operatorId === "all" ? facts.operators : facts.operators.filter((o) => o.id === scope.operatorId);
   const familyMatch = (family: EngineFamily) => scope.family === "all" || family === scope.family;
 
-  const engines = facts.engines.filter((e) => operatorIds.has(e.operatorId) && familyMatch(e.family));
+  const selectedIds = new Set(selected.map((o) => o.id));
+  const engines = facts.engines.filter((e) => selectedIds.has(e.operatorId) && familyMatch(e.family));
+
+  // Contract and utilisation data is held per operator, not per family, so an
+  // operator only stays in scope while it still operates an engine in scope.
+  const operatorsWithEngines = new Set(engines.map((e) => e.operatorId));
+  const operators = scope.family === "all" ? selected : selected.filter((o) => operatorsWithEngines.has(o.id));
+  const operatorIds = new Set(operators.map((o) => o.id));
   const engineIds = new Set(engines.map((e) => e.id));
   const alerts = facts.alerts.filter((a) => engineIds.has(a.engineId));
   const workOrders = facts.workOrders.filter((w) => engineIds.has(w.engineId));
@@ -404,7 +411,7 @@ function scopeFacts(facts: ReportFacts, scope: ReportScope): ScopedFacts {
     .filter((b) => b.affected > 0);
 
   const scopeLabel =
-    (scope.operatorId === "all" ? "All managed operators" : (operators[0]?.name ?? scope.operatorId)) +
+    (scope.operatorId === "all" ? "All managed operators" : (selected[0]?.name ?? scope.operatorId)) +
     (scope.family === "all" ? "" : ` · ${scope.family}`);
 
   return {
@@ -421,6 +428,7 @@ function scopeFacts(facts: ReportFacts, scope: ReportScope): ScopedFacts {
     flightMonths: facts.flightMonths.filter((m) => operatorIds.has(m.operatorId) && monthOverlapsPeriod(m.month, period)),
     audit: facts.audit.filter((a) => inPeriod(a.at, period)),
     scopeLabel,
+    familyScoped: scope.family !== "all",
   };
 }
 
@@ -576,8 +584,8 @@ function contractPerformanceSection(s: ScopedFacts): ReportSection {
       metric("Liquidated damages", usd(penalties), penalties > 0 ? "red" : "green", "Accrued this period"),
       metric(
         "Mean availability",
-        `${num(mean(s.operators.map((o) => o.availabilityActual)), 2)}%`,
-        mean(s.operators.map((o) => o.availabilityActual - o.availabilityTarget)) < 0 ? "amber" : "green",
+        s.operators.length === 0 ? "—" : `${num(mean(s.operators.map((o) => o.availabilityActual)), 2)}%`,
+        s.operators.length === 0 ? "grey" : mean(s.operators.map((o) => o.availabilityActual - o.availabilityTarget)) < 0 ? "amber" : "green",
       ),
     ],
     columns: [
@@ -590,7 +598,7 @@ function contractPerformanceSection(s: ScopedFacts): ReportSection {
       { key: "rate", label: "$/EFH", align: "right" },
     ],
     rows,
-    colourNote: "Red means availability is more than 0.8 points below the contracted commitment, so damages accrue.",
+    colourNote: `Red means availability is more than 0.8 points below the contracted commitment, so damages accrue.${s.familyScoped ? " Contracts are agreed per operator, so these figures cover the operator's whole fleet, not the selected family alone." : ""}`,
   };
 }
 
@@ -633,7 +641,7 @@ function utilisationSection(s: ScopedFacts): ReportSection {
       { key: "fuel", label: "Fuel burn", align: "right" },
     ],
     rows,
-    colourNote: "Utilisation is reported without status colour — it is context, not a condition.",
+    colourNote: `Utilisation is reported without status colour — it is context, not a condition.${s.familyScoped ? " Sectors and block hours are held per operator, not per engine family, so they cover the operator's whole fleet." : ""}`,
   };
 }
 

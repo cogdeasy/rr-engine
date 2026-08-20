@@ -38,7 +38,7 @@ export function ReportWorkbench({
   const period = resolveReportPeriod(scope.periodId, facts.generatedAt);
 
   function selectReport(reportId: ReportId) {
-    setScope((current) => ({ ...defaultReportScope(reportId, current.operatorId), periodId: current.periodId, family: current.family }));
+    setScope((current) => ({ ...defaultReportScope(reportId, current.operatorId), family: current.family }));
   }
 
   function toggleSection(sectionId: string) {
