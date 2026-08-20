@@ -132,7 +132,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Per-shaft vibration levels, spectral peaks and balance history.",
     decision: "Is this a balance issue we can trim, or rotor damage?",
     icon: "waveform",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "oil-debris",
