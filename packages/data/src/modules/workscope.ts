@@ -477,12 +477,25 @@ export function buildEngineWorkscope(engineId: string): EngineWorkscope | undefi
 /* Queue                                                               */
 /* ------------------------------------------------------------------ */
 
+/**
+ * Cycles until the engine has to come off wing: whichever binds first, the
+ * predicted remaining life or the tightest life-limited part.
+ */
+function removalWithinCyclesFor(engine: Engine): number {
+  const tightest = getDataset()
+    .llps.filter((l) => l.engineId === engine.id)
+    .reduce((min, l) => Math.min(min, l.cyclesRemaining), Number.POSITIVE_INFINITY);
+  return Math.max(0, Math.min(engine.rulCycles, tightest));
+}
+
 /** Engines whose next event is a shop visit needing a workscope decision. */
 export function workscopeQueue(limit = 14): WorkscopeCandidate[] {
   const data = getDataset();
   return [...data.engines]
     .filter((e) => e.status !== "green" || e.lifeStage === "pre-shop-visit")
-    .sort((a, b) => a.rulCycles - b.rulCycles || a.healthScore - b.healthScore)
+    .sort(
+      (a, b) => removalWithinCyclesFor(a) - removalWithinCyclesFor(b) || a.healthScore - b.healthScore,
+    )
     .slice(0, limit)
     .map((engine) => {
       const workscope = buildEngineWorkscope(engine.id)!;
