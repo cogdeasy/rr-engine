@@ -1,0 +1,4 @@
+packages/*/src/modules/index.ts merge=union
+packages/ui/src/components/modules/index.ts merge=union
+apps/api/src/routes/modules.ts merge=union
+apps/web/src/lib/modules.ts merge=union
