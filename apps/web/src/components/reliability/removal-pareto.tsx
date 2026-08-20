@@ -8,7 +8,7 @@ import type { RemovalCause } from "@rr/types";
  */
 export function RemovalPareto({ causes }: { causes: RemovalCause[] }) {
   if (causes.length === 0) return null;
-  const shown = causes.slice(0, 10);
+  const shown = causes;
   const height = 180;
   const barWidth = 44;
   const gap = 18;
@@ -48,14 +48,14 @@ export function RemovalPareto({ causes }: { causes: RemovalCause[] }) {
       <table className="mt-4 w-full text-sm">
         <thead>
           <tr className="border-b border-rr-ink/8">
-            <th className="rr-label py-2 text-left text-rr-slate">Removal cause</th>
-            <th className="rr-label py-2 text-left text-rr-slate">Module</th>
-            <th className="rr-label py-2 text-right text-rr-slate">Removals</th>
-            <th className="rr-label py-2 text-right text-rr-slate">Share</th>
-            <th className="rr-label py-2 text-right text-rr-slate">Cumulative</th>
-            <th className="rr-label py-2 text-right text-rr-slate">Mean TAT</th>
-            <th className="rr-label py-2 text-right text-rr-slate">Shop cost</th>
-            <th className="rr-label py-2 text-right text-rr-slate">Priority</th>
+            <th className="rr-label whitespace-nowrap py-2 text-left text-rr-slate">Removal cause</th>
+            <th className="rr-label whitespace-nowrap py-2 pl-4 text-left text-rr-slate">Module</th>
+            <th className="rr-label whitespace-nowrap py-2 pl-4 text-right text-rr-slate">Removals</th>
+            <th className="rr-label whitespace-nowrap py-2 pl-4 text-right text-rr-slate">Share</th>
+            <th className="rr-label whitespace-nowrap py-2 pl-4 text-right text-rr-slate">Cumulative</th>
+            <th className="rr-label whitespace-nowrap py-2 pl-4 text-right text-rr-slate">Mean TAT</th>
+            <th className="rr-label whitespace-nowrap py-2 pl-4 text-right text-rr-slate">Shop cost</th>
+            <th className="rr-label whitespace-nowrap py-2 pl-4 text-right text-rr-slate">Priority</th>
           </tr>
         </thead>
         <tbody>
@@ -63,15 +63,15 @@ export function RemovalPareto({ causes }: { causes: RemovalCause[] }) {
             <tr key={cause.id} className="border-b border-rr-ink/5 last:border-0">
               <td className={cn("border-l-2 py-2.5 pl-3 font-medium text-rr-ink", statusStyles[cause.status].border.replace("border-", "border-l-"))}>
                 {cause.cause}
-                <span className="ml-2 text-[11px] text-rr-slate">ATA {cause.ataChapter}</span>
+                <span className="ml-2 whitespace-nowrap text-[11px] text-rr-slate">ATA {cause.ataChapter}</span>
               </td>
-              <td className="py-2.5 text-[12px] text-rr-slate">{cause.moduleCode}</td>
-              <td className="rr-numeric py-2.5 text-right font-semibold text-rr-ink">{cause.removals}</td>
-              <td className="rr-numeric py-2.5 text-right text-rr-slate">{cause.sharePct}%</td>
-              <td className="rr-numeric py-2.5 text-right text-rr-slate">{cause.cumulativePct}%</td>
-              <td className="rr-numeric py-2.5 text-right text-rr-slate">{cause.meanTatDays} d</td>
-              <td className="rr-numeric py-2.5 text-right text-rr-ink">{formatUsd(cause.costUsd)}</td>
-              <td className="py-2.5 text-right">
+              <td className="whitespace-nowrap py-2.5 pl-4 text-[12px] text-rr-slate">{cause.moduleCode}</td>
+              <td className="rr-numeric whitespace-nowrap py-2.5 pl-4 text-right font-semibold text-rr-ink">{cause.removals}</td>
+              <td className="rr-numeric whitespace-nowrap py-2.5 pl-4 text-right text-rr-slate">{cause.sharePct}%</td>
+              <td className="rr-numeric whitespace-nowrap py-2.5 pl-4 text-right text-rr-slate">{cause.cumulativePct}%</td>
+              <td className="rr-numeric whitespace-nowrap py-2.5 pl-4 text-right text-rr-slate">{cause.meanTatDays} d</td>
+              <td className="rr-numeric whitespace-nowrap py-2.5 pl-4 text-right text-rr-ink">{formatUsd(cause.costUsd)}</td>
+              <td className="whitespace-nowrap py-2.5 pl-4 text-right">
                 <StatusPill status={cause.status}>{cause.status === "red" ? "Campaign" : cause.vitalFew ? "Vital few" : "Monitor"}</StatusPill>
               </td>
             </tr>
