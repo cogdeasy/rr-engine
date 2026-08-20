@@ -43,7 +43,7 @@ function hoursBetween(from: Date, to: Date): number {
  * the action window is left (deadline is `raisedAt + timeToActionHours`).
  */
 function priorityScore(alert: Alert, hoursRemaining: number | null, hoursToNextSector: number | null): number {
-  const severity = severityRank(alert.severity) * 1000;
+  const severity = severityRank(alert.severity) * 2000;
   const urgency = hoursRemaining === null ? 0 : Math.max(0, 500 - Math.min(500, Math.max(0, hoursRemaining)));
   const overdue = hoursRemaining !== null && hoursRemaining <= 0 ? 400 : 0;
   const sector = hoursToNextSector !== null && hoursRemaining !== null && hoursRemaining <= hoursToNextSector ? 300 : 0;
