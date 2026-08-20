@@ -256,7 +256,9 @@ function recommendationFor(
     };
   }
   if (top?.kind === "parts") {
-    const worst = view.partLines.find((p) => p.onHand < p.qtyRequired);
+    const short = view.partLines.filter((p) => p.onHand < p.qtyRequired);
+    // Same selection as the parts blocker: the line with the longest lead time.
+    const worst = short.length === 0 ? undefined : short.reduce((a, b) => (b.leadTimeDays > a.leadTimeDays ? b : a));
     return {
       action: worst && worst.onOrder > 0 ? "Expedite inbound order and confirm ETA" : "Raise an AOG parts request",
       rationale: worst
