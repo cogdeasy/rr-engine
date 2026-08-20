@@ -217,7 +217,7 @@ export function getWarrantyClaims(): WarrantyClaim[] {
     );
 
     const evidenceComplete = rand.bool(rng, 0.72);
-    const state = rand.weighted<WarrantyClaimState>(rng, [
+    const drawnState = rand.weighted<WarrantyClaimState>(rng, [
       { value: "draft", weight: ageFromRaise < 25 ? 26 : 6 },
       { value: "submitted", weight: 18 },
       { value: "under-review", weight: 24 },
@@ -230,10 +230,26 @@ export function getWarrantyClaims(): WarrantyClaim[] {
       },
     ]);
 
-    const submittedAt = state === "draft" ? null : iso(addDays(raisedAt, rand.int(rng, 2, 18)));
-    const decided = state === "approved" || state === "rejected";
+    // A claim cannot have been submitted or decided in the future: recent work
+    // orders roll back to the furthest state their timeline actually supports.
+    const submittedOn = drawnState === "draft" ? null : addDays(raisedAt, rand.int(rng, 2, 18));
     const settlementDays = rand.int(rng, 12, Math.max(20, terms.slaDays + 55));
-    const decidedAt = decided && submittedAt ? iso(addDays(new Date(submittedAt), settlementDays)) : null;
+    const decidedOn =
+      (drawnState === "approved" || drawnState === "rejected") && submittedOn
+        ? addDays(submittedOn, settlementDays)
+        : null;
+
+    const submitted = submittedOn && submittedOn <= NOW ? submittedOn : null;
+    const settledOn = submitted && decidedOn && decidedOn <= NOW ? decidedOn : null;
+    const state: WarrantyClaimState = !submitted
+      ? "draft"
+      : decidedOn && !settledOn
+        ? "under-review"
+        : drawnState;
+
+    const submittedAt = submitted ? iso(submitted) : null;
+    const decided = state === "approved" || state === "rejected";
+    const decidedAt = settledOn && decided ? iso(settledOn) : null;
 
     const rejectionReason: WarrantyRejectionReason | null =
       state === "rejected"
