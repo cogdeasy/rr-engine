@@ -96,8 +96,8 @@ export function getDefaultOperatorId(): string {
 /* Action list — "what we need from you"                               */
 /* ------------------------------------------------------------------ */
 
-function engineLabel(engine: Engine | undefined, aircraft: Aircraft | undefined): { esn?: string; tail?: string } {
-  return { esn: engine?.esn, tail: aircraft?.tail };
+function engineLabel(engine: Engine | undefined, aircraft: Aircraft | undefined): Pick<OperatorAction, "engineEsn" | "tail"> {
+  return { engineEsn: engine?.esn, tail: aircraft?.tail };
 }
 
 export function buildOperatorActions(operatorId: string): OperatorAction[] {
@@ -282,7 +282,7 @@ function buildAvailability(operatorId: string): OperatorAvailabilitySummary {
     target,
     status: actual < target - 0.8 ? "red" : actual < target ? "amber" : "green",
     trend: trendOf(history),
-    deltaPct: round(actual - previous, 2),
+    deltaPct: previous === 0 ? 0 : round(((actual - previous) / previous) * 100, 2),
     history,
     dispatchReliability: dispatch,
     dispatchTarget: 99.5,

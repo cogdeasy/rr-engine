@@ -132,6 +132,7 @@ export interface OperatorAvailabilitySummary {
   target: number;
   status: StatusLevel;
   trend: Trend;
+  /** Percentage change against the previous month, not a points delta. */
   deltaPct: number;
   history: Point[];
   dispatchReliability: number;

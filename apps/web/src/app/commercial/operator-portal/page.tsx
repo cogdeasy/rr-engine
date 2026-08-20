@@ -50,6 +50,8 @@ export default async function OperatorPortalPage({
     history: availability.history,
   };
 
+  const dispatchPrior = availability.dispatchHistory.at(-2)?.v ?? availability.dispatchReliability;
+
   const dispatchKpi: KpiSnapshot = {
     id: "op-dispatch",
     label: "Dispatch reliability",
@@ -57,7 +59,8 @@ export default async function OperatorPortalPage({
     unit: "%",
     target: availability.dispatchTarget,
     trend: availability.dispatchTrend,
-    deltaPct: 0,
+    deltaPct:
+      dispatchPrior === 0 ? 0 : Math.round(((availability.dispatchReliability - dispatchPrior) / dispatchPrior) * 10_000) / 100,
     status: availability.dispatchReliability >= availability.dispatchTarget ? "green" : "amber",
     history: availability.dispatchHistory,
   };
