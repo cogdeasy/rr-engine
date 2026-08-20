@@ -30,7 +30,7 @@ import type {
   SimulationLevers,
   SimulationOutcome,
   StatusLevel,
-  WorkscopeLevel,
+  SimulationWorkscopeLevel,
 } from "@rr/types";
 import { ENGINE_FAMILIES } from "../catalog";
 import { getDataset } from "../index";
@@ -54,27 +54,27 @@ const UNSCHEDULED_PREMIUM_USD = 1_850_000;
 /** Typical widebody annual utilisation, used to turn sector length into cycles per year. */
 const ANNUAL_FLIGHT_HOURS = 3_800;
 
-const WORKSCOPE_COST_FACTOR: Record<WorkscopeLevel, number> = {
+const WORKSCOPE_COST_FACTOR: Record<SimulationWorkscopeLevel, number> = {
   minimum: 0.56,
   "performance-restoration": 0.84,
   "full-overhaul": 1.18,
 };
 
 /** Margin restored by the shop visit, as a share of new-engine margin. */
-const WORKSCOPE_MARGIN_RESTORED: Record<WorkscopeLevel, number> = {
+const WORKSCOPE_MARGIN_RESTORED: Record<SimulationWorkscopeLevel, number> = {
   minimum: 0.62,
   "performance-restoration": 0.86,
   "full-overhaul": 0.98,
 };
 
 /** Shop days consumed by the visit. */
-const WORKSCOPE_TAT_DAYS: Record<WorkscopeLevel, number> = {
+const WORKSCOPE_TAT_DAYS: Record<SimulationWorkscopeLevel, number> = {
   minimum: 26,
   "performance-restoration": 48,
   "full-overhaul": 68,
 };
 
-export const WORKSCOPE_LEVELS: { id: WorkscopeLevel; label: string; description: string }[] = [
+export const WORKSCOPE_LEVELS: { id: SimulationWorkscopeLevel; label: string; description: string }[] = [
   { id: "minimum", label: "Minimum", description: "Life-limited parts and mandatory findings only." },
   {
     id: "performance-restoration",
@@ -162,7 +162,7 @@ export function getSimulationBaseline(engineId: string): SimulationBaseline | un
   const washIntervalDays = [0, 180, 270, 360, 540][hashString(`${engine.id}:wash`) % 5]!;
 
   const lifeFraction = engine.cyclesSinceOverhaul / spec.overhaulIntervalCycles;
-  const plannedWorkscope: WorkscopeLevel =
+  const plannedWorkscope: SimulationWorkscopeLevel =
     lifeFraction > 0.9 ? "full-overhaul" : lifeFraction > 0.62 ? "performance-restoration" : "minimum";
 
   const minimumEgtMargin = 8;

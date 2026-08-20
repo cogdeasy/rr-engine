@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import type { SimulationBaseline, SimulationLevers, WorkscopeLevel } from "@rr/types";
+import type { SimulationBaseline, SimulationLevers, SimulationWorkscopeLevel } from "@rr/types";
 import { LEVER_RANGES, WORKSCOPE_LEVELS } from "@rr/data";
 import { Button, cn, formatNumber } from "@rr/ui";
 
@@ -149,7 +149,7 @@ export function LeverControls({
                 key={option.id}
                 type="button"
                 aria-pressed={active}
-                onClick={() => set("workscope", option.id as WorkscopeLevel)}
+                onClick={() => set("workscope", option.id as SimulationWorkscopeLevel)}
                 className={cn(
                   "rounded-sm px-2 py-2 text-[11px] font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-rr-blue",
                   active ? "bg-white text-rr-blue shadow-[0_1px_2px_rgba(5,6,31,0.08)]" : "text-rr-slate hover:text-rr-ink",

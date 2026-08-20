@@ -9,7 +9,7 @@
 import type { Point, StatusLevel } from "../index";
 
 /** Depth of the next shop visit. Deeper workscopes restore more margin. */
-export type WorkscopeLevel = "minimum" | "performance-restoration" | "full-overhaul";
+export type SimulationWorkscopeLevel = "minimum" | "performance-restoration" | "full-overhaul";
 
 /** The five levers exposed by the simulator. */
 export interface SimulationLevers {
@@ -21,7 +21,7 @@ export interface SimulationLevers {
   routeSeverity: number;
   /** Days between on-wing water washes; 0 disables the wash programme. */
   washIntervalDays: number;
-  workscope: WorkscopeLevel;
+  workscope: SimulationWorkscopeLevel;
 }
 
 /** Everything the deterministic model needs about one engine, derived from `@rr/data`. */

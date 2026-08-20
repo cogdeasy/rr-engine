@@ -1,5 +1,5 @@
 import type { FastifyInstance } from "fastify";
-import type { SimulationLevers, WorkscopeLevel } from "@rr/types";
+import type { SimulationLevers, SimulationWorkscopeLevel } from "@rr/types";
 import {
   compareScenario,
   getSimulationBaseline,
@@ -17,9 +17,9 @@ function parseNumber(raw: string | undefined, fallback: number): number | undefi
   return Number.isFinite(value) ? value : undefined;
 }
 
-function parseWorkscope(raw: string | undefined, fallback: WorkscopeLevel): WorkscopeLevel | undefined {
+function parseWorkscope(raw: string | undefined, fallback: SimulationWorkscopeLevel): SimulationWorkscopeLevel | undefined {
   if (raw === undefined) return fallback;
-  return WORKSCOPE_LEVELS.some((level) => level.id === raw) ? (raw as WorkscopeLevel) : undefined;
+  return WORKSCOPE_LEVELS.some((level) => level.id === raw) ? (raw as SimulationWorkscopeLevel) : undefined;
 }
 
 /**

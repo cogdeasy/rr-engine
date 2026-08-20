@@ -117,7 +117,7 @@ const DAILY_BLOCK_HOURS = 13;
  * engine actually flies against a wide-body daily utilisation of
  * {@link DAILY_BLOCK_HOURS} block hours.
  */
-export function engineCyclesPerDay(engine: Engine): number {
+export function scheduleEngineCyclesPerDay(engine: Engine): number {
   const flights = getDataset().flights.filter((f) => f.aircraftId === engine.aircraftId);
   if (flights.length > 0) {
     const meanSectorHours = flights.reduce((s, f) => s + f.blockHours, 0) / flights.length;
@@ -129,7 +129,7 @@ export function engineCyclesPerDay(engine: Engine): number {
 
 /** Date at which the engine's predicted remaining useful life runs out. */
 export function rulExpiryDate(engine: Engine): Date {
-  return addDays(NOW, Math.round(engine.rulCycles / engineCyclesPerDay(engine)));
+  return addDays(NOW, Math.round(engine.rulCycles / scheduleEngineCyclesPerDay(engine)));
 }
 
 function shopVisitDurationDays(engine: Engine): number {
