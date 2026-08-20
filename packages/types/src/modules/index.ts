@@ -8,3 +8,4 @@
 
 export {};
 export * from "./aog";
+export * from "./contracts";

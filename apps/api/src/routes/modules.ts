@@ -1,4 +1,5 @@
 import type { FastifyInstance } from "fastify";
+import { registerContractRoutes } from "./contracts";
 
 /**
  * Feature-module routes.
@@ -11,4 +12,5 @@ import { registerAogRoutes } from "./aog";
 
 export async function registerModuleRoutes(app: FastifyInstance): Promise<void> {
   await registerAogRoutes(app);
+  await registerContractRoutes(app);
 }
