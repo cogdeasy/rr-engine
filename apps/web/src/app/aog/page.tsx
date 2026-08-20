@@ -26,7 +26,7 @@ export default function AogPage() {
             </p>
             {worst ? (
               <p className="mt-5 text-sm text-rr-cloud">
-                Longest running:{" "}
+                Most urgent:{" "}
                 <span className="font-semibold text-white">
                   {worst.tail} at {worst.stationIcao}
                 </span>{" "}
