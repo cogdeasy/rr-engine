@@ -170,7 +170,7 @@ export function EngineRegister({
       push("egt", `EGT margin < ${filters.maxEgtMargin}°C`, () => update({ maxEgtMargin: null }));
     }
     if (filters.maxDaysToShopVisit !== null) {
-      push("sv", `Shop visit < ${filters.maxDaysToShopVisit} days`, () => update({ maxDaysToShopVisit: null }));
+      push("sv", `Shop visit ≤ ${filters.maxDaysToShopVisit} days`, () => update({ maxDaysToShopVisit: null }));
     }
     if (filters.minOpenAlerts !== null) {
       push("alerts", `${filters.minOpenAlerts}+ open alerts`, () => update({ minOpenAlerts: null }));

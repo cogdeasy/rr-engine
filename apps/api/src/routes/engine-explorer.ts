@@ -34,7 +34,8 @@ export async function registerEngineExplorerRoutes(app: FastifyInstance): Promis
       if (maxDaysToShopVisit !== undefined) {
         if (row.daysToShopVisit === null || row.daysToShopVisit > Number(maxDaysToShopVisit)) return false;
       }
-      if (query && !`${row.esn} ${row.aircraftTail ?? ""} ${row.operatorName}`.toLowerCase().includes(query)) return false;
+      if (query && !`${row.esn} ${row.aircraftTail ?? ""} ${row.operatorName} ${row.family}`.toLowerCase().includes(query))
+        return false;
       return true;
     });
 

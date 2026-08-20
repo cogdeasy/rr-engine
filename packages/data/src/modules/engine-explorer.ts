@@ -193,6 +193,7 @@ function buildRow(engineId: string): EngineRegisterRow {
     status: engine.status,
     egtMarginStatus,
     shopVisitStatus,
+    rulStatus,
     criticalAlerts: criticalAlerts.length,
     hasWorkOrder: Boolean(workOrder),
     alertAction: criticalAlerts[0]?.recommendedAction ?? openAlerts[0]?.recommendedAction,
@@ -260,6 +261,7 @@ function buildRow(engineId: string): EngineRegisterRow {
 function recommend(input: {
   status: StatusLevel;
   egtMarginStatus: StatusLevel;
+  rulStatus: StatusLevel;
   shopVisitStatus: StatusLevel;
   criticalAlerts: number;
   hasWorkOrder: boolean;
@@ -281,6 +283,14 @@ function recommend(input: {
   }
   if (input.shopVisitStatus === "red" || input.shopVisitStatus === "amber") {
     return { action: "Book a shop visit slot", route: "/plan/schedule" };
+  }
+  if (input.rulStatus === "red") {
+    return { action: "Plan removal — remaining life below the red line", route: "/plan/workscope" };
+  }
+  /* Engine status is fleet-relative health, so a row can be red without any of
+     the specific breaches above. Red always earns an action. */
+  if (input.status === "red") {
+    return { action: "Investigate health deterioration and raise a workscope", route: "/health/trending" };
   }
   if (input.status === "amber") {
     return { action: input.alertAction ?? "Add to watchlist and re-baseline performance", route: "/health/trending" };
@@ -363,7 +373,7 @@ export const ENGINE_EXPLORER_SAVED_VIEWS: EngineSavedView[] = [
   },
   {
     id: "shop-visit",
-    label: "Due shop visit < 90 days",
+    label: "Due shop visit ≤ 90 days",
     description: "Projected removal inside the planning horizon.",
     filters: { maxDaysToShopVisit: 90 },
   },
