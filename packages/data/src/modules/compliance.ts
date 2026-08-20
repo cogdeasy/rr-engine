@@ -258,6 +258,7 @@ function computeComplianceTasks(horizonDays: number): ComplianceTask[] {
         embodied,
         evidence: embodied ? evidenceFor(bulletin, engine, data.workOrders) : null,
         dueAt,
+        calendarDueAt: bulletin.complianceDueAt,
         calendarDaysRemaining,
         hoursLimit,
         cyclesLimit,

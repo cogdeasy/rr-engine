@@ -53,8 +53,10 @@ export interface ComplianceTask {
   onWing: boolean;
   embodied: boolean;
   evidence: ComplianceEvidence | null;
-  /** Calendar deadline published with the bulletin. */
+  /** Deadline imposed by whichever limit governs (calendar, hours or cycles). */
   dueAt: Iso;
+  /** Calendar deadline published with the bulletin. */
+  calendarDueAt: Iso;
   calendarDaysRemaining: number;
   /** Utilisation limits, where the bulletin imposes them. */
   hoursLimit: number | null;

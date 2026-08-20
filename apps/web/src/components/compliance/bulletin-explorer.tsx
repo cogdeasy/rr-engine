@@ -122,17 +122,17 @@ export function BulletinExplorer({ bulletins, tasks }: { bulletins: ComplianceBu
 
         <Tabs
           tabs={[
-            { id: "outstanding", label: "Outstanding engines", count: outstanding.length },
-            { id: "plan", label: "Bundling plan", count: bundleable.length },
-            { id: "evidence", label: "Evidence", count: embodied.length },
+            { id: "outstanding", label: "Outstanding engines", count: selected.outstanding },
+            { id: "plan", label: "Bundling plan", count: selected.bundleable },
+            { id: "evidence", label: "Evidence", count: selected.embodied },
           ]}
           active={tab}
           onChange={(id) => setTab(id as TabId)}
         />
 
-        {tab === "outstanding" ? <OutstandingTable tasks={outstanding.slice(0, 10)} /> : null}
-        {tab === "plan" ? <BundlingTable tasks={bundleable.slice(0, 10)} /> : null}
-        {tab === "evidence" ? <EvidenceTable tasks={embodied.slice(0, 10)} /> : null}
+        {tab === "outstanding" ? <OutstandingTable tasks={outstanding.slice(0, 10)} total={selected.outstanding} /> : null}
+        {tab === "plan" ? <BundlingTable tasks={bundleable.slice(0, 10)} total={selected.bundleable} /> : null}
+        {tab === "evidence" ? <EvidenceTable tasks={embodied.slice(0, 10)} total={selected.embodied} /> : null}
       </Panel>
     </section>
   );
@@ -159,7 +159,17 @@ function Figure({
   );
 }
 
-function TableShell({ headers, children }: { headers: string[]; children: React.ReactNode }) {
+function TableShell({
+  headers,
+  shown,
+  total,
+  children,
+}: {
+  headers: string[];
+  shown: number;
+  total: number;
+  children: React.ReactNode;
+}) {
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
@@ -174,6 +184,11 @@ function TableShell({ headers, children }: { headers: string[]; children: React.
         </thead>
         <tbody>{children}</tbody>
       </table>
+      {total > shown ? (
+        <p className="pt-2 text-[11px] text-rr-slate">
+          Showing the {shown} nearest of {total} engines.
+        </p>
+      ) : null}
     </div>
   );
 }
@@ -191,10 +206,10 @@ function EngineCell({ task }: { task: ComplianceTask }) {
   );
 }
 
-function OutstandingTable({ tasks }: { tasks: ComplianceTask[] }) {
+function OutstandingTable({ tasks, total }: { tasks: ComplianceTask[]; total: number }) {
   if (tasks.length === 0) return <Empty message="Campaign complete — every applicable engine is embodied." />;
   return (
-    <TableShell headers={["Engine", "Due", "Remaining", "Effort", "Cost", "Disposition"]}>
+    <TableShell headers={["Engine", "Due", "Remaining", "Effort", "Cost", "Disposition"]} shown={tasks.length} total={total}>
       {tasks.map((task) => (
         <tr key={task.id} className="border-b border-rr-ink/5 last:border-0">
           <EngineCell task={task} />
@@ -213,10 +228,10 @@ function OutstandingTable({ tasks }: { tasks: ComplianceTask[] }) {
   );
 }
 
-function BundlingTable({ tasks }: { tasks: ComplianceTask[] }) {
+function BundlingTable({ tasks, total }: { tasks: ComplianceTask[]; total: number }) {
   if (tasks.length === 0) return <Empty message="No planned downtime available — these engines need dedicated slots." />;
   return (
-    <TableShell headers={["Engine", "Shop visit", "Facility", "Input", "Margin", "Saving"]}>
+    <TableShell headers={["Engine", "Shop visit", "Facility", "Input", "Margin", "Saving"]} shown={tasks.length} total={total}>
       {tasks.map((task) => (
         <tr key={task.id} className="border-b border-rr-ink/5 last:border-0">
           <EngineCell task={task} />
@@ -235,10 +250,10 @@ function BundlingTable({ tasks }: { tasks: ComplianceTask[] }) {
   );
 }
 
-function EvidenceTable({ tasks }: { tasks: ComplianceTask[] }) {
+function EvidenceTable({ tasks, total }: { tasks: ComplianceTask[]; total: number }) {
   if (tasks.length === 0) return <Empty message="No embodiment recorded against this bulletin yet." />;
   return (
-    <TableShell headers={["Engine", "Certificate", "Embodied", "Facility", "Work order", "Signatory"]}>
+    <TableShell headers={["Engine", "Certificate", "Embodied", "Facility", "Work order", "Signatory"]} shown={tasks.length} total={total}>
       {tasks.map((task) => (
         <tr key={task.id} className="border-b border-rr-ink/5 last:border-0">
           <EngineCell task={task} />

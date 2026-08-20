@@ -242,7 +242,8 @@ function TaskDetail({ task }: { task: ComplianceTask | null }) {
           <DaysRemaining days={task.daysRemaining} className="text-lg" />
         </div>
         <dl className="mt-2 space-y-1 text-[11px] text-rr-slate">
-          <Row label="Calendar deadline" value={formatDate(task.dueAt)} />
+          <Row label="Calendar deadline" value={formatDate(task.calendarDueAt)} />
+          <Row label="Governing deadline" value={formatDate(task.dueAt)} />
           <Row
             label="Hours limit"
             value={task.hoursLimit === null ? "not imposed" : `${task.hoursRemaining} h remaining of ${task.hoursLimit} h`}
