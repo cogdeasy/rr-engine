@@ -60,7 +60,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Geographic view of aircraft, engine status and maintenance bases.",
     decision: "Which flagged engines are near a station that can act on them?",
     icon: "map",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "engine-explorer",
@@ -70,7 +70,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Filterable register of every managed engine with health ranking.",
     decision: "Which engines breach thresholds and in what order do we work them?",
     icon: "list",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "engine-detail",
@@ -80,7 +80,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Per-engine dossier with the interactive Rolls-Royce 3D engine model.",
     decision: "What exactly is wrong with this engine and which module drives it?",
     icon: "cube",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "alerts",
@@ -90,7 +90,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "EHM, ACARS and prognostic alerts queued for disposition.",
     decision: "Which alerts are real, and which need action before the next sector?",
     icon: "bell",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "aog",
@@ -100,7 +100,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Aircraft on ground events with recovery clock and escalation state.",
     decision: "What is the fastest path to returning this aircraft to service?",
     icon: "siren",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "notifications",
@@ -110,7 +110,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Escalation workflow, ownership and acknowledgement trail.",
     decision: "Has every red condition been acknowledged by an accountable owner?",
     icon: "inbox",
-    implemented: false,
+    implemented: true,
   },
 
   // Diagnose
@@ -132,7 +132,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Per-shaft vibration levels, spectral peaks and balance history.",
     decision: "Is this a balance issue we can trim, or rotor damage?",
     icon: "waveform",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "oil-debris",
@@ -142,7 +142,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Oil consumption, temperature and debris particle counts.",
     decision: "Is a bearing degrading, and does the engine need to come off wing?",
     icon: "droplet",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "hot-section",
@@ -152,7 +152,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "HPT tip clearance, EGT hot spots and combustor distress.",
     decision: "How much hot section life remains before a shop visit is forced?",
     icon: "flame",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "performance",
@@ -162,7 +162,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Specific fuel consumption deviation and washes' recovered margin.",
     decision: "Is a water wash worth the downtime for this engine?",
     icon: "fuel",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "telemetry-quality",
@@ -172,7 +172,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Sensor coverage, gaps and data quality by aircraft and parameter.",
     decision: "Can we trust the data behind a red flag on this engine?",
     icon: "signal",
-    implemented: false,
+    implemented: true,
   },
 
   // Predict
@@ -184,7 +184,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Remaining useful life distributions per engine and module.",
     decision: "How many cycles can this engine safely stay on wing?",
     icon: "trending-down",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "risk",
@@ -194,7 +194,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Failure-mode probabilities, drivers and model confidence.",
     decision: "Which failure mode dominates the risk for this fleet segment?",
     icon: "target",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "simulation",
@@ -204,7 +204,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Digital twin scenarios: derate, routing and wash interventions.",
     decision: "What does changing the operating profile buy us in margin?",
     icon: "sliders",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "environment",
@@ -214,7 +214,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Sand, dust and salt exposure accumulated per engine and route.",
     decision: "Should we rotate engines away from harsh-environment routes?",
     icon: "wind",
-    implemented: false,
+    implemented: true,
   },
 
   // Plan
@@ -226,7 +226,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Rolling plan of removals, shop visits and checks on one timeline.",
     decision: "Does the plan fit within contractual availability commitments?",
     icon: "calendar",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "workscope",
@@ -236,7 +236,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Module-by-module workscope build-up with cost and TAT impact.",
     decision: "Which modules do we open, and what does that cost in TAT?",
     icon: "layers",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "capacity",
@@ -246,7 +246,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Slot utilisation across overhaul bases and partner shops.",
     decision: "Where is the next available slot that meets the removal date?",
     icon: "factory",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "llp",
@@ -256,7 +256,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Life-limited part cycles remaining and stack optimisation.",
     decision: "Which LLPs must be replaced at the next shop visit?",
     icon: "clock",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "workforce",
@@ -266,7 +266,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Technician availability, licences and skill coverage by shift.",
     decision: "Do we have certified people to release this work on time?",
     icon: "users",
-    implemented: false,
+    implemented: true,
   },
 
   // Execute
@@ -278,7 +278,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Work order lifecycle from raise through release to sign-off.",
     decision: "What is blocking the work orders in progress today?",
     icon: "clipboard",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "task-cards",
@@ -288,7 +288,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Task card execution, sign-off and man-hour tracking.",
     decision: "Which tasks are behind estimate and why?",
     icon: "check-square",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "borescope",
@@ -298,7 +298,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Inspection findings, imagery and repeat-inspection intervals.",
     decision: "Does the observed damage exceed serviceable limits?",
     icon: "search",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "test-cell",
@@ -308,7 +308,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Post-overhaul pass-off runs and restored margin verification.",
     decision: "Has this engine met its acceptance criteria for return to service?",
     icon: "zap",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "build-records",
@@ -318,7 +318,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Engine configuration, module serial history and traceability.",
     decision: "What is actually installed in this engine right now?",
     icon: "file-text",
-    implemented: false,
+    implemented: true,
   },
 
   // Supply
@@ -330,7 +330,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Stock positions, reservations and reorder exposure by facility.",
     decision: "Will parts be on the shelf when the engine arrives?",
     icon: "package",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "supply-chain",
@@ -340,7 +340,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Supplier lead times, purchase order status and shortage risk.",
     decision: "Which shortages will delay a shop visit in the next 90 days?",
     icon: "truck",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "warranty",
@@ -350,7 +350,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Claim capture, recovery value and settlement status.",
     decision: "Is this repair recoverable under warranty or campaign cover?",
     icon: "shield",
-    implemented: false,
+    implemented: true,
   },
 
   // Commercial
@@ -362,7 +362,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Availability commitments, rates and liquidated damages exposure.",
     decision: "Which contracts are at risk of breaching availability this quarter?",
     icon: "handshake",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "costs",
@@ -372,7 +372,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Maintenance cost per engine flight hour, by driver and fleet.",
     decision: "Where is cost per EFH drifting away from plan?",
     icon: "chart",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "operator-portal",
@@ -382,7 +382,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Customer-facing view of their fleet health and planned events.",
     decision: "What does the airline need to see and agree to this week?",
     icon: "globe",
-    implemented: false,
+    implemented: true,
   },
 
   // Assure
@@ -394,7 +394,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Dispatch reliability, IFSD rate, MTBUR and unscheduled removals.",
     decision: "Is fleet reliability trending toward or away from target?",
     icon: "chart-line",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "compliance",
@@ -404,7 +404,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Service bulletin and airworthiness directive embodiment status.",
     decision: "Which mandatory actions are approaching their compliance date?",
     icon: "badge-check",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "audit",
@@ -414,7 +414,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Immutable record of decisions, overrides and sign-offs.",
     decision: "Who decided what, when, and on what evidence?",
     icon: "history",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "reports",
@@ -424,7 +424,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Scheduled fleet reports and data exports for customers and audits.",
     decision: "What goes into this month's customer review pack?",
     icon: "download",
-    implemented: false,
+    implemented: true,
   },
 
   // Platform
@@ -436,7 +436,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Roles, thresholds, integrations and notification preferences.",
     decision: "Who can act on what, and at which thresholds do we alert?",
     icon: "settings",
-    implemented: false,
+    implemented: true,
   },
 ];
 

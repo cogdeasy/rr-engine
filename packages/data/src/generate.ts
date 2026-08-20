@@ -150,7 +150,13 @@ function makeFleet(rng: Rng, operators: Operator[]) {
           installedAt: iso(daysAgo(rand.int(rng, 30, 1800))),
           buildStandard: `${family.split(" ").pop()}-B${rand.int(rng, 1, 4)}.${rand.int(rng, 0, 9)}`,
           lifeStage:
-            lifeFraction > 0.92 ? "pre-shop-visit" : lifeFraction < 0.12 ? "new" : lifeFraction > 0.6 ? "mature" : "mature",
+            lifeFraction > 0.92
+              ? "pre-shop-visit"
+              : lifeFraction < 0.12
+                ? "new"
+                : lifeFraction > 0.6
+                  ? "mature"
+                  : "post-overhaul",
           totalFlightHours: round(totalFlightCycles * rand.float(rng, 5.2, 8.4), 0),
           totalFlightCycles,
           hoursSinceOverhaul: round(cyclesSinceOverhaul * rand.float(rng, 5.2, 8.4), 0),
@@ -606,8 +612,9 @@ function makeServiceBulletins(rng: Rng, engines: Engine[]): ServiceBulletin[] {
 function makeAuditLog(rng: Rng, workOrders: WorkOrder[], alerts: Alert[]): AuditEntry[] {
   const out: AuditEntry[] = [];
   const actors = ["a.hughes@rolls-royce.com", "r.patel@rolls-royce.com", "ehm-service", "prognostics-pipeline", "m.silva@rolls-royce.com"];
+  if (workOrders.length === 0 && alerts.length === 0) return out;
   for (let i = 0; i < 220; i += 1) {
-    const useWo = rand.bool(rng, 0.5) && workOrders.length > 0;
+    const useWo = alerts.length === 0 || (rand.bool(rng, 0.5) && workOrders.length > 0);
     const entity = useWo ? rand.pick(rng, workOrders) : rand.pick(rng, alerts);
     out.push({
       id: id("AU", i + 1),
@@ -705,8 +712,15 @@ export function latestTelemetry(engine: Engine): TelemetrySnapshot {
 }
 
 export function paginate<T>(items: T[], page = 1, pageSize = 25): Paginated<T> {
-  const start = (page - 1) * pageSize;
-  return { items: items.slice(start, start + pageSize), total: items.length, page, pageSize };
+  const safePage = Number.isFinite(page) && page >= 1 ? Math.floor(page) : 1;
+  const safePageSize = Number.isFinite(pageSize) && pageSize >= 1 ? Math.floor(pageSize) : 25;
+  const start = (safePage - 1) * safePageSize;
+  return {
+    items: items.slice(start, start + safePageSize),
+    total: items.length,
+    page: safePage,
+    pageSize: safePageSize,
+  };
 }
 
 export type { ModuleCode, StatusLevel };

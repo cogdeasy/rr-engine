@@ -53,17 +53,23 @@ export async function registerCoreRoutes(app: FastifyInstance) {
     },
   );
 
-  app.get<{ Params: { engineId: string } }>("/engines/:engineId/alerts", async (request) =>
-    getAlertsForEngine(request.params.engineId),
-  );
+  app.get<{ Params: { engineId: string } }>("/engines/:engineId/alerts", async (request, reply) => {
+    const engine = getEngine(request.params.engineId);
+    if (!engine) return reply.code(404).send({ error: "not_found", message: "Unknown engine", statusCode: 404 });
+    return getAlertsForEngine(engine.id);
+  });
 
-  app.get<{ Params: { engineId: string } }>("/engines/:engineId/prognostics", async (request) =>
-    getPrognosticsForEngine(request.params.engineId),
-  );
+  app.get<{ Params: { engineId: string } }>("/engines/:engineId/prognostics", async (request, reply) => {
+    const engine = getEngine(request.params.engineId);
+    if (!engine) return reply.code(404).send({ error: "not_found", message: "Unknown engine", statusCode: 404 });
+    return getPrognosticsForEngine(engine.id);
+  });
 
-  app.get<{ Params: { engineId: string } }>("/engines/:engineId/work-orders", async (request) =>
-    getWorkOrdersForEngine(request.params.engineId),
-  );
+  app.get<{ Params: { engineId: string } }>("/engines/:engineId/work-orders", async (request, reply) => {
+    const engine = getEngine(request.params.engineId);
+    if (!engine) return reply.code(404).send({ error: "not_found", message: "Unknown engine", statusCode: 404 });
+    return getWorkOrdersForEngine(engine.id);
+  });
 
   app.get<{ Querystring: { open?: string } }>("/alerts", async (request) =>
     request.query.open === "false" ? getDataset().alerts : getOpenAlerts(),
