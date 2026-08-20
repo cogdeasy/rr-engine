@@ -19,7 +19,7 @@ import type {
   Series,
   StatusLevel,
 } from "@rr/types";
-import { ENGINE_3D_ASSETS, ENGINE_FAMILIES, ENGINE_MODULES, PARAMETERS } from "../catalog";
+import { ENGINE_3D_ASSETS, ENGINE_FAMILIES, ENGINE_MODULES, FAILURE_MODES, PARAMETERS } from "../catalog";
 import { engineSeries, latestTelemetry } from "../generate";
 import { getDataset, getEngine, severityRank, statusRank } from "../index";
 
@@ -100,15 +100,29 @@ function isOpen(alert: Alert): boolean {
   return alert.state !== "closed" && alert.state !== "false-positive";
 }
 
+/**
+ * Alerts carry the failure mode's ATA chapter, which is finer than the module's
+ * own chapter for some modes (73-21 vs 73-00, 78-30 vs 78-00), so both
+ * vocabularies are indexed.
+ */
+const MODULE_BY_ATA: Map<string, ModuleCode> = new Map([
+  ...ENGINE_MODULES.map((m) => [m.ataChapter, m.code] as const),
+  ...FAILURE_MODES.map((f) => [f.ata, f.module] as const),
+]);
+
+function moduleForAtaChapter(ataChapter: string): ModuleCode | null {
+  return MODULE_BY_ATA.get(ataChapter) ?? null;
+}
+
 /** Alerts are raised against a failure mode, which the catalog maps to a module. */
 function alertsByModule(alerts: Alert[]): Map<ModuleCode, Alert[]> {
   const byModule = new Map<ModuleCode, Alert[]>();
   for (const alert of alerts) {
-    const spec = ENGINE_MODULES.find((m) => m.ataChapter === alert.ataChapter);
-    if (!spec) continue;
-    const bucket = byModule.get(spec.code) ?? [];
+    const code = moduleForAtaChapter(alert.ataChapter);
+    if (!code) continue;
+    const bucket = byModule.get(code) ?? [];
     bucket.push(alert);
-    byModule.set(spec.code, bucket);
+    byModule.set(code, bucket);
   }
   return byModule;
 }

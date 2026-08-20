@@ -263,8 +263,15 @@ function AlertsTab({ alerts }: { alerts: Alert[] }) {
     },
   ];
 
+  const open = alerts.filter((a) => a.state !== "closed" && a.state !== "false-positive").length;
+
   return (
-    <DataTable columns={columns} rows={alerts} rowKey={(a) => a.id} initialSortKey="raised" emptyMessage="No alerts raised against this engine." />
+    <div className="space-y-3">
+      <p className="rr-label text-rr-slate">
+        {open} open · {alerts.length} raised to date
+      </p>
+      <DataTable columns={columns} rows={alerts} rowKey={(a) => a.id} initialSortKey="raised" emptyMessage="No alerts raised against this engine." />
+    </div>
   );
 }
 
