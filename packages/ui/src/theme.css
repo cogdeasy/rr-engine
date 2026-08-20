@@ -96,7 +96,19 @@
     backdrop-filter: blur(6px);
   }
 
+  /* Overlaid via ::before so it composes with, rather than replaces, any
+     background the element already carries (e.g. .rr-hero-gradient). */
   .rr-grid-lines {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .rr-grid-lines::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
     background-image:
       linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
