@@ -223,7 +223,7 @@ export default function SupplyChainPage() {
               </li>
               <li className="flex gap-2">
                 <StatusPill status="amber">Amber</StatusPill>
-                <span>Cover lands inside five days of need, or the supplier has notified slip against its promise.</span>
+                <span>Cover lands within five days of the required-on-dock date — no float left for supplier slip.</span>
               </li>
               <li className="flex gap-2">
                 <StatusPill status="green">Green</StatusPill>

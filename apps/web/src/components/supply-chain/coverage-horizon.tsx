@@ -17,7 +17,9 @@ export function CoverageHorizon({
 }) {
   const span = horizonDays - startDays;
   const pct = (days: number) => ((Math.max(startDays, Math.min(horizonDays, days)) - startDays) / span) * 100;
-  const ticks = [0, 30, 60, horizonDays];
+  // Quarter marks across whatever span is asked for, so the axis stays legible
+  // (and keys stay unique) for horizons other than the default 90 days.
+  const ticks = [0, 1, 2, 3].map((i) => Math.round(startDays + (span * i) / 3));
 
   return (
     <div>
