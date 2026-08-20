@@ -27,7 +27,7 @@ export function EnginePicker({ options, selectedId, shaft }: { options: EngineOp
         aria-label="Select the engine to analyse"
         onChange={(event) => router.push(`/health/vibration?engine=${event.target.value}&shaft=${shaft}`, { scroll: false })}
         className={cn(
-          "h-8 min-w-64 rounded-full border border-rr-ink/12 bg-surface px-3.5 text-xs font-medium text-rr-ink",
+          "h-8 min-w-64 rounded-full border border-rr-ink/12 bg-white px-3.5 text-xs font-medium text-rr-ink",
           "focus:border-rr-blue focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rr-blue",
         )}
       >

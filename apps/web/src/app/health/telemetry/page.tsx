@@ -134,7 +134,7 @@ export default function Page() {
           {report.impacts.map((impact) => (
             <li
               key={impact.id}
-              className={cn("rounded-sm border bg-surface p-4", statusStyles[impact.status].border)}
+              className={cn("rounded-sm border bg-white p-4", statusStyles[impact.status].border)}
             >
               <div className="flex items-start justify-between gap-3">
                 <Link href={impact.href} className="text-[13px] font-semibold text-rr-ink hover:text-rr-blue">

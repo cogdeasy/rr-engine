@@ -52,7 +52,7 @@ export function HeatCell({
  * not the status palette, because attribution is categorical rather than
  * operational.
  */
-const DRIVER_COLOURS = ["#6a63ff", "#8b85ff", "#a9a5e6"];
+const DRIVER_COLOURS = ["#10069f", "#3b32c2", "#a9a5e6"];
 
 export function DriverAttributionBar({
   drivers,

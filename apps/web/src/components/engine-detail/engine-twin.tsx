@@ -18,10 +18,10 @@ const EngineTwinCanvas = dynamic(() => import("./engine-twin-canvas").then((m) =
 
 function TwinSkeleton() {
   return (
-    <div className="flex h-full w-full items-center justify-center bg-[#05061a]">
+    <div className="flex h-full w-full items-center justify-center bg-[#f2f3f8]">
       <div className="flex flex-col items-center gap-3">
-        <span className="h-10 w-10 animate-spin rounded-full border-2 border-white/15 border-t-white/70" aria-hidden />
-        <p className="rr-label text-white/60">Loading 3D engine twin</p>
+        <span className="h-10 w-10 animate-spin rounded-full border-2 border-rr-ink/10 border-t-rr-blue" aria-hidden />
+        <p className="rr-label text-rr-slate">Loading 3D engine twin</p>
       </div>
     </div>
   );
@@ -30,10 +30,10 @@ function TwinSkeleton() {
 /** Poster shown when the GLB cannot be fetched or decoded. */
 function TwinPoster({ label, modules }: { label: string; modules: ModuleCondition[] }) {
   return (
-    <div className="flex h-full w-full flex-col justify-between bg-[#05061a] p-6 text-white">
+    <div className="flex h-full w-full flex-col justify-between bg-[#f2f3f8] p-6 text-rr-ink">
       <div>
-        <p className="rr-label text-white/50">3D twin unavailable</p>
-        <p className="mt-1 text-sm text-white/80">
+        <p className="rr-label text-rr-slate">3D twin unavailable</p>
+        <p className="mt-1 text-sm text-rr-slate">
           The {label} model could not be loaded. Module condition below is unaffected.
         </p>
       </div>
@@ -48,7 +48,7 @@ function TwinPoster({ label, modules }: { label: string; modules: ModuleConditio
           ))}
         </div>
       </div>
-      <p className="rr-label text-white/40">Schematic module strip · height = life consumed</p>
+      <p className="rr-label text-rr-slate">Schematic module strip · height = life consumed</p>
     </div>
   );
 }
@@ -75,18 +75,18 @@ export function EngineTwin({ asset, modules, esn }: EngineTwinProps) {
 
   return (
     <div className="rr-panel grid overflow-hidden lg:grid-cols-[minmax(0,1fr)_320px]">
-      <div className="relative min-h-[520px] bg-[#05061a]">
+      <div className="relative min-h-[560px] bg-[#f2f3f8]">
         <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex items-start justify-between gap-3 p-4">
           <div className="pointer-events-auto">
-            <p className="rr-label text-white/50">Interactive twin</p>
-            <p className="text-sm font-semibold text-white">{asset?.label ?? "No model for this family"}</p>
-            <p className="mt-0.5 text-[11px] text-white/50">
+            <p className="rr-label text-rr-blue">Interactive twin</p>
+            <p className="mt-1 text-lg font-semibold tracking-tight text-rr-ink">{asset?.label ?? "No model for this family"}</p>
+            <p className="mt-1 text-[11px] text-rr-slate">
               {esn} · drag to orbit, scroll to zoom, click a module to inspect
             </p>
           </div>
           <div className="pointer-events-auto flex items-center gap-2">
             <Button
-              variant="onDark"
+              variant="secondary"
               size="sm"
               onClick={() => setExploded((value) => !value)}
               disabled={!canExplode || failed}
@@ -96,14 +96,14 @@ export function EngineTwin({ asset, modules, esn }: EngineTwinProps) {
               {exploded ? "Recombine" : "Cutaway"}
             </Button>
             {selected ? (
-              <Button variant="onDark" size="sm" onClick={() => setSelected(null)}>
+              <Button variant="secondary" size="sm" onClick={() => setSelected(null)}>
                 Clear
               </Button>
             ) : null}
           </div>
         </div>
 
-        <div className="h-full min-h-[460px] w-full">
+        <div className="h-full min-h-[500px] w-full">
           {asset && !failed ? (
             <EngineTwinCanvas
               sources={sources}
@@ -121,7 +121,7 @@ export function EngineTwin({ asset, modules, esn }: EngineTwinProps) {
           )}
         </div>
 
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex flex-wrap items-center gap-3 p-4 text-[11px] text-white/60">
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex flex-wrap items-center gap-4 border-t border-rr-ink/10 bg-white/70 p-4 text-[11px] text-rr-slate backdrop-blur-sm">
           {(["red", "amber", "green"] as const).map((status) => (
             <span key={status} className="inline-flex items-center gap-1.5">
               <span className={cn("h-2 w-2 rounded-full", statusStyles[status].dot)} aria-hidden />

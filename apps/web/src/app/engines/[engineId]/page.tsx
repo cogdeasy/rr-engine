@@ -24,20 +24,18 @@ export default async function Page({ params }: { params: Promise<{ engineId: str
   const actionTone = statusStyles[recommendedAction.status];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header ---------------------------------------------------- */}
-      <Panel tone="dark" className="rr-hero-gradient border-0">
-        <div className="flex flex-wrap items-start justify-between gap-6">
+      <section className="border-t-2 border-rr-blue pt-8">
+        <div className="flex flex-wrap items-start justify-between gap-8">
           <div>
-            <p className="rr-label text-rr-blue-200">Operate · engine dossier</p>
-            <div className="mt-2 flex flex-wrap items-center gap-3">
-              <h1 className="rr-numeric text-3xl font-semibold tracking-tight">{engine.esn}</h1>
+            <p className="rr-label text-rr-blue">Operate · engine dossier</p>
+            <div className="mt-3 flex flex-wrap items-center gap-3">
+              <h1 className="rr-numeric text-[2.5rem] font-semibold leading-none tracking-tight text-rr-ink">{engine.esn}</h1>
               <StatusPill status={engine.status} size="md" />
-              <Badge variant="outline" className="border-white/30 text-white/80">
-                {engine.family}
-              </Badge>
+              <Badge variant="outline">{engine.family}</Badge>
             </div>
-            <dl className="mt-4 flex flex-wrap gap-x-8 gap-y-3 text-sm">
+            <dl className="mt-6 flex flex-wrap gap-x-10 gap-y-3 text-sm">
               <HeaderFact label="Operator" value={operator ? `${operator.name} (${operator.code})` : "Unassigned"} />
               <HeaderFact
                 label="Aircraft"
@@ -64,18 +62,18 @@ export default async function Page({ params }: { params: Promise<{ engineId: str
               <HeroMetric label="RUL" value={formatNumber(engine.rulCycles)} unit="cyc" />
             </div>
             <div className="flex items-center gap-2">
-              <Button variant="onDark" size="sm">
+              <Button variant="secondary" size="sm">
                 Export dossier
               </Button>
               <Link href="/alerts">
-                <Button variant="onDark" size="sm">
+                <Button variant="secondary" size="sm">
                   {openAlerts.length} open alert{openAlerts.length === 1 ? "" : "s"}
                 </Button>
               </Link>
             </div>
           </div>
         </div>
-      </Panel>
+      </section>
 
       {/* Decision -------------------------------------------------- */}
       <Panel className={cn("flex flex-wrap items-center justify-between gap-5 border-l-4", actionTone.bg, actionTone.border)}>
@@ -129,8 +127,8 @@ export default async function Page({ params }: { params: Promise<{ engineId: str
 function HeaderFact({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div>
-      <dt className="rr-label text-rr-blue-200">{label}</dt>
-      <dd className="mt-1 text-white/90">{value}</dd>
+      <dt className="rr-label text-rr-slate">{label}</dt>
+      <dd className="mt-1 text-rr-ink">{value}</dd>
     </div>
   );
 }
@@ -138,10 +136,10 @@ function HeaderFact({ label, value }: { label: string; value: React.ReactNode })
 function HeroMetric({ label, value, unit }: { label: string; value: React.ReactNode; unit?: string }) {
   return (
     <div>
-      <p className="rr-label text-rr-blue-200">{label}</p>
-      <p className="rr-numeric mt-1 text-3xl font-semibold">
+      <p className="rr-label text-rr-slate">{label}</p>
+      <p className="rr-numeric mt-2 text-[2rem] font-semibold leading-none text-rr-ink">
         {value}
-        {unit ? <span className="ml-1 text-sm font-medium text-white/60">{unit}</span> : null}
+        {unit ? <span className="ml-1 text-sm font-medium text-rr-slate">{unit}</span> : null}
       </p>
     </div>
   );

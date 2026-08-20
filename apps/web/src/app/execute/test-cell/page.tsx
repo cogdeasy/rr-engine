@@ -174,8 +174,8 @@ function HeroMetric({
 }) {
   // Status hues are lightened for legibility on the near-black hero surface.
   const toneClass = {
-    red: "text-[#ff8f98]",
-    amber: "text-[#ffc978]",
+    red: "text-[#ff6d78]",
+    amber: "text-[#ffb454]",
     green: "text-white",
     grey: "text-rr-cloud",
   }[tone];

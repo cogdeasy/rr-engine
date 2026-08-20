@@ -12,7 +12,7 @@ export function BoardCard({ view, onOpen }: { view: WorkOrderView; onOpen: (view
       onClick={() => onOpen(view)}
       aria-label={`Open work order ${view.reference}`}
       className={cn(
-        "w-full rounded-sm border border-rr-ink/8 border-l-2 bg-surface p-3 text-left transition-colors hover:border-rr-blue/40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rr-blue",
+        "w-full rounded-sm border border-rr-ink/8 border-l-2 bg-white p-3 text-left transition-colors hover:border-rr-blue/40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rr-blue",
         view.status === "red" ? "border-l-status-red" : view.status === "amber" ? "border-l-status-amber" : "border-l-status-green",
       )}
     >

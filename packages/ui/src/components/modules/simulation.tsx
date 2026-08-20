@@ -62,25 +62,25 @@ export function ScenarioProjectionChart({
       >
         <defs>
           <linearGradient id="rr-sim-fill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#6a63ff" stopOpacity="0.2" />
-            <stop offset="100%" stopColor="#6a63ff" stopOpacity="0" />
+            <stop offset="0%" stopColor="#10069f" stopOpacity="0.2" />
+            <stop offset="100%" stopColor="#10069f" stopOpacity="0" />
           </linearGradient>
         </defs>
         {[0.25, 0.5, 0.75].map((f) => (
-          <line key={f} x1={0} x2={CHART_WIDTH} y1={height * f} y2={height * f} stroke="#e7eaf8" strokeOpacity={0.132} />
+          <line key={f} x1={0} x2={CHART_WIDTH} y1={height * f} y2={height * f} stroke="#05061f" strokeOpacity={0.06} />
         ))}
         {limit > min && limit < max ? (
           <>
-            <rect x={0} y={toY(limit)} width={CHART_WIDTH} height={Math.max(0, height - toY(limit))} fill="#ff5f6d" fillOpacity={0.07} />
-            <line x1={0} x2={CHART_WIDTH} y1={toY(limit)} y2={toY(limit)} stroke="#ff5f6d" strokeDasharray="6 4" strokeWidth={1.2} />
+            <rect x={0} y={toY(limit)} width={CHART_WIDTH} height={Math.max(0, height - toY(limit))} fill="#d81e2b" fillOpacity={0.07} />
+            <line x1={0} x2={CHART_WIDTH} y1={toY(limit)} y2={toY(limit)} stroke="#d81e2b" strokeDasharray="6 4" strokeWidth={1.2} />
           </>
         ) : null}
         <path d={`${scenarioPath} L${CHART_WIDTH},${height} L0,${height} Z`} fill="url(#rr-sim-fill)" />
-        <path d={baselinePath} fill="none" stroke="#8f96bb" strokeWidth={1.5} strokeDasharray="5 4" vectorEffect="non-scaling-stroke" />
+        <path d={baselinePath} fill="none" stroke="#6b7089" strokeWidth={1.5} strokeDasharray="5 4" vectorEffect="non-scaling-stroke" />
         <path
           d={scenarioPath}
           fill="none"
-          stroke={breached ? "#ff5f6d" : "#6a63ff"}
+          stroke={breached ? "#d81e2b" : "#10069f"}
           strokeWidth={2}
           vectorEffect="non-scaling-stroke"
         />
@@ -164,7 +164,7 @@ export interface CostSegment {
   value: number;
 }
 
-const COST_COLOURS = ["#6a63ff", "#8b85ff", "#35c8ff", "#b07cff", "#8f96bb"];
+const COST_COLOURS = ["#10069f", "#3b32c2", "#00a3d3", "#7b4bd8", "#6b7089"];
 
 /** Stacked breakdown of where the money in a scenario goes. */
 export function CostStack({ segments, formatValue, className }: { segments: CostSegment[]; formatValue: (v: number) => string; className?: string }) {

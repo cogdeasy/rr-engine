@@ -148,7 +148,7 @@ function Field({ label, value }: { label: string; value: string }) {
 
 function CandidateCard({ candidate, compact }: { candidate: SuggestedTechnician; compact?: boolean }) {
   return (
-    <div className={cn("mt-1.5 rounded-sm border border-rr-ink/8 bg-surface p-3", compact && "py-2")}>
+    <div className={cn("mt-1.5 rounded-sm border border-rr-ink/8 bg-white p-3", compact && "py-2")}>
       <div className="flex items-baseline justify-between gap-2">
         <p className="text-[13px] font-semibold text-rr-ink">{candidate.name}</p>
         <p className="rr-numeric text-xs font-semibold text-rr-blue">{candidate.matchScore}</p>

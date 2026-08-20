@@ -20,10 +20,10 @@ import { moduleCodeForGltfNode } from "@rr/data";
 const DRACO_DECODER_PATH = "https://www.gstatic.com/draco/versioned/decoders/1.5.6/";
 
 const STATUS_EMISSIVE: Record<StatusLevel, { colour: string; intensity: number }> = {
-  red: { colour: "#ff5f6d", intensity: 0.55 },
-  amber: { colour: "#ffb43d", intensity: 0.42 },
-  green: { colour: "#2fd39b", intensity: 0.05 },
-  grey: { colour: "#8f96bb", intensity: 0 },
+  red: { colour: "#d81e2b", intensity: 0.55 },
+  amber: { colour: "#f08c00", intensity: 0.42 },
+  green: { colour: "#0a8754", intensity: 0.05 },
+  grey: { colour: "#6b7089", intensity: 0 },
 };
 
 const SELECTED_EMISSIVE = { colour: "#3d31ff", intensity: 0.75 };
@@ -206,7 +206,7 @@ function Hotspot({
       ? "border-status-red bg-status-red text-white"
       : mod.status === "amber"
         ? "border-status-amber bg-status-amber text-white"
-        : "border-white/70 bg-white/85 text-rr-ink";
+        : "border-rr-ink/15 bg-white/90 text-rr-ink";
   return (
     <button
       type="button"
@@ -216,7 +216,7 @@ function Hotspot({
       className={[
         "whitespace-nowrap rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] shadow-sm transition-transform focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white",
         tone,
-        selected ? "scale-110 ring-2 ring-white" : "hover:scale-105",
+        selected ? "scale-110 ring-2 ring-rr-blue" : "hover:scale-105",
       ].join(" ")}
     >
       {mod.code}
@@ -246,7 +246,7 @@ class ModelBoundary extends React.Component<
 function LoadingCaption() {
   return (
     <Html center>
-      <p className="rr-label whitespace-nowrap text-white/70">Loading engine geometry…</p>
+      <p className="rr-label whitespace-nowrap text-rr-slate">Loading engine geometry…</p>
     </Html>
   );
 }
@@ -283,10 +283,10 @@ export function EngineTwinCanvas({
       gl={{ antialias: true, preserveDrawingBuffer: true }}
       className="h-full w-full"
     >
-      <color attach="background" args={["#05061a"]} />
-      <hemisphereLight intensity={0.55} groundColor="#05061a" />
-      <directionalLight position={[6, 8, 5]} intensity={1.5} castShadow />
-      <directionalLight position={[-6, 3, -4]} intensity={0.5} color="#8f9bff" />
+      <color attach="background" args={["#f2f3f8"]} />
+      <hemisphereLight intensity={1.1} color="#ffffff" groundColor="#d8dbe6" />
+      <directionalLight position={[6, 8, 5]} intensity={1.9} castShadow />
+      <directionalLight position={[-6, 3, -4]} intensity={0.7} color="#dfe3f5" />
       <React.Suspense fallback={<LoadingCaption />}>
         <ModelBoundary onError={handleError} fallback={null}>
           <Bounds fit clip observe margin={1.15}>
@@ -303,7 +303,7 @@ export function EngineTwinCanvas({
           </Bounds>
         </ModelBoundary>
       </React.Suspense>
-      <ContactShadows position={[0, -1.1, 0]} opacity={0.35} scale={14} blur={2.6} far={4} />
+      <ContactShadows position={[0, -1.1, 0]} opacity={0.28} scale={14} blur={2.6} far={4} color="#05061f" />
       <OrbitControls makeDefault enablePan={false} minDistance={1.6} maxDistance={12} autoRotate={false} />
     </Canvas>
   );

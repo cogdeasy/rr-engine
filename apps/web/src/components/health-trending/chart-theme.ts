@@ -5,17 +5,17 @@
  * of the visualisation ramp so that red, amber and green stay reserved for
  * operational state.
  */
-export const SERIES_COLOURS = ["#6a63ff", "#35c8ff", "#b07cff", "#8b85ff", "#98a0c6", "#0b0d33"] as const;
+export const SERIES_COLOURS = ["#10069f", "#00a3d3", "#7b4bd8", "#3b32c2", "#4b4f77", "#0b0d33"] as const;
 
 export const STATUS_COLOURS = {
-  red: "#ff5f6d",
-  amber: "#ffb43d",
-  green: "#2fd39b",
-  grey: "#8f96bb",
+  red: "#d81e2b",
+  amber: "#f08c00",
+  green: "#0a8754",
+  grey: "#6b7089",
 } as const;
 
 export const AXIS_COLOUR = "#c9cbe0";
-export const AXIS_TEXT = "#98a0c6";
+export const AXIS_TEXT = "#4b4f77";
 export const GRID_COLOUR = "rgba(5, 6, 31, 0.07)";
 
 export function seriesColour(index: number): string {

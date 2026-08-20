@@ -156,7 +156,7 @@ export function CapacityWorkspace({ overview }: { overview: CapacityOverview }) 
           <table className="w-full border-separate border-spacing-x-1 border-spacing-y-1 text-sm">
             <thead>
               <tr>
-                <th className="rr-label sticky left-0 z-10 bg-surface pr-3 text-left text-rr-slate">Shop</th>
+                <th className="rr-label sticky left-0 z-10 bg-white pr-3 text-left text-rr-slate">Shop</th>
                 {overview.months.map((m) => (
                   <th key={m.key} className="rr-label px-1 text-center text-rr-slate">
                     {m.label.split(" ")[0]}
@@ -167,7 +167,7 @@ export function CapacityWorkspace({ overview }: { overview: CapacityOverview }) 
             <tbody>
               {overview.facilities.map((f) => (
                 <tr key={f.facilityId}>
-                  <th scope="row" className="sticky left-0 z-10 bg-surface pr-3 text-left">
+                  <th scope="row" className="sticky left-0 z-10 bg-white pr-3 text-left">
                     <button
                       type="button"
                       onClick={() => {

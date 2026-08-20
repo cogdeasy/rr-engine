@@ -18,8 +18,8 @@ import { LAND_RINGS } from "./world";
 
 /** Map-tuned status palette: the same semantics, legible on the navy surface. */
 export const MAP_STATUS_COLOUR: Record<StatusLevel, string> = {
-  red: "#ff5f6d",
-  amber: "#ffc061",
+  red: "#ff3b47",
+  amber: "#ffa41b",
   green: "#2bb673",
   grey: "#8a90ab",
 };
@@ -141,7 +141,7 @@ export function FleetMapCanvas({ aircraft, stations, selectedId, onSelect, class
                   x={(a.x + b.x) / 2}
                   y={(a.y + b.y) / 2 - 5}
                   textAnchor="middle"
-                  fill="#1a1f45"
+                  fill="#e7e6fb"
                   fontSize={8}
                   fontFamily="var(--font-mono)"
                 >

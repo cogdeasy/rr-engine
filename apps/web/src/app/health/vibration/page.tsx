@@ -308,11 +308,11 @@ export default async function VibrationPage({ searchParams }: { searchParams: Pr
           </dl>
           <ul className="mt-4 space-y-1.5 text-[11px] text-rr-slate">
             <li className="flex items-center gap-2">
-              <span className="inline-block h-2 w-2 rounded-full" style={{ backgroundColor: "#6a63ff" }} aria-hidden />
+              <span className="inline-block h-2 w-2 rounded-full" style={{ backgroundColor: "#10069f" }} aria-hidden />
               Current vector
             </li>
             <li className="flex items-center gap-2">
-              <span className="inline-block h-2 w-2 rounded-full border border-rr-blue-400 bg-surface" aria-hidden />
+              <span className="inline-block h-2 w-2 rounded-full border border-rr-blue-400 bg-white" aria-hidden />
               Previous balance runs
             </li>
             <li className="flex items-center gap-2">

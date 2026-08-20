@@ -151,14 +151,14 @@ export function TrendChart({
             <ReferenceLine
               key={event.id}
               x={event.at}
-              stroke={event.kind === "alert" ? STATUS_COLOURS.amber : "#98a0c6"}
+              stroke={event.kind === "alert" ? STATUS_COLOURS.amber : "#4b4f77"}
               strokeDasharray="3 3"
               strokeOpacity={0.7}
               label={{
                 value: EVENT_GLYPH[event.kind],
                 position: "top",
                 fontSize: 9,
-                fill: event.kind === "alert" ? STATUS_COLOURS.amber : "#98a0c6",
+                fill: event.kind === "alert" ? STATUS_COLOURS.amber : "#4b4f77",
               }}
             />
           ))}
@@ -204,7 +204,7 @@ export function TrendChart({
               height={26}
               travellerWidth={8}
               stroke="#a9a5e6"
-              fill="#0b0e2a"
+              fill="#f4f5fa"
               tickFormatter={shortDate}
               onChange={handleBrush}
             />

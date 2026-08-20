@@ -74,10 +74,10 @@ export function RunProfileChart({
         onPointerLeave={() => setHoverIndex(null)}
       >
         {/* Limit bands */}
-        <rect x={PAD.left} y={yEgt(EGT_MAX)} width={plotWidth} height={Math.max(0, yEgt(EGT_RED) - yEgt(EGT_MAX))} fill="#ff5f6d" opacity={0.09} />
-        <rect x={PAD.left} y={yEgt(EGT_RED)} width={plotWidth} height={Math.max(0, yEgt(EGT_AMBER) - yEgt(EGT_RED))} fill="#ffb43d" opacity={0.1} />
-        <line x1={PAD.left} x2={PAD.left + plotWidth} y1={yEgt(EGT_RED)} y2={yEgt(EGT_RED)} stroke="#ff5f6d" strokeWidth={1} strokeDasharray="6 4" />
-        <text x={PAD.left + plotWidth} y={yEgt(EGT_RED) - 5} textAnchor="end" fontSize={10} fill="#ff5f6d" className="rr-label">
+        <rect x={PAD.left} y={yEgt(EGT_MAX)} width={plotWidth} height={Math.max(0, yEgt(EGT_RED) - yEgt(EGT_MAX))} fill="#d81e2b" opacity={0.09} />
+        <rect x={PAD.left} y={yEgt(EGT_RED)} width={plotWidth} height={Math.max(0, yEgt(EGT_AMBER) - yEgt(EGT_RED))} fill="#f08c00" opacity={0.1} />
+        <line x1={PAD.left} x2={PAD.left + plotWidth} y1={yEgt(EGT_RED)} y2={yEgt(EGT_RED)} stroke="#d81e2b" strokeWidth={1} strokeDasharray="6 4" />
+        <text x={PAD.left + plotWidth} y={yEgt(EGT_RED) - 5} textAnchor="end" fontSize={10} fill="#d81e2b" className="rr-label">
           EGT redline {EGT_RED}°C
         </text>
 
@@ -92,10 +92,10 @@ export function RunProfileChart({
               y={PAD.top}
               width={x(window.to) - x(window.from)}
               height={plotHeight}
-              fill="#6a63ff"
+              fill="#10069f"
               opacity={0.045}
             />
-            <text x={(x(window.from) + x(window.to)) / 2} y={HEIGHT - 10} textAnchor="middle" fontSize={9} fill="#98a0c6" className="rr-label">
+            <text x={(x(window.from) + x(window.to)) / 2} y={HEIGHT - 10} textAnchor="middle" fontSize={9} fill="#4b4f77" className="rr-label">
               {label}
             </text>
           </g>
@@ -104,43 +104,43 @@ export function RunProfileChart({
         {/* Gridlines + axes */}
         {[300, 450, 600, 750, 900].map((v) => (
           <g key={v}>
-            <line x1={PAD.left} x2={PAD.left + plotWidth} y1={yEgt(v)} y2={yEgt(v)} stroke="#e7eaf8" strokeOpacity={0.132} />
-            <text x={PAD.left - 8} y={yEgt(v) + 3} textAnchor="end" fontSize={10} fill="#98a0c6" className="rr-numeric">
+            <line x1={PAD.left} x2={PAD.left + plotWidth} y1={yEgt(v)} y2={yEgt(v)} stroke="#05061f" strokeOpacity={0.06} />
+            <text x={PAD.left - 8} y={yEgt(v) + 3} textAnchor="end" fontSize={10} fill="#4b4f77" className="rr-numeric">
               {v}
             </text>
           </g>
         ))}
         {[0, 25, 50, 75, 100].map((v) => (
-          <text key={v} x={PAD.left + plotWidth + 8} y={yPct(v) + 3} fontSize={10} fill="#98a0c6" className="rr-numeric">
+          <text key={v} x={PAD.left + plotWidth + 8} y={yPct(v) + 3} fontSize={10} fill="#4b4f77" className="rr-numeric">
             {v}%
           </text>
         ))}
         {[0, 45, 90, 135, 180].filter((t) => t <= tMax).map((t) => (
-          <text key={t} x={x(t)} y={HEIGHT - 22} textAnchor="middle" fontSize={10} fill="#98a0c6" className="rr-numeric">
+          <text key={t} x={x(t)} y={HEIGHT - 22} textAnchor="middle" fontSize={10} fill="#4b4f77" className="rr-numeric">
             {t}s
           </text>
         ))}
 
         {/* Series */}
-        <path d={thrustPath} fill="none" stroke="#35c8ff" strokeWidth={1.4} strokeDasharray="3 3" />
-        <path d={n1Path} fill="none" stroke="#8b85ff" strokeWidth={1.4} />
-        <path d={egtPath} fill="none" stroke="#6a63ff" strokeWidth={2.2} />
+        <path d={thrustPath} fill="none" stroke="#00a3d3" strokeWidth={1.4} strokeDasharray="3 3" />
+        <path d={n1Path} fill="none" stroke="#3b32c2" strokeWidth={1.4} />
+        <path d={egtPath} fill="none" stroke="#10069f" strokeWidth={2.2} />
 
         {/* Crosshair */}
         {active ? (
           <g>
-            <line x1={x(active.t)} x2={x(active.t)} y1={PAD.top} y2={PAD.top + plotHeight} stroke="#e7eaf8" strokeOpacity={0.5} />
-            <circle cx={x(active.t)} cy={yEgt(active.egtC)} r={3.5} fill="#6a63ff" />
-            <circle cx={x(active.t)} cy={yPct(active.n1)} r={3} fill="#8b85ff" />
+            <line x1={x(active.t)} x2={x(active.t)} y1={PAD.top} y2={PAD.top + plotHeight} stroke="#05061f" strokeOpacity={0.25} />
+            <circle cx={x(active.t)} cy={yEgt(active.egtC)} r={3.5} fill="#10069f" />
+            <circle cx={x(active.t)} cy={yPct(active.n1)} r={3} fill="#3b32c2" />
           </g>
         ) : null}
       </svg>
 
       <div className="mt-2 flex flex-wrap items-center justify-between gap-x-6 gap-y-2 text-[11px] text-rr-slate">
         <div className="flex flex-wrap items-center gap-4">
-          <LegendSwatch colour="#6a63ff" label="EGT °C" />
-          <LegendSwatch colour="#8b85ff" label="N1 %" />
-          <LegendSwatch colour="#35c8ff" label="Thrust % of achieved" dashed />
+          <LegendSwatch colour="#10069f" label="EGT °C" />
+          <LegendSwatch colour="#3b32c2" label="N1 %" />
+          <LegendSwatch colour="#00a3d3" label="Thrust % of achieved" dashed />
         </div>
         <div className="rr-numeric flex flex-wrap items-center gap-4">
           {active ? (

@@ -168,7 +168,7 @@ export function EscalationPanel({
                         value={current.ackSlaMinutes}
                         onChange={(event) => update(policy.severity, { ackSlaMinutes: Number(event.target.value) })}
                         disabled={policy.ackSlaMinutes === 0}
-                        className="rr-numeric h-8 rounded-full border border-rr-ink/12 bg-surface px-3 text-xs font-semibold text-rr-ink focus:border-rr-blue focus:outline-none disabled:opacity-50"
+                        className="rr-numeric h-8 rounded-full border border-rr-ink/12 bg-white px-3 text-xs font-semibold text-rr-ink focus:border-rr-blue focus:outline-none disabled:opacity-50"
                       >
                         {policy.ackSlaMinutes === 0 ? <option value={0}>No ack</option> : null}
                         {ACK_OPTIONS.map((minutes) => (
@@ -268,7 +268,7 @@ function RoleSelect({
         id={id}
         value={value}
         onChange={(event) => onChange(event.target.value as PlatformRoleId)}
-        className="h-8 w-44 rounded-full border border-rr-ink/12 bg-surface px-3 text-xs text-rr-ink focus:border-rr-blue focus:outline-none"
+        className="h-8 w-44 rounded-full border border-rr-ink/12 bg-white px-3 text-xs text-rr-ink focus:border-rr-blue focus:outline-none"
       >
         {roles.map((role) => (
           <option key={role.id} value={role.id}>

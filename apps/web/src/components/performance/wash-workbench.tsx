@@ -298,7 +298,7 @@ function EngineWashCase({
             </Link>
             <Link
               href={`/health/trending?engine=${engine.engineId}`}
-              className="inline-flex items-center rounded-full px-3 py-1.5 text-xs font-semibold text-rr-slate transition-colors hover:bg-surface hover:text-rr-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rr-blue"
+              className="inline-flex items-center rounded-full px-3 py-1.5 text-xs font-semibold text-rr-slate transition-colors hover:bg-white hover:text-rr-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rr-blue"
             >
               Open trend detail
             </Link>

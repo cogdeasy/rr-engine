@@ -181,7 +181,7 @@ export function TriageConsole({
             <select
               value={stateFilter}
               onChange={(event) => setStateFilter(event.target.value)}
-              className="h-8 rounded-full border border-rr-ink/12 bg-surface px-3 text-xs font-medium normal-case tracking-normal text-rr-ink focus:border-rr-blue focus:outline-none"
+              className="h-8 rounded-full border border-rr-ink/12 bg-white px-3 text-xs font-medium normal-case tracking-normal text-rr-ink focus:border-rr-blue focus:outline-none"
             >
               <option value="all">All states</option>
               {(["new", "triaged", "investigating", "actioned", "false-positive"] as Alert["state"][]).map((state) => (
@@ -197,7 +197,7 @@ export function TriageConsole({
             <select
               value={operator}
               onChange={(event) => setOperator(event.target.value)}
-              className="h-8 rounded-full border border-rr-ink/12 bg-surface px-3 text-xs font-medium normal-case tracking-normal text-rr-ink focus:border-rr-blue focus:outline-none"
+              className="h-8 rounded-full border border-rr-ink/12 bg-white px-3 text-xs font-medium normal-case tracking-normal text-rr-ink focus:border-rr-blue focus:outline-none"
             >
               <option value="all">All operators</option>
               {operators.map(([code, name]) => (
@@ -248,7 +248,7 @@ export function TriageConsole({
                 <label className="flex items-center gap-2 text-xs text-rr-slate">
                   <input
                     type="checkbox"
-                    className="h-3.5 w-3.5 accent-[#6a63ff]"
+                    className="h-3.5 w-3.5 accent-[#10069F]"
                     aria-label="Select all alerts in view"
                     checked={visibleRows.length > 0 && checkedInView.length === visibleRows.length}
                     onChange={(event) =>
@@ -299,7 +299,7 @@ export function TriageConsole({
                     <div className="flex items-start pt-1">
                       <input
                         type="checkbox"
-                        className="h-3.5 w-3.5 accent-[#6a63ff]"
+                        className="h-3.5 w-3.5 accent-[#10069F]"
                         aria-label={`Select alert ${item.alert.id}`}
                         checked={checked.has(item.alert.id)}
                         onChange={() => setChecked((prev) => toggleSet(prev, item.alert.id))}

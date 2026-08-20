@@ -187,7 +187,7 @@ export function TaskCardDetail({
         <p className="rr-label text-rr-slate">Sign-off</p>
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
           {signOffState.map((signOff) => (
-            <div key={signOff.role} className="rounded-sm border border-rr-ink/8 bg-surface px-3 py-3">
+            <div key={signOff.role} className="rounded-sm border border-rr-ink/8 bg-white px-3 py-3">
               <p className="rr-label text-rr-slate">{signOff.role}</p>
               <p className="mt-1 text-[13px] font-semibold text-rr-ink">{signOff.name}</p>
               <p className="rr-numeric text-[11px] text-rr-slate">stamp {signOff.stamp}</p>

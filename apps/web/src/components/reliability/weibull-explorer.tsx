@@ -83,17 +83,17 @@ export function WeibullExplorer({ fits }: { fits: WeibullFit[] }) {
         >
           <defs>
             <linearGradient id={`weibull-${fit.id}`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#6a63ff" stopOpacity="0.2" />
-              <stop offset="100%" stopColor="#6a63ff" stopOpacity="0" />
+              <stop offset="0%" stopColor="#10069f" stopOpacity="0.2" />
+              <stop offset="100%" stopColor="#10069f" stopOpacity="0" />
             </linearGradient>
           </defs>
           {[0.25, 0.5, 0.75].map((f) => (
-            <line key={f} x1={0} x2={width} y1={height * f} y2={height * f} stroke="#e7eaf8" strokeOpacity={0.132} />
+            <line key={f} x1={0} x2={width} y1={height * f} y2={height * f} stroke="#05061f" strokeOpacity={0.06} />
           ))}
-          <line x1={x(fit.b10Cycles)} x2={x(fit.b10Cycles)} y1={0} y2={height} stroke="#ffb43d" strokeDasharray="5 4" strokeWidth={1.2} />
-          <line x1={x(fit.etaCycles)} x2={x(fit.etaCycles)} y1={0} y2={height} stroke="#ff5f6d" strokeDasharray="5 4" strokeWidth={1.2} />
+          <line x1={x(fit.b10Cycles)} x2={x(fit.b10Cycles)} y1={0} y2={height} stroke="#f08c00" strokeDasharray="5 4" strokeWidth={1.2} />
+          <line x1={x(fit.etaCycles)} x2={x(fit.etaCycles)} y1={0} y2={height} stroke="#d81e2b" strokeDasharray="5 4" strokeWidth={1.2} />
           <path d={area} fill={`url(#weibull-${fit.id})`} />
-          <path d={line} fill="none" stroke="#6a63ff" strokeWidth={1.8} vectorEffect="non-scaling-stroke" />
+          <path d={line} fill="none" stroke="#10069f" strokeWidth={1.8} vectorEffect="non-scaling-stroke" />
         </svg>
         <div className="mt-1 flex justify-between text-[11px] text-rr-slate">
           <span>0 cycles since overhaul</span>

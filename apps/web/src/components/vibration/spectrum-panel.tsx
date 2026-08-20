@@ -5,10 +5,10 @@ import type { ShaftId, VibrationSpectrum } from "@rr/types";
 import { Badge, Panel, PanelHeader, StatusPill, Tabs, cn, statusStyles } from "@rr/ui";
 
 const STATUS_HEX: Record<string, string> = {
-  red: "#ff5f6d",
-  amber: "#ffb43d",
-  green: "#2fd39b",
-  grey: "#8f96bb",
+  red: "#d81e2b",
+  amber: "#f08c00",
+  green: "#0a8754",
+  grey: "#6b7089",
 };
 
 const WIDTH = 960;
@@ -68,22 +68,22 @@ export function SpectrumPanel({
         >
           <defs>
             <linearGradient id={`spectrum-${spectrum.shaft}`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#6a63ff" stopOpacity="0.28" />
-              <stop offset="100%" stopColor="#6a63ff" stopOpacity="0.02" />
+              <stop offset="0%" stopColor="#10069f" stopOpacity="0.28" />
+              <stop offset="100%" stopColor="#10069f" stopOpacity="0.02" />
             </linearGradient>
           </defs>
 
           {[0.25, 0.5, 0.75].map((f) => (
-            <line key={f} x1={0} x2={WIDTH} y1={HEIGHT * f} y2={HEIGHT * f} stroke="#e7eaf8" strokeOpacity={0.11} />
+            <line key={f} x1={0} x2={WIDTH} y1={HEIGHT * f} y2={HEIGHT * f} stroke="#05061f" strokeOpacity={0.05} />
           ))}
 
-          <line x1={0} x2={WIDTH} y1={y(advisory)} y2={y(advisory)} stroke="#ffb43d" strokeDasharray="6 4" strokeWidth={1.1} />
-          <text x={6} y={y(advisory) - 5} fontSize={10} fill="#ffb43d" className="rr-numeric">
+          <line x1={0} x2={WIDTH} y1={y(advisory)} y2={y(advisory)} stroke="#f08c00" strokeDasharray="6 4" strokeWidth={1.1} />
+          <text x={6} y={y(advisory) - 5} fontSize={10} fill="#f08c00" className="rr-numeric">
             advisory {advisory} IPS
           </text>
 
           {markers.map((peak, index) => {
-            const colour = peak.synchronous ? "#6a63ff" : STATUS_HEX[peak.status] ?? "#8f96bb";
+            const colour = peak.synchronous ? "#10069f" : STATUS_HEX[peak.status] ?? "#6b7089";
             return (
               <g key={peak.id}>
                 <line
@@ -111,18 +111,18 @@ export function SpectrumPanel({
           })}
 
           <path d={area} fill={`url(#spectrum-${spectrum.shaft})`} />
-          <path d={line} fill="none" stroke="#6a63ff" strokeWidth={1.3} vectorEffect="non-scaling-stroke" />
-          <line x1={0} x2={WIDTH} y1={HEIGHT} y2={HEIGHT} stroke="#e7eaf8" strokeOpacity={0.33} />
+          <path d={line} fill="none" stroke="#10069f" strokeWidth={1.3} vectorEffect="non-scaling-stroke" />
+          <line x1={0} x2={WIDTH} y1={HEIGHT} y2={HEIGHT} stroke="#05061f" strokeOpacity={0.15} />
 
           {[0, 100, 200, 300, 400, 500].map((hz) => (
             <g key={hz}>
-              <line x1={x(hz)} x2={x(hz)} y1={HEIGHT} y2={HEIGHT + 4} stroke="#e7eaf8" strokeOpacity={0.5} />
-              <text x={x(hz)} y={HEIGHT + 18} fontSize={10} textAnchor="middle" fill="#98a0c6" className="rr-numeric">
+              <line x1={x(hz)} x2={x(hz)} y1={HEIGHT} y2={HEIGHT + 4} stroke="#05061f" strokeOpacity={0.25} />
+              <text x={x(hz)} y={HEIGHT + 18} fontSize={10} textAnchor="middle" fill="#4b4f77" className="rr-numeric">
                 {hz} Hz
               </text>
             </g>
           ))}
-          <text x={WIDTH} y={HEIGHT + 32} fontSize={10} textAnchor="end" fill="#98a0c6">
+          <text x={WIDTH} y={HEIGHT + 32} fontSize={10} textAnchor="end" fill="#4b4f77">
             Amplitude scaled to {maxAmp.toFixed(2)} IPS full range
           </text>
         </svg>

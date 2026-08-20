@@ -49,42 +49,41 @@ export default function FleetOverviewPage() {
 
   return (
     <div className="space-y-12">
-      {/* Hero — full-bleed dawn-above-cloud surface, editorial headline, translucent stat cards */}
-      <section className="rr-hero-gradient relative -mx-10 -mt-12 overflow-hidden px-10 pb-10 pt-20 text-white xl:-mx-14 xl:px-14 xl:pt-28">
-        <div className="rr-grid-lines pointer-events-none absolute inset-0 opacity-60" aria-hidden />
-        <div className="relative mx-auto w-full max-w-[1600px]">
-          <p className="rr-label text-rr-blue-200">Fleet services operations centre</p>
-          <h1 className="rr-display mt-6 max-w-4xl text-white">
+      {/* Masthead — white, editorial, RR blue rule */}
+      <section>
+        <div className="border-t-2 border-rr-blue pt-8">
+          <p className="rr-label text-rr-blue">Fleet services operations centre</p>
+          <h1 className="rr-display mt-5 max-w-4xl text-rr-ink">
             {formatNumber(summary.engines)} engines under management.
             <br />
-            <span className="text-white/55">{summary.byStatus.red} flagged red this morning.</span>
+            <span className="text-rr-slate">{summary.byStatus.red} flagged red this morning.</span>
           </h1>
-          <p className="mt-8 max-w-xl text-[15px] leading-relaxed text-rr-cloud">
+          <p className="mt-6 max-w-xl text-[15px] leading-relaxed text-rr-slate">
             Live engine health, prognostics and maintenance execution across the managed Trent and UltraFan fleet.
             Every red condition here has an owner, a recommended action and a deadline.
           </p>
-          <div className="mt-10 flex flex-wrap gap-3">
+          <div className="mt-8 flex flex-wrap gap-3">
             <Link
               href="/alerts"
-              className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-semibold text-rr-blue-deep transition-colors hover:bg-rr-cloud"
+              className="inline-flex items-center gap-2 rounded-full bg-rr-blue px-7 py-3 text-sm font-semibold text-white transition-colors hover:bg-rr-blue-600"
             >
               Triage {summary.openAlerts} open alerts
               <span aria-hidden>›</span>
             </Link>
             <Link
               href="/engines"
-              className="inline-flex items-center gap-2 rounded-full border border-white/50 px-7 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/10"
+              className="inline-flex items-center gap-2 rounded-full border border-rr-ink/20 px-7 py-3 text-sm font-semibold text-rr-ink transition-colors hover:border-rr-blue hover:text-rr-blue"
             >
               Engine explorer
             </Link>
           </div>
+        </div>
 
-          <div className="mt-20 grid gap-px overflow-hidden rounded-sm border border-white/15 bg-white/10 sm:grid-cols-2 xl:grid-cols-4">
-            <HeroStat label="Red" value={summary.byStatus.red} tone="red" caption="immediate action" />
-            <HeroStat label="Amber" value={summary.byStatus.amber} tone="amber" caption="on watchlist" />
-            <HeroStat label="Green" value={summary.byStatus.green} tone="green" caption="within limits" />
-            <HeroStat label="AOG" value={summary.aogAircraft} tone="red" caption="aircraft grounded" />
-          </div>
+        <div className="mt-12 grid divide-y divide-rr-ink/10 border-y border-rr-ink/10 sm:grid-cols-2 sm:divide-y-0 xl:grid-cols-4 xl:divide-x xl:divide-rr-ink/10">
+          <HeroStat label="Red" value={summary.byStatus.red} tone="red" caption="immediate action" />
+          <HeroStat label="Amber" value={summary.byStatus.amber} tone="amber" caption="on watchlist" />
+          <HeroStat label="Green" value={summary.byStatus.green} tone="green" caption="within limits" />
+          <HeroStat label="AOG" value={summary.aogAircraft} tone="red" caption="aircraft grounded" />
         </div>
       </section>
 
@@ -117,7 +116,7 @@ export default function FleetOverviewPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-white/10">
+                <tr className="border-b border-rr-ink/8">
                   <th className="rr-label py-2 text-left text-rr-slate">Engine</th>
                   <th className="rr-label py-2 text-left text-rr-slate">Operator</th>
                   <th className="rr-label py-2 text-right text-rr-slate">EGT margin</th>
@@ -128,7 +127,7 @@ export default function FleetOverviewPage() {
               </thead>
               <tbody>
                 {watchlist.map(({ engine, operator, aircraft, alerts: count }) => (
-                  <tr key={engine.id} className="border-b border-white/[0.06] last:border-0">
+                  <tr key={engine.id} className="border-b border-rr-ink/5 last:border-0">
                     <td className={cn("py-3 pl-3 border-l-2", engine.status === "red" ? "border-status-red" : engine.status === "amber" ? "border-status-amber" : "border-status-green")}>
                       <Link href={`/engines/${engine.id}`} className="font-semibold text-rr-ink hover:text-rr-blue">
                         {engine.esn}
@@ -197,7 +196,7 @@ export default function FleetOverviewPage() {
                     {operator.code} · {operator.region}
                   </p>
                 </div>
-                <div className="flex h-3 flex-1 overflow-hidden rounded-full bg-white/10">
+                <div className="flex h-3 flex-1 overflow-hidden rounded-full bg-rr-mist">
                   {red > 0 ? <div className="bg-status-red" style={{ width: `${(red / total) * 100}%` }} /> : null}
                   {amber > 0 ? <div className="bg-status-amber" style={{ width: `${(amber / total) * 100}%` }} /> : null}
                   {green > 0 ? <div className="bg-status-green" style={{ width: `${(green / total) * 100}%` }} /> : null}
@@ -241,7 +240,7 @@ export default function FleetOverviewPage() {
             const engine = data.engines.find((e) => e.id === wo.engineId);
             const facility = data.facilities.find((f) => f.id === wo.facilityId);
             return (
-              <div key={wo.id} className="rounded-sm border border-white/10 bg-white/[0.02] p-5">
+              <div key={wo.id} className="rounded-sm border border-rr-ink/8 p-4">
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <p className="text-[13px] font-semibold text-rr-ink">{wo.reference}</p>
@@ -275,7 +274,7 @@ export default function FleetOverviewPage() {
         </div>
       </Panel>
 
-      <Panel className="flex flex-wrap items-center justify-between gap-4 border-rr-blue/30 bg-rr-blue-50">
+      <Panel className="flex flex-wrap items-center justify-between gap-4 bg-rr-blue-50/60">
         <div className="flex items-center gap-3">
           <ModuleIcon name="cube" className="h-5 w-5 text-rr-blue" />
           <div>
@@ -301,13 +300,13 @@ function HeroStat({ label, value, tone, caption }: { label: string; value: numbe
   const colour = { red: "text-status-red", amber: "text-status-amber", green: "text-status-green" }[tone];
   const dot = { red: "bg-status-red", amber: "bg-status-amber", green: "bg-status-green" }[tone];
   return (
-    <div className="bg-white/[0.06] px-6 py-7 backdrop-blur-md">
-      <p className="rr-label flex items-center gap-2 text-rr-cloud/70">
+    <div className="px-1 py-7 xl:px-8 xl:first:pl-0">
+      <p className="rr-label flex items-center gap-2 text-rr-slate">
         <span className={cn("h-1.5 w-1.5 rounded-full", dot)} />
         {label}
       </p>
       <p className={cn("rr-numeric mt-4 text-5xl font-semibold leading-none", colour)}>{value}</p>
-      <p className="mt-3 text-[11px] text-rr-cloud/70">{caption}</p>
+      <p className="mt-3 text-[11px] text-rr-slate">{caption}</p>
     </div>
   );
 }

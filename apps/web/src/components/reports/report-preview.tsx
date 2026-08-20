@@ -7,7 +7,7 @@ import { Badge, RrMark, StatusPill, cn, statusStyles } from "@rr/ui";
  */
 export function ReportPreview({ doc }: { doc: ReportDocument }) {
   return (
-    <article id="report-preview" className="bg-surface">
+    <article id="report-preview" className="bg-white">
       <header className="flex items-start justify-between gap-6 border-b border-rr-ink/10 px-8 py-7">
         <div>
           <p className="rr-label text-rr-blue">Rolls-Royce fleet services · {doc.title}</p>
@@ -36,7 +36,7 @@ export function ReportPreview({ doc }: { doc: ReportDocument }) {
 
       <div className="grid grid-cols-2 gap-px border-b border-rr-ink/10 bg-rr-ink/8 sm:grid-cols-5">
         {doc.headline.map((m) => (
-          <div key={m.label} className="bg-surface px-5 py-4">
+          <div key={m.label} className="bg-white px-5 py-4">
             <p className="rr-label text-rr-slate">{m.label}</p>
             <p className={cn("rr-numeric mt-1.5 text-2xl font-semibold", m.status === "grey" ? "text-rr-ink" : statusStyles[m.status].text)}>
               {m.value}

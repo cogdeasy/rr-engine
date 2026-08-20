@@ -38,51 +38,51 @@ export function SurvivalCurve({ curve, height = 220 }: { curve: EngineSurvivalCu
       >
         <defs>
           <linearGradient id={`survival-${curve.engineId}`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#6a63ff" stopOpacity="0.18" />
-            <stop offset="100%" stopColor="#6a63ff" stopOpacity="0" />
+            <stop offset="0%" stopColor="#10069f" stopOpacity="0.18" />
+            <stop offset="100%" stopColor="#10069f" stopOpacity="0" />
           </linearGradient>
         </defs>
 
         {[0.25, 0.5, 0.75].map((f) => (
-          <line key={f} x1={0} x2={width} y1={plotHeight * f} y2={plotHeight * f} stroke="#e7eaf8" strokeOpacity={0.132} />
+          <line key={f} x1={0} x2={width} y1={plotHeight * f} y2={plotHeight * f} stroke="#05061f" strokeOpacity={0.06} />
         ))}
 
         {/* Maintenance opportunity window */}
-        <rect x={windowX} y={0} width={windowWidth} height={plotHeight} fill="#ffb43d" fillOpacity={0.1} />
-        <line x1={windowX} x2={windowX} y1={0} y2={plotHeight} stroke="#ffb43d" strokeWidth={1.2} strokeDasharray="5 4" />
+        <rect x={windowX} y={0} width={windowWidth} height={plotHeight} fill="#f08c00" fillOpacity={0.1} />
+        <line x1={windowX} x2={windowX} y1={0} y2={plotHeight} stroke="#f08c00" strokeWidth={1.2} strokeDasharray="5 4" />
         <line
           x1={windowX + windowWidth}
           x2={windowX + windowWidth}
           y1={0}
           y2={plotHeight}
-          stroke="#ff5f6d"
+          stroke="#d81e2b"
           strokeWidth={1.2}
           strokeDasharray="5 4"
         />
 
         <path d={survivalArea} fill={`url(#survival-${curve.engineId})`} />
-        <path d={survivalPath} fill="none" stroke="#6a63ff" strokeWidth={2} />
-        <path d={hazardPath} fill="none" stroke="#ff5f6d" strokeWidth={1.6} strokeDasharray="4 3" />
+        <path d={survivalPath} fill="none" stroke="#10069f" strokeWidth={2} />
+        <path d={hazardPath} fill="none" stroke="#d81e2b" strokeWidth={1.6} strokeDasharray="4 3" />
 
-        <text x={windowX + 6} y={14} className="rr-label" fontSize={9} fill="#ffb43d">
+        <text x={windowX + 6} y={14} className="rr-label" fontSize={9} fill="#f08c00">
           WINDOW OPENS
         </text>
-        <text x={Math.min(width - 4, windowX + windowWidth + 6)} y={14} className="rr-label" fontSize={9} fill="#ff5f6d" textAnchor={windowX + windowWidth > width - 90 ? "end" : "start"}>
+        <text x={Math.min(width - 4, windowX + windowWidth + 6)} y={14} className="rr-label" fontSize={9} fill="#d81e2b" textAnchor={windowX + windowWidth > width - 90 ? "end" : "start"}>
           REMOVE BY
         </text>
 
-        <line x1={0} x2={width} y1={plotHeight} y2={plotHeight} stroke="#e7eaf8" strokeOpacity={0.264} />
+        <line x1={0} x2={width} y1={plotHeight} y2={plotHeight} stroke="#05061f" strokeOpacity={0.12} />
         {[0, 0.25, 0.5, 0.75, 1].map((f) => (
-          <text key={f} x={f * width} y={height - 6} fontSize={10} fill="#98a0c6" textAnchor={f === 0 ? "start" : f === 1 ? "end" : "middle"} className="rr-numeric">
+          <text key={f} x={f * width} y={height - 6} fontSize={10} fill="#4b4f77" textAnchor={f === 0 ? "start" : f === 1 ? "end" : "middle"} className="rr-numeric">
             {formatNumber(Math.round(maxCycles * f))}
           </text>
         ))}
       </svg>
       <figcaption className="mt-1 flex flex-wrap items-center justify-between gap-3 text-[11px] text-rr-slate">
         <span className="inline-flex items-center gap-3">
-          <LegendSwatch colour="#6a63ff" label="Survival probability" />
-          <LegendSwatch colour="#ff5f6d" label="Hazard / 1k cycles" dashed />
-          <LegendSwatch colour="#ffb43d" label="Removal window" block />
+          <LegendSwatch colour="#10069f" label="Survival probability" />
+          <LegendSwatch colour="#d81e2b" label="Hazard / 1k cycles" dashed />
+          <LegendSwatch colour="#f08c00" label="Removal window" block />
         </span>
         <span className="rr-numeric">
           Weibull shape {curve.shape} · scale {formatNumber(curve.scaleCycles)} cycles

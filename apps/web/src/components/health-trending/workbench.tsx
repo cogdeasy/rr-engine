@@ -231,7 +231,7 @@ export function TrendingWorkbench({ data }: { data: TrendingWorkbenchData }) {
                     onClick={() => toggleEngine(engine.id)}
                     className={cn(
                       "flex items-center justify-between gap-3 rounded-sm border px-3 py-2 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rr-blue",
-                      selected ? "border-rr-blue/40 bg-rr-blue-50" : "border-rr-ink/10 bg-surface hover:border-rr-blue/30",
+                      selected ? "border-rr-blue/40 bg-rr-blue-50" : "border-rr-ink/10 bg-white hover:border-rr-blue/30",
                     )}
                   >
                     <span className="flex items-center gap-2">

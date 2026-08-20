@@ -21,12 +21,12 @@ export function RemovalPareto({ causes }: { causes: RemovalCause[] }) {
     .map((cause, i) => `${i === 0 ? "M" : "L"}${i * (barWidth + gap) + barWidth / 2},${cumY(cause.cumulativePct).toFixed(1)}`)
     .join(" ");
 
-  const fill: Record<string, string> = { red: "#ff5f6d", amber: "#ffb43d", green: "#2fd39b", grey: "#8f96bb" };
+  const fill: Record<string, string> = { red: "#d81e2b", amber: "#f08c00", green: "#0a8754", grey: "#6b7089" };
 
   return (
     <div>
       <svg viewBox={`0 0 ${width} ${height + 8}`} className="w-full" style={{ height: 200 }} role="img" aria-label="Pareto of unscheduled removal causes">
-        <line x1={0} x2={width} y1={cumY(80)} y2={cumY(80)} stroke="#e7eaf8" strokeOpacity={0.5} strokeDasharray="5 4" strokeWidth={1} />
+        <line x1={0} x2={width} y1={cumY(80)} y2={cumY(80)} stroke="#05061f" strokeOpacity={0.25} strokeDasharray="5 4" strokeWidth={1} />
         {shown.map((cause, i) => (
           <rect
             key={cause.id}
@@ -39,9 +39,9 @@ export function RemovalPareto({ causes }: { causes: RemovalCause[] }) {
             opacity={cause.vitalFew ? 0.92 : 0.4}
           />
         ))}
-        <path d={line} fill="none" stroke="#6a63ff" strokeWidth={1.6} />
+        <path d={line} fill="none" stroke="#10069f" strokeWidth={1.6} />
         {shown.map((cause, i) => (
-          <circle key={`${cause.id}-dot`} cx={i * (barWidth + gap) + barWidth / 2} cy={cumY(cause.cumulativePct)} r={2.6} fill="#6a63ff" />
+          <circle key={`${cause.id}-dot`} cx={i * (barWidth + gap) + barWidth / 2} cy={cumY(cause.cumulativePct)} r={2.6} fill="#10069f" />
         ))}
       </svg>
 

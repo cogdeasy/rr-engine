@@ -102,7 +102,7 @@ export function FleetCompareChart({
             type="monotone"
             dataKey="median"
             name="Family median"
-            stroke="#98a0c6"
+            stroke="#4b4f77"
             strokeWidth={1.4}
             strokeDasharray="5 4"
             dot={false}
