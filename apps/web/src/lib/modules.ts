@@ -236,7 +236,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Module-by-module workscope build-up with cost and TAT impact.",
     decision: "Which modules do we open, and what does that cost in TAT?",
     icon: "layers",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "capacity",
