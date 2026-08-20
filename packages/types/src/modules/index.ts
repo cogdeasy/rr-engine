@@ -25,3 +25,4 @@ export * from "./risk";
 export * from "./audit";
 export * from "./inventory";
 export * from "./supply-chain";
+export * from "./warranty";
