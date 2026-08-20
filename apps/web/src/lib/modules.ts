@@ -172,7 +172,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Sensor coverage, gaps and data quality by aircraft and parameter.",
     decision: "Can we trust the data behind a red flag on this engine?",
     icon: "signal",
-    implemented: false,
+    implemented: true,
   },
 
   // Predict
