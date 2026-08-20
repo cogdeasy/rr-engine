@@ -30,8 +30,10 @@ export default function Page() {
   const actionEngines = rotationEngines + shortenEngines;
   const overdue = engines.filter((e) => e.sectors > 0 && e.cyclesToAdjustedRemoval <= 0);
 
+  /* Scored engines only, so the driver points sum to the headline mean severity. */
+  const scored = engines.filter((e) => e.sectors > 0);
   const fleetDrivers = drivers.map((driver) => {
-    const share = engines.reduce((sum, engine) => sum + engine.contributions[driver.id], 0) / Math.max(1, engines.length);
+    const share = scored.reduce((sum, engine) => sum + engine.contributions[driver.id], 0) / Math.max(1, scored.length);
     return { driver, share };
   });
   const maxShare = Math.max(...fleetDrivers.map((d) => d.share));
@@ -182,7 +184,7 @@ export default function Page() {
       <Panel>
         <PanelHeader
           title="What the fleet is breathing"
-          subtitle="Mean points of the severity index contributed by each damage mechanism across all managed engines"
+          subtitle="Mean points of the severity index contributed by each damage mechanism across the engines with sector data"
         />
         <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
           {fleetDrivers.map(({ driver, share }) => (

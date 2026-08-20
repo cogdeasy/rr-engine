@@ -505,8 +505,11 @@ function actionFor(meanSeverity: number, redShare: number): RotationAction {
   return "hold";
 }
 
+let recommendationCache: IntervalRecommendation[] | null = null;
+
 /** Recommended interval adjustments per operator × route group. */
 export function intervalRecommendations(): IntervalRecommendation[] {
+  if (recommendationCache) return recommendationCache;
   const data = getDataset();
   const engines = exposureIndex().engines.filter((e) => e.sectors > 0);
   const groups = new Map<string, EngineExposure[]>();
@@ -560,7 +563,8 @@ export function intervalRecommendations(): IntervalRecommendation[] {
     });
   }
 
-  return out.sort((a, b) => b.meanSeverityIndex - a.meanSeverityIndex || b.engineCount - a.engineCount);
+  recommendationCache = out.sort((a, b) => b.meanSeverityIndex - a.meanSeverityIndex || b.engineCount - a.engineCount);
+  return recommendationCache;
 }
 
 function worstExposureRouteGroup(engine: EngineExposure): string {
