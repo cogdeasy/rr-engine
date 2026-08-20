@@ -18,3 +18,4 @@ export * from "./hot-section";
 export * from "./environment";
 export * from "./borescope";
 export * from "./workforce";
+export * from "./llp";
