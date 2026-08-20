@@ -42,7 +42,7 @@ export function RulDistribution({ buckets, medianCycles }: { buckets: RulDistrib
             <span className="h-2.5 w-3 rounded-[1px] bg-status-amber-soft" /> Watchlist band
           </span>
           <span className="inline-flex items-center gap-1.5">
-            <span className="h-2.5 w-3 rounded-[1px] bg-status-green" /> Slot already booked
+            <span className="h-2.5 w-3 rounded-[1px] bg-rr-slate" /> Solid lower segment: slot already booked
           </span>
         </span>
         <span className="rr-numeric">Fleet median {formatNumber(medianCycles)} cycles</span>

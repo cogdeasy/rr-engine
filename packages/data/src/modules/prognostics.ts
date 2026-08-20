@@ -30,7 +30,13 @@ const LIVE_WORK_ORDER_STATES = new Set(["planned", "released", "in-progress", "a
 
 /** Fleet-average sectors per day, used when an engine has no recent flights. */
 const FALLBACK_CYCLES_PER_DAY = 1.6;
-const FLIGHT_WINDOW_DAYS = 45;
+/**
+ * The flight log holds a 45-day sample of sectors per aircraft (8–18), not the
+ * complete movement history, so the sector count is a relative utilisation
+ * index. Dividing by this scales it onto the 1.6–3.6 sectors/day band that
+ * wide-body twins actually fly.
+ */
+const SECTOR_SAMPLE_DIVISOR = 5;
 
 function moduleLabel(code: string): string {
   return ENGINE_MODULES.find((m) => m.code === code)?.label ?? code;
@@ -43,7 +49,7 @@ export function cyclesPerDayForEngine(engineId: string): number {
   if (!engine?.aircraftId) return FALLBACK_CYCLES_PER_DAY;
   const flights = data.flights.filter((f) => f.aircraftId === engine.aircraftId);
   if (flights.length === 0) return FALLBACK_CYCLES_PER_DAY;
-  return round(clamp(flights.length / FLIGHT_WINDOW_DAYS, 0.5, 6), 2);
+  return round(clamp(flights.length / SECTOR_SAMPLE_DIVISOR, 0.5, 6), 2);
 }
 
 /** The prognostic that will take the engine off wing first. */
