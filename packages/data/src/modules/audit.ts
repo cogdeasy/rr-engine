@@ -90,10 +90,15 @@ function change(field: string, before: string | null, after: string | null): Aud
 }
 
 function statusFor(record: DraftRecord): StatusLevel {
-  if (record.actor.kind === "system" && !record.override) return "grey";
-  const overdue = ageHours(record.at) > COUNTERSIGN_SLA_HOURS;
-  if (record.requiresCountersignature && !record.countersignedBy) return overdue ? "red" : "amber";
+  // An override with nothing behind it is the worst case, whoever wrote it.
   if (record.override && record.evidence.length === 0) return "red";
+  // A quality gate left open is a gap even on a system-written record, so this
+  // is evaluated before the system short-circuit; the compliance metric counts
+  // the same records and the two must agree.
+  if (record.requiresCountersignature && !record.countersignedBy) {
+    return ageHours(record.at) > COUNTERSIGN_SLA_HOURS ? "red" : "amber";
+  }
+  if (record.actor.kind === "system" && !record.override) return "grey";
   if (record.override) return "amber";
   return "green";
 }
@@ -581,9 +586,9 @@ export function auditAttention(records: AuditRecord[]): AuditAttentionItem[] {
     .map((record) => ({
       record,
       reason:
-        record.requiresCountersignature && !record.countersignedBy
-          ? `Awaiting countersignature for ${Math.round(ageHours(record.at))}h (SLA ${COUNTERSIGN_SLA_HOURS}h)`
-          : "Override recorded with no supporting evidence attached",
+        record.override && record.evidence.length === 0
+          ? "Override recorded with no supporting evidence attached"
+          : `Awaiting countersignature for ${Math.round(ageHours(record.at))}h (SLA ${COUNTERSIGN_SLA_HOURS}h)`,
       ageHours: ageHours(record.at),
     }))
     .sort((a, b) => b.ageHours - a.ageHours);
@@ -604,10 +609,14 @@ export function auditTrail(): AuditTrailSummary {
 
   const countersignRequired = records.filter((r) => r.requiresCountersignature);
   const decisionRecords = records.filter((r) => r.actor.kind !== "system");
+  // Zero-filled so a quiet day reads as a trough rather than disappearing.
   const dailyCounts = new Map<string, number>();
+  for (let back = 29; back >= 0; back -= 1) {
+    dailyCounts.set(iso(addHours(NOW, -24 * back)).slice(0, 10), 0);
+  }
   for (const record of records.filter((r) => within(30)(r.at))) {
     const day = record.at.slice(0, 10);
-    dailyCounts.set(day, (dailyCounts.get(day) ?? 0) + 1);
+    if (dailyCounts.has(day)) dailyCounts.set(day, dailyCounts.get(day)! + 1);
   }
 
   cachedTrail = {
@@ -627,9 +636,7 @@ export function auditTrail(): AuditTrailSummary {
       decisionRecords.length === 0
         ? 100
         : Math.round((decisionRecords.filter((r) => r.evidence.length > 0).length / decisionRecords.length) * 1000) / 10,
-    dailyVolume: [...dailyCounts.entries()]
-      .sort((a, b) => (a[0] < b[0] ? -1 : 1))
-      .map(([day, count]) => ({ t: `${day}T00:00:00.000Z`, v: count })),
+    dailyVolume: [...dailyCounts.entries()].map(([day, count]) => ({ t: `${day}T00:00:00.000Z`, v: count })),
   };
   return cachedTrail;
 }

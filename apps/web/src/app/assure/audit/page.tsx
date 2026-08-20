@@ -124,10 +124,11 @@ export default async function AuditTrailPage({ searchParams }: { searchParams: P
           caption="Departures from the recommended action"
         />
         <Panel className="p-4">
-          <p className="rr-label text-rr-slate">Daily ledger volume, 30 days</p>
+          <p className="rr-label text-rr-slate">Ledger volume</p>
           <p className="rr-numeric mt-2 text-3xl font-semibold text-rr-ink">{formatNumber(trail.recordsLast7Days)}</p>
           <p className="text-[11px] text-rr-slate">entries in the last 7 days</p>
           <Sparkline points={trail.dailyVolume} status="green" height={34} className="mt-2" />
+          <p className="mt-1 text-[11px] text-rr-slate">Daily entries, 30 days</p>
         </Panel>
       </section>
 

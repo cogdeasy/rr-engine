@@ -2,11 +2,17 @@ import type { FastifyInstance } from "fastify";
 import type { AuditCategory, AuditEntityType } from "@rr/types";
 import { auditEntityTimeline, auditTrail, paginate } from "@rr/data";
 
-/** Accept date-only bounds (`2026-08-15`) as whole inclusive UTC days. */
-function bound(value: string | undefined, edge: "start" | "end"): string | undefined {
+/**
+ * Bounds as epoch millis, so an offset timestamp (`...+01:00`) compares
+ * correctly. A date-only bound covers the whole UTC day, inclusive.
+ */
+function bound(value: string | undefined, edge: "start" | "end"): number | undefined {
   if (!value) return undefined;
-  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return `${value}T${edge === "start" ? "00:00:00.000Z" : "23:59:59.999Z"}`;
-  return value;
+  const at = /^\d{4}-\d{2}-\d{2}$/.test(value)
+    ? `${value}T${edge === "start" ? "00:00:00.000Z" : "23:59:59.999Z"}`
+    : value;
+  const ms = new Date(at).getTime();
+  return Number.isNaN(ms) ? undefined : ms;
 }
 
 /**
@@ -37,8 +43,9 @@ export async function registerAuditRoutes(app: FastifyInstance): Promise<void> {
         if (category && record.category !== category) return false;
         if (entityType && record.entityType !== entityType) return false;
         if (engineId && record.engineId !== engineId && record.esn !== engineId) return false;
-        if (fromAt && record.at < fromAt) return false;
-        if (toAt && record.at > toAt) return false;
+        const at = new Date(record.at).getTime();
+        if (fromAt !== undefined && at < fromAt) return false;
+        if (toAt !== undefined && at > toAt) return false;
         if (needle) {
           const haystack = `${record.action} ${record.detail} ${record.entityLabel} ${record.actor.name} ${record.esn ?? ""}`.toLowerCase();
           if (!haystack.includes(needle)) return false;
