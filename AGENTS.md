@@ -26,9 +26,13 @@
 
 ## Design language
 
-Rolls-Royce aligned: RR blue `#10069F`, near-black navy hero surfaces, generous whitespace,
-uppercase micro-labels, pill CTAs, restrained colour reserved for operational state, large
-numerics for the values a controller acts on.
+Rolls-Royce aligned, dark and editorial like rolls-royce.com: the whole console sits on a
+near-black navy canvas (`--color-rr-abyss`) with translucent floating panels (`.rr-panel`),
+dawn-above-cloud hero surfaces (`.rr-hero-gradient`), display headlines (`.rr-display`),
+generous whitespace, uppercase micro-labels, pill CTAs, restrained colour reserved for
+operational state, and large numerics for the values a controller acts on. Never introduce
+light surfaces: use tokens (`text-rr-ink`, `text-rr-slate`, `bg-white/[0.04]`) rather than
+`bg-white` or literal hex values.
 
 ## Assets
 
