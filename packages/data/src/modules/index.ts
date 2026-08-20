@@ -26,3 +26,4 @@ export * from "./audit";
 export * from "./inventory";
 export * from "./supply-chain";
 export * from "./warranty";
+export * from "./capacity";

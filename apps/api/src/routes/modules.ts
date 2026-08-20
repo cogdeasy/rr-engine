@@ -16,6 +16,7 @@ import { registerAuditRoutes } from "./audit";
 import { registerInventoryRoutes } from "./inventory";
 import { registerSupplyChainRoutes } from "./supply-chain";
 import { registerWarrantyRoutes } from "./warranty";
+import { registerCapacityRoutes } from "./capacity";
 
 /**
  * Feature-module routes.
@@ -49,4 +50,5 @@ export async function registerModuleRoutes(app: FastifyInstance): Promise<void> 
   await registerInventoryRoutes(app);
   await registerSupplyChainRoutes(app);
   await registerWarrantyRoutes(app);
+  await registerCapacityRoutes(app);
 }

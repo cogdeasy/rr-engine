@@ -246,7 +246,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Slot utilisation across overhaul bases and partner shops.",
     decision: "Where is the next available slot that meets the removal date?",
     icon: "factory",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "llp",
