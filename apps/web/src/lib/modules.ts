@@ -256,7 +256,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Life-limited part cycles remaining and stack optimisation.",
     decision: "Which LLPs must be replaced at the next shop visit?",
     icon: "clock",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "workforce",
