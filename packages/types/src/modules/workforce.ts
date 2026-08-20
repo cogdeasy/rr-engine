@@ -60,7 +60,7 @@ export interface CoverageCell {
   facilityId: string;
   /** Heads holding the skill on this shift, current or not. */
   heads: number;
-  /** Heads holding the skill who are current and not absent. */
+  /** Heads holding the skill whose approval for it is still current. */
   currentHeads: number;
   /** Heads holding the skill whose authorisation has lapsed. */
   lapsedHeads: number;

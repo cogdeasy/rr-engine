@@ -500,7 +500,7 @@ function scoreCandidate(profile: TechnicianProfile, card: TaskCard, family: Engi
   const licence = profile.certifications.find((c) => c.kind === "licence");
   if (!licence || licence.daysToExpiry <= 0) return null;
 
-  const spareHoursPerWeek = round(profile.availableHoursPerWeek * (1 - profile.technician.utilisationPct / 100), 1);
+  const spareHoursPerWeek = profile.availableHoursPerWeek;
   const capacityScore = clamp(spareHoursPerWeek * 3.2, 0, 30);
   const currencyScore = clamp(Math.min(skillApproval.daysToExpiry, familyApproval.daysToExpiry) / 12, 0, 20);
   const loadScore = clamp(18 - profile.assignedTaskCards * 3.5, 0, 18);
@@ -579,12 +579,11 @@ function buildSuggestions(input: SuggestionInput): AssignmentSuggestion[] {
     });
   }
 
-  return out
-    .sort((a, b) => {
-      const rank = (s: AssignmentSuggestion) => (s.candidate === null ? 0 : 1);
-      return rank(a) - rank(b) || a.daysToStart - b.daysToStart || b.estimatedHours - a.estimatedHours;
-    })
-    .slice(0, 24);
+  /* Not truncated: the summary counts unstaffed priority work from this list. */
+  return out.sort((a, b) => {
+    const rank = (s: AssignmentSuggestion) => (s.candidate === null ? 0 : 1);
+    return rank(a) - rank(b) || a.daysToStart - b.daysToStart || b.estimatedHours - a.estimatedHours;
+  });
 }
 
 /** Roster filtered to one facility, used by the API and by the roster table. */
