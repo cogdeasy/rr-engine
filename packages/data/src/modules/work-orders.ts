@@ -401,10 +401,15 @@ export function getWorkOrderView(reference: string): WorkOrderView | undefined {
 export function workOrderKpis(): WorkOrderKpis {
   const views = workOrderViews();
   const open = views.filter((v) => v.stage !== "closed");
-  const closed = views.filter((v) => v.stage === "closed");
+  // Closed orders in completion order, so the recent half is a genuine prior-period comparison.
+  const closed = views
+    .filter((v) => v.stage === "closed")
+    .sort((a, b) => new Date(a.workOrder.scheduledEnd).getTime() - new Date(b.workOrder.scheduledEnd).getTime());
   const cycleDays = closed.map((v) => Math.max(1, daysBetween(v.workOrder.raisedAt, v.workOrder.scheduledEnd)));
-  const half = Math.max(1, Math.floor(cycleDays.length / 2));
   const mean = (values: number[]) => (values.length === 0 ? 0 : round(values.reduce((s, v) => s + v, 0) / values.length, 1));
+  const half = Math.floor(cycleDays.length / 2);
+  const recent = half === 0 ? cycleDays : cycleDays.slice(half);
+  const prior = half === 0 ? cycleDays : cycleDays.slice(0, half);
 
   return {
     open: open.length,
@@ -413,8 +418,8 @@ export function workOrderKpis(): WorkOrderKpis {
     blocked: open.filter((v) => v.blockers.length > 0).length,
     aogLinked: open.filter((v) => v.aogLinked).length,
     criticalOpen: open.filter((v) => v.priority === "critical").length,
-    avgCycleTimeDays: mean(cycleDays.slice(half)),
-    priorCycleTimeDays: mean(cycleDays.slice(0, half)),
+    avgCycleTimeDays: mean(recent),
+    priorCycleTimeDays: mean(prior),
     labourHoursBooked: Math.round(open.reduce((s, v) => s + v.bookedHours, 0)),
   };
 }
