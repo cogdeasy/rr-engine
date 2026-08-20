@@ -19,7 +19,8 @@ import { ModuleIcon } from "@/components/icon";
 export default function FleetOverviewPage() {
   const data = getDataset();
   const summary = fleetSummary();
-  const alerts = getOpenAlerts().slice(0, 6);
+  const openAlerts = getOpenAlerts();
+  const alerts = openAlerts.slice(0, 6);
 
   const watchlist = [...data.engines]
     .sort((a, b) => a.healthScore - b.healthScore)
@@ -28,7 +29,7 @@ export default function FleetOverviewPage() {
       engine,
       operator: data.operators.find((o) => o.id === engine.operatorId),
       aircraft: data.aircraft.find((a) => a.id === engine.aircraftId),
-      alerts: data.alerts.filter((a) => a.engineId === engine.id && a.state !== "closed").length,
+      alerts: openAlerts.filter((a) => a.engineId === engine.id).length,
     }));
 
   const byOperator = data.operators

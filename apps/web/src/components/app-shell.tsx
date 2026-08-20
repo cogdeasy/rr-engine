@@ -110,7 +110,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 }
 
 function TopBar({ pathname }: { pathname: string }) {
-  const mod = MODULES.find((m) => isActive(pathname, m.href) && m.href !== "/") ?? MODULES[0];
+  const mod =
+    MODULES.filter((m) => isActive(pathname, m.href) && m.href !== "/").sort((a, b) => b.href.length - a.href.length)[0] ??
+    MODULES[0];
   return (
     <header className="sticky top-0 z-20 flex h-16 items-center justify-between gap-6 border-b border-rr-ink/8 bg-white/90 px-8 backdrop-blur">
       <div className="min-w-0">
