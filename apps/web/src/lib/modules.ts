@@ -60,7 +60,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Geographic view of aircraft, engine status and maintenance bases.",
     decision: "Which flagged engines are near a station that can act on them?",
     icon: "map",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "engine-explorer",
