@@ -81,10 +81,10 @@ export function DefectTable({ defects }: { defects: RecurringDefect[] }) {
     },
     {
       key: "repeat",
-      header: "Repeat rate",
+      header: "Events / engine",
       align: "right",
-      sortValue: (row) => row.repeatRatePct,
-      render: (row) => <span className="rr-numeric text-rr-slate">{row.repeatRatePct}%</span>,
+      sortValue: (row) => row.eventsPerEngine,
+      render: (row) => <span className="rr-numeric text-rr-slate">{row.eventsPerEngine.toFixed(1)}×</span>,
     },
     {
       key: "trend",
