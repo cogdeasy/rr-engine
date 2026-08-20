@@ -80,7 +80,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Per-engine dossier with the interactive Rolls-Royce 3D engine model.",
     decision: "What exactly is wrong with this engine and which module drives it?",
     icon: "cube",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "alerts",

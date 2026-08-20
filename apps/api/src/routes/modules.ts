@@ -1,4 +1,5 @@
 import type { FastifyInstance } from "fastify";
+import { registerEngineDetailRoutes } from "./engine-detail";
 
 /**
  * Feature-module routes.
@@ -8,5 +9,5 @@ import type { FastifyInstance } from "fastify";
  * one call below so parallel branches conflict on a single line at most.
  */
 export async function registerModuleRoutes(app: FastifyInstance): Promise<void> {
-  void app;
+  await registerEngineDetailRoutes(app);
 }
