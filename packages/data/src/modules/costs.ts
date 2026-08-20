@@ -205,8 +205,10 @@ export function engineCostProfiles(): EngineCostProfile[] {
       0,
     );
     const labour = hours * rate;
+    /* Heavy events are accrued across their interval, labour included, so neither
+       their hardware nor their shop hours are expensed here. */
+    if (HEAVY_TYPES.has(wo.type)) continue;
     labourCost.set(wo.engineId, (labourCost.get(wo.engineId) ?? 0) + labour);
-    if (HEAVY_TYPES.has(wo.type)) continue; // heavy hardware is accrued, not expensed
     const cost = wo.actualCostUsd ?? wo.estimatedCostUsd;
     lightMaterials.set(wo.engineId, (lightMaterials.get(wo.engineId) ?? 0) + Math.max(cost - labour, cost * 0.2));
     if (wo.type === "aog-recovery") {
@@ -728,7 +730,10 @@ export function costAnalytics(): CostAnalytics {
         costPerEfh: opCurrent.costPerEfh,
         budgetPerEfh: opBudget,
         variancePct,
-        deltaPctVsPrior: round(((opCurrent.costPerEfh - opPrior.costPerEfh) / opPrior.costPerEfh) * 100, 1),
+        deltaPctVsPrior: round(
+          ((opCurrent.costPerEfh - opPrior.costPerEfh) / Math.max(0.01, opPrior.costPerEfh)) * 100,
+          1,
+        ),
         penaltiesUsd: contract?.penaltiesUsd ?? 0,
         topCategory,
         status: varianceStatus(variancePct),
@@ -845,7 +850,7 @@ export function costAnalytics(): CostAnalytics {
 
   /* Decision-first headline actions. */
   const worstOperator = operators[0];
-  const worstDriver = drivers.filter((d) => d.status === "red")[0] ?? drivers[0]!;
+  const worstDriver = drivers.find((d) => d.status === "red") ?? drivers[0];
   const exposureUsd = round(aogRows.reduce((s, row) => s + row.exposureUsd, 0), 0);
   const penaltiesAccruedUsd = round(data.contracts.reduce((s, c) => s + c.penaltiesUsd, 0), 0);
   const breachMonth = forecast.find((point) => point.status === "red");
@@ -862,15 +867,17 @@ export function costAnalytics(): CostAnalytics {
       href: "/commercial/contracts",
     });
   }
-  actions.push({
-    id: "driver",
-    title: `${worstDriver.label} up ${worstDriver.deltaPctVsPrior.toFixed(1)}% on the quarter`,
-    detail: worstDriver.recommendedAction,
-    impactUsd: round(worstDriver.annualCostUsd * (worstDriver.deltaPctVsPrior / 100), 0),
-    status: worstDriver.status,
-    action: "Review workscope policy",
-    href: "/plan/workscope",
-  });
+  if (worstDriver) {
+    actions.push({
+      id: "driver",
+      title: `${worstDriver.label} up ${worstDriver.deltaPctVsPrior.toFixed(1)}% on the quarter`,
+      detail: worstDriver.recommendedAction,
+      impactUsd: round(worstDriver.annualCostUsd * (worstDriver.deltaPctVsPrior / 100), 0),
+      status: worstDriver.status,
+      action: "Review workscope policy",
+      href: "/plan/workscope",
+    });
+  }
   if (aogRows.length > 0) {
     actions.push({
       id: "aog",
