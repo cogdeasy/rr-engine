@@ -43,7 +43,11 @@ export async function registerHealthTrendingRoutes(app: FastifyInstance): Promis
       if (!TRENDED_PARAMETERS.includes(parameter)) {
         return reply.code(400).send({ error: "bad_request", message: `Parameter ${parameter} is not trended`, statusCode: 400 });
       }
-      return fleetBand(family, parameter, Number(days));
+      const band = fleetBand(family, parameter, Number(days));
+      if (band.points.length === 0) {
+        return reply.code(404).send({ error: "not_found", message: `No fleet sample for family ${family}`, statusCode: 404 });
+      }
+      return band;
     },
   );
 }
