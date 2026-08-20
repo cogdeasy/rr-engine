@@ -42,7 +42,7 @@
   --color-viz-6: #d81e2b;
   --color-viz-7: #7b4bd8;
 
-  --font-sans: "Inter", "Helvetica Neue", Arial, sans-serif;
+  --font-sans: var(--font-inter), "Inter", "Helvetica Neue", Arial, sans-serif;
   --font-mono: "JetBrains Mono", "SF Mono", ui-monospace, monospace;
 
   --radius-panel: 2px;

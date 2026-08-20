@@ -150,7 +150,13 @@ function makeFleet(rng: Rng, operators: Operator[]) {
           installedAt: iso(daysAgo(rand.int(rng, 30, 1800))),
           buildStandard: `${family.split(" ").pop()}-B${rand.int(rng, 1, 4)}.${rand.int(rng, 0, 9)}`,
           lifeStage:
-            lifeFraction > 0.92 ? "pre-shop-visit" : lifeFraction < 0.12 ? "new" : lifeFraction > 0.6 ? "mature" : "mature",
+            lifeFraction > 0.92
+              ? "pre-shop-visit"
+              : lifeFraction < 0.12
+                ? "new"
+                : lifeFraction > 0.6
+                  ? "mature"
+                  : "post-overhaul",
           totalFlightHours: round(totalFlightCycles * rand.float(rng, 5.2, 8.4), 0),
           totalFlightCycles,
           hoursSinceOverhaul: round(cyclesSinceOverhaul * rand.float(rng, 5.2, 8.4), 0),

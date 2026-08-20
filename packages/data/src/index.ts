@@ -69,7 +69,7 @@ export function fleetSummary() {
     operators: d.operators.length,
     byStatus,
     openAlerts: getOpenAlerts().length,
-    criticalAlerts: d.alerts.filter((a) => a.severity === "critical" && a.state !== "closed").length,
+    criticalAlerts: getOpenAlerts().filter((a) => a.severity === "critical").length,
     activeWorkOrders: d.workOrders.filter((w) => w.state === "in-progress" || w.state === "awaiting-parts").length,
     aogAircraft: d.aircraft.filter((a) => a.status === "aog").length,
     averageEgtMargin:
