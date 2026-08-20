@@ -100,7 +100,9 @@ export interface EscalationSummary {
   breached: number;
   /** Mean acknowledgement time in minutes across acknowledged escalations. */
   meanAckMinutes: number;
-  /** Mean acknowledgement time for the previous period, for the delta. */
+  /** Mean over conditions raised in the last 24h. */
+  recentMeanAckMinutes: number;
+  /** Mean over conditions raised before that — disjoint from the recent set. */
   priorMeanAckMinutes: number;
   acknowledgedWithinSla: number;
   ackCoveragePct: number;

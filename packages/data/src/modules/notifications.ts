@@ -379,8 +379,14 @@ export function getEscalationSummary(): EscalationSummary {
   const meanAck = acknowledged.length
     ? round(acknowledged.reduce((s, e) => s + e.elapsedMinutes, 0) / acknowledged.length, 0)
     : 0;
+  // Disjoint periods so the KPI delta is a genuine trend: conditions raised in
+  // the last 24h against everything raised before that.
+  const mean = (rows: Escalation[]) =>
+    rows.length ? round(rows.reduce((s, e) => s + e.elapsedMinutes, 0) / rows.length, 0) : 0;
+  const recent = acknowledged.filter((e) => minutesBetween(e.raisedAt, NOW) <= 1440);
   const older = acknowledged.filter((e) => minutesBetween(e.raisedAt, NOW) > 1440);
-  const priorMeanAck = older.length ? round(older.reduce((s, e) => s + e.elapsedMinutes, 0) / older.length, 0) : meanAck;
+  const recentMeanAck = recent.length ? mean(recent) : meanAck;
+  const priorMeanAck = older.length ? mean(older) : recentMeanAck;
 
   const byTier = TIER_ORDER.reduce(
     (acc, tier) => {
@@ -400,6 +406,7 @@ export function getEscalationSummary(): EscalationSummary {
     unacknowledged: unack.length,
     breached: breached.length,
     meanAckMinutes: meanAck,
+    recentMeanAckMinutes: recentMeanAck,
     priorMeanAckMinutes: priorMeanAck,
     acknowledgedWithinSla: acknowledged.filter((e) => !e.breached).length,
     ackCoveragePct: all.length ? round(((all.length - unack.length) / all.length) * 100, 1) : 100,
@@ -429,23 +436,28 @@ export function getEscalationOwnerLoad(limit = 6) {
     .slice(0, limit);
 }
 
-/** Mean acknowledgement time per day over the trailing window, for the trend chart. */
-export function getAckTimeTrend(days = 14): Point[] {
+/**
+ * Mean acknowledgement time per bucket across the escalation window.
+ *
+ * The window matches the spread of the escalation clock (conditions re-trigger
+ * within the trailing 60 hours), so every plotted point is a real mean over the
+ * conditions raised in that bucket. Empty buckets carry the previous value
+ * forward rather than inventing one.
+ */
+export function getAckTimeTrend(hours = 60, bucketHours = 4): Point[] {
   const all = getEscalations().filter((e) => e.acknowledgedAt !== null);
+  const bucketMs = bucketHours * 3600000;
   const points: Point[] = [];
-  for (let i = days - 1; i >= 0; i -= 1) {
-    const dayStart = new Date(NOW.getTime() - i * 86400000);
-    dayStart.setUTCHours(0, 0, 0, 0);
-    const dayEnd = new Date(dayStart.getTime() + 86400000);
+  let carried = 0;
+  for (let start = NOW.getTime() - hours * 3600000; start < NOW.getTime(); start += bucketMs) {
     const rows = all.filter((e) => {
       const t = new Date(e.raisedAt).getTime();
-      return t >= dayStart.getTime() && t < dayEnd.getTime();
+      return t >= start && t < start + bucketMs;
     });
-    const rng = createRng(`ack-trend:${i}`);
-    const value = rows.length
-      ? round(rows.reduce((s, e) => s + e.elapsedMinutes, 0) / rows.length, 1)
-      : round(rand.float(rng, 24, 74), 1);
-    points.push({ t: dayStart.toISOString(), v: value });
+    if (rows.length) {
+      carried = round(rows.reduce((s, e) => s + e.elapsedMinutes, 0) / rows.length, 1);
+    }
+    points.push({ t: new Date(start).toISOString(), v: carried });
   }
   return points;
 }

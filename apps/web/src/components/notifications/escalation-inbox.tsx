@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import type { Escalation, EscalationEvent, EscalationOwner, EscalationTier } from "@rr/types";
+import type { Escalation, EscalationEvent, EscalationOwner, EscalationTier, Severity } from "@rr/types";
 import {
   Badge,
   Button,
@@ -28,6 +28,9 @@ export interface TierMeta {
   slaMinutes: number;
 }
 
+/** Severity-adjusted acknowledgement window per tier, resolved on the server. */
+export type SlaTable = Record<Severity, Record<EscalationTier, number>>;
+
 type FilterId = "unacknowledged" | "breached" | "all";
 
 const FILTERS: { id: FilterId; label: string }[] = [
@@ -40,11 +43,13 @@ export function EscalationInbox({
   escalations,
   tiers,
   standbyOwners,
+  slaTable,
   nowIso,
 }: {
   escalations: Escalation[];
   tiers: TierMeta[];
   standbyOwners: EscalationOwner[];
+  slaTable: SlaTable;
   nowIso: string;
 }) {
   const [overrides, setOverrides] = React.useState<Record<string, Escalation>>({});
@@ -117,6 +122,13 @@ export function EscalationInbox({
     const nextTier = TIER_ORDER[index + 1]!;
     const meta = tiers.find((t) => t.tier === nextTier);
     const nextOwner = standbyOwners.find((o) => o.tier === nextTier) ?? escalation.owner;
+    // The tighter window applies from the original raise, so the countdown and
+    // breach flag have to be recomputed against it.
+    const slaMinutes = slaTable[escalation.severity][nextTier];
+    const elapsedMinutes = Math.round(
+      (new Date(nowIso).getTime() - new Date(escalation.raisedAt).getTime()) / 60000,
+    );
+    const slaRemainingMinutes = slaMinutes - elapsedMinutes;
     applyEvent(
       escalation,
       {
@@ -135,7 +147,11 @@ export function EscalationInbox({
         acknowledgedBy: null,
         status: "red",
         notifiedCount: escalation.notifiedCount + 1,
-        slaMinutes: meta?.slaMinutes ?? escalation.slaMinutes,
+        slaMinutes,
+        slaDueAt: new Date(new Date(escalation.raisedAt).getTime() + slaMinutes * 60000).toISOString(),
+        elapsedMinutes,
+        slaRemainingMinutes,
+        breached: slaRemainingMinutes < 0,
       },
     );
   }

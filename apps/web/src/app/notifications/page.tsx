@@ -1,5 +1,6 @@
 import Link from "next/link";
 import {
+  ackSlaMinutes,
   ESCALATION_TIERS,
   getAckTimeTrend,
   getChannelBreakdown,
@@ -8,14 +9,17 @@ import {
   getEscalations,
   getStandbyOwners,
 } from "@rr/data";
+import type { Severity } from "@rr/types";
 import { Panel, PanelHeader, StatTile, StatusPill, TrendChart, cn, formatNumber } from "@rr/ui";
-import { EscalationInbox } from "@/components/notifications/escalation-inbox";
+import { EscalationInbox, type SlaTable } from "@/components/notifications/escalation-inbox";
 import { CHANNEL_LABEL, formatDuration } from "@/components/notifications/utils";
 
 export const metadata = { title: "Escalations" };
 
 /** Fixed operational "now" — the dataset is generated against this instant. */
 const NOW_ISO = "2026-08-20T06:00:00.000Z";
+
+const SEVERITIES: Severity[] = ["critical", "high", "medium", "low", "info"];
 
 export default function EscalationsPage() {
   const escalations = getEscalations();
@@ -29,8 +33,17 @@ export default function EscalationsPage() {
     .reverse()
     .map(({ tier, label, description, slaMinutes }) => ({ tier, label, description, slaMinutes }));
 
+  // Severity-adjusted acknowledgement windows, resolved on the server so the
+  // inbox can recompute an SLA without pulling the dataset into the client.
+  const slaTable = Object.fromEntries(
+    SEVERITIES.map((severity) => [
+      severity,
+      Object.fromEntries(ESCALATION_TIERS.map(({ tier }) => [tier, ackSlaMinutes(severity, tier)])),
+    ]),
+  ) as SlaTable;
+
   const channelTotal = channels.reduce((sum, c) => sum + c.count, 0);
-  const ackDelta = summary.meanAckMinutes - summary.priorMeanAckMinutes;
+  const ackDelta = summary.recentMeanAckMinutes - summary.priorMeanAckMinutes;
 
   return (
     <div className="space-y-7">
@@ -86,7 +99,7 @@ export default function EscalationsPage() {
           label="Mean acknowledgement"
           value={formatDuration(summary.meanAckMinutes)}
           status={summary.meanAckMinutes > 90 ? "amber" : "green"}
-          caption={`${ackDelta >= 0 ? "+" : ""}${Math.round(ackDelta)}m vs conditions older than 24h`}
+          caption={`Last 24h ${ackDelta >= 0 ? "+" : ""}${Math.round(ackDelta)}m vs earlier conditions`}
         />
         <StatTile
           label="Tier 3 / 4 exposure"
@@ -100,7 +113,7 @@ export default function EscalationsPage() {
         <Panel className="xl:col-span-2">
           <PanelHeader
             title="Acknowledgement time"
-            subtitle="Daily mean minutes from red condition raised to owner acknowledgement"
+            subtitle="Mean minutes from red condition raised to owner acknowledgement, 4-hour buckets"
           />
           <TrendChart
             series={{
@@ -147,7 +160,13 @@ export default function EscalationsPage() {
         </Panel>
       </div>
 
-      <EscalationInbox escalations={escalations} tiers={tiers} standbyOwners={standbyOwners} nowIso={NOW_ISO} />
+      <EscalationInbox
+        escalations={escalations}
+        tiers={tiers}
+        standbyOwners={standbyOwners}
+        slaTable={slaTable}
+        nowIso={NOW_ISO}
+      />
 
       <div className="grid gap-5 xl:grid-cols-3">
         <Panel className="xl:col-span-2">
