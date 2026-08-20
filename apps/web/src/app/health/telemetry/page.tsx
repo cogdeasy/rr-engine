@@ -77,7 +77,10 @@ export default function Page() {
 
   const degraded = report.impacts.filter((impact) => impact.status !== "green");
   const actNow = untrusted.filter((e) => e.status === "red" || e.status === "grey");
-  const worstDay = [...report.ingest].sort((a, b) => a.coveragePct - b.coveragePct)[0];
+  // A day with nothing scheduled is not a bad day, so it cannot be the worst one.
+  const worstDay = report.ingest
+    .filter((day) => day.expected > 0)
+    .sort((a, b) => a.coveragePct - b.coveragePct)[0];
 
   return (
     <div className="space-y-7">

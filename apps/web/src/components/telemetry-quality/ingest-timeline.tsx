@@ -19,9 +19,13 @@ export function IngestTimeline({ days }: { days: IngestDay[] }) {
               <div
                 className="flex w-full flex-col justify-end rounded-[2px] bg-rr-mist"
                 style={{ height: 132 }}
-                title={`${new Date(day.date).toLocaleDateString("en-GB", { day: "2-digit", month: "short" })}: ${formatNumber(
-                  day.received,
-                )} of ${formatNumber(day.expected)} snapshots (${day.coveragePct}%)`}
+                title={
+                  day.expected === 0
+                    ? `${new Date(day.date).toLocaleDateString("en-GB", { day: "2-digit", month: "short" })}: no sectors scheduled`
+                    : `${new Date(day.date).toLocaleDateString("en-GB", { day: "2-digit", month: "short" })}: ${formatNumber(
+                        day.received,
+                      )} of ${formatNumber(day.expected)} snapshots (${day.coveragePct}%)`
+                }
               >
                 <div className="flex w-full flex-col justify-end rounded-[2px] bg-rr-cloud/50" style={{ height: `${expectedHeight}%` }}>
                   <div className={cn("w-full rounded-b-[2px]", statusStyles[day.status].dot)} style={{ height: `${receivedShare}%` }} />
