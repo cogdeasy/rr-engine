@@ -236,9 +236,11 @@ export function shortageLines(): ShortageLine[] {
         remainingSurplus.set(donor.id, (remainingSurplus.get(donor.id) ?? 0) - transferQty);
       }
 
+      const transferCovers = Boolean(donor) && transferQty >= position.shortfall;
+
       let action: ShortageLine["action"];
       let actionLabel: string;
-      if (donor && transferQty >= position.shortfall) {
+      if (donor && transferCovers) {
         action = "transfer";
         actionLabel = `Transfer ${transferQty} from ${donor.facilityIcao}`;
       } else if (position.blockingDemand > 0 || (position.daysToFirstNeed ?? Infinity) < position.leadTimeDays) {
@@ -256,8 +258,8 @@ export function shortageLines(): ShortageLine[] {
         position,
         action,
         actionLabel,
-        transferFromIcao: donor?.facilityIcao ?? null,
-        transferQty,
+        transferFromIcao: transferCovers ? (donor?.facilityIcao ?? null) : null,
+        transferQty: transferCovers ? transferQty : 0,
         workOrderRefs: [...new Set(lines.map((line) => line.workOrderRef))],
         engineIds: [...new Set(lines.map((line) => line.engineId))],
         exposureUsd: position.shortfall * position.unitCostUsd,

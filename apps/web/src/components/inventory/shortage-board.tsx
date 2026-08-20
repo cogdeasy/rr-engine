@@ -226,7 +226,6 @@ export function ShortageBoard({
           row.position.status === "red" ? "border-status-red" : row.position.status === "amber" ? "border-status-amber" : "border-status-green"
         }
         emptyMessage="No shortages match the current filters — planned work is fully covered."
-        initialSortKey="short"
         dense
       />
       </div>
