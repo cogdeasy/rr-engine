@@ -382,7 +382,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Customer-facing view of their fleet health and planned events.",
     decision: "What does the airline need to see and agree to this week?",
     icon: "globe",
-    implemented: false,
+    implemented: true,
   },
 
   // Assure
