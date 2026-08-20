@@ -166,12 +166,19 @@ export default async function VibrationPage({ searchParams }: { searchParams: Pr
               </div>
               <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-rr-mist">
                 <div
-                  className={cn("h-full rounded-full", signature.onWingRecoverable ? "bg-status-green" : "bg-status-red")}
+                  className={cn(
+                    "h-full rounded-full",
+                    signature.onWingRecoverable ? "bg-status-green" : signature.recoverableCount > 0 ? "bg-status-amber" : "bg-status-red",
+                  )}
                   style={{ width: `${(signature.count / Math.max(1, totalExceeding)) * 100}%` }}
                 />
               </div>
               <p className="mt-2 text-[11px] text-rr-slate">
-                {signature.onWingRecoverable ? "Recoverable on wing" : "Requires inspection before further flight"}
+                {signature.recoverableCount === 0
+                  ? "Requires inspection before further flight"
+                  : signature.onWingRecoverable
+                    ? "Recoverable on wing"
+                    : `${signature.recoverableCount} recoverable on wing, ${signature.count - signature.recoverableCount} for inspection`}
               </p>
             </li>
           ))}

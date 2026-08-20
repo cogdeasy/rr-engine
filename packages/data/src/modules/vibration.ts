@@ -326,10 +326,11 @@ function gaussianPeak(frequency: number, centre: number, amplitude: number, widt
  */
 export function vibrationSpectrum(engine: Engine, shaft: ShaftId = "N1"): VibrationSpectrum {
   const spec = VIBRATION_SHAFTS.find((s) => s.shaft === shaft) ?? VIBRATION_SHAFTS[0]!;
+  const shaftId = spec.shaft;
   const profile = signatureProfile(engine);
   const shafts = trackedOrders(engine);
-  const tracked = shafts.find((s) => s.shaft === shaft)!;
-  const rng = createRng(`${engine.id}:spectrum:${shaft}`);
+  const tracked = shafts.find((s) => s.shaft === spec.shaft) ?? shafts[0]!;
+  const rng = createRng(`${engine.id}:spectrum:${spec.shaft}`);
 
   const f1 = tracked.orderHz;
   const bladePass = f1 * spec.bladeCount;
@@ -340,10 +341,10 @@ export function vibrationSpectrum(engine: Engine, shaft: ShaftId = "N1"): Vibrat
   const { amber, red } = limitsFor(spec);
 
   const componentDefs = [
-    { id: "1x", label: `1x ${shaft}`, order: 1, hz: f1, amp: tracked.latest, width: f1 * 0.035 + 0.6, synchronous: true },
+    { id: "1x", label: `1x ${shaftId}`, order: 1, hz: f1, amp: tracked.latest, width: f1 * 0.035 + 0.6, synchronous: true },
     {
       id: "2x",
-      label: `2x ${shaft}`,
+      label: `2x ${shaftId}`,
       order: 2,
       hz: f1 * 2,
       amp: tracked.latest * profile.harmonicRatio,
@@ -352,7 +353,7 @@ export function vibrationSpectrum(engine: Engine, shaft: ShaftId = "N1"): Vibrat
     },
     {
       id: "3x",
-      label: `3x ${shaft}`,
+      label: `3x ${shaftId}`,
       order: 3,
       hz: f1 * 3,
       amp: tracked.latest * profile.harmonicRatio * 0.42,
@@ -361,7 +362,7 @@ export function vibrationSpectrum(engine: Engine, shaft: ShaftId = "N1"): Vibrat
     },
     {
       id: "sub",
-      label: `0.48x ${shaft}`,
+      label: `0.48x ${shaftId}`,
       order: 0.48,
       hz: f1 * 0.48,
       amp: tracked.latest * profile.nonSynchronousShare * 0.55,
@@ -370,7 +371,7 @@ export function vibrationSpectrum(engine: Engine, shaft: ShaftId = "N1"): Vibrat
     },
     {
       id: "bearing",
-      label: `${profile.bearingOrder}x ${shaft}`,
+      label: `${profile.bearingOrder}x ${shaftId}`,
       order: profile.bearingOrder,
       hz: bearingHz,
       amp: tracked.latest * profile.nonSynchronousShare * 0.78,
@@ -408,7 +409,7 @@ export function vibrationSpectrum(engine: Engine, shaft: ShaftId = "N1"): Vibrat
     .map((component) => ({
       id: component.id,
       label: component.label,
-      shaft,
+      shaft: shaftId,
       order: component.order,
       frequencyHz: round(component.hz, 1),
       amplitudeIps: round(component.amp, 3),
@@ -423,7 +424,7 @@ export function vibrationSpectrum(engine: Engine, shaft: ShaftId = "N1"): Vibrat
 
   return {
     engineId: engine.id,
-    shaft,
+    shaft: shaftId,
     condition: "Cruise, stabilised — last recorded sector",
     capturedAt: iso(daysAgo(1)),
     resolutionHz,
@@ -808,17 +809,28 @@ export function vibrationFleetSummary(): VibrationFleetSummary {
 }
 
 /** Signature mix across the engines currently in exceedance. */
-export function signatureBreakdown(): { kind: VibrationSignatureKind; label: string; count: number; onWingRecoverable: boolean }[] {
-  const counts = new Map<VibrationSignatureKind, number>();
+export function signatureBreakdown(): {
+  kind: VibrationSignatureKind;
+  label: string;
+  count: number;
+  recoverableCount: number;
+  onWingRecoverable: boolean;
+}[] {
+  const counts = new Map<VibrationSignatureKind, { count: number; recoverableCount: number }>();
   for (const profile of vibrationExceedances()) {
-    counts.set(profile.diagnosis.kind, (counts.get(profile.diagnosis.kind) ?? 0) + 1);
+    const entry = counts.get(profile.diagnosis.kind) ?? { count: 0, recoverableCount: 0 };
+    entry.count += 1;
+    if (profile.diagnosis.onWingRecoverable) entry.recoverableCount += 1;
+    counts.set(profile.diagnosis.kind, entry);
   }
   return [...counts.entries()]
-    .map(([kind, count]) => ({
+    .map(([kind, { count, recoverableCount }]) => ({
       kind,
       label: SIGNATURE_LABELS[kind],
       count,
-      onWingRecoverable: kind === "fan-imbalance" || kind === "nominal",
+      recoverableCount,
+      // Only call the whole group recoverable when every engine in it is.
+      onWingRecoverable: recoverableCount === count,
     }))
     .sort((a, b) => b.count - a.count);
 }

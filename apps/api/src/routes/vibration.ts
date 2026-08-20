@@ -21,9 +21,11 @@ export async function registerVibrationRoutes(app: FastifyInstance): Promise<voi
   }));
 
   app.get<{ Querystring: { exceedancesOnly?: string; limit?: string } }>("/vibration/fleet", async (request) => {
-    const { exceedancesOnly, limit = "50" } = request.query;
+    const { exceedancesOnly, limit } = request.query;
+    const parsed = Number(limit);
+    const take = Number.isFinite(parsed) && parsed > 0 ? Math.min(Math.floor(parsed), 500) : 50;
     const profiles = exceedancesOnly === "true" ? vibrationExceedances() : fleetVibrationProfiles();
-    return { items: profiles.slice(0, Number(limit)), total: profiles.length };
+    return { items: profiles.slice(0, take), total: profiles.length };
   });
 
   app.get<{ Params: { engineId: string } }>("/vibration/engines/:engineId", async (request, reply) => {
