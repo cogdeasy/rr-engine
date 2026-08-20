@@ -22,6 +22,7 @@ import { registerHotSectionRoutes } from "./hot-section";
 import { registerTestCellRoutes } from "./modules/test-cell";
 import { registerEnvironmentRoutes } from "./modules/environment";
 import { registerBorescopeRoutes } from "./borescope";
+import { registerPrognosticsRoutes } from "./prognostics";
 
 /**
  * Feature-module routes.
@@ -61,4 +62,5 @@ export async function registerModuleRoutes(app: FastifyInstance): Promise<void> 
   await registerTestCellRoutes(app);
   await registerEnvironmentRoutes(app);
   await registerBorescopeRoutes(app);
+  await registerPrognosticsRoutes(app);
 }
