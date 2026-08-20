@@ -7,6 +7,8 @@ import type { FastifyInstance } from "fastify";
  * exporting `register<ModuleName>Routes(app)`, and adds exactly one import plus
  * one call below so parallel branches conflict on a single line at most.
  */
+import { registerTaskCardRoutes } from "./task-cards";
+
 export async function registerModuleRoutes(app: FastifyInstance): Promise<void> {
-  void app;
+  await registerTaskCardRoutes(app);
 }
