@@ -330,7 +330,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Stock positions, reservations and reorder exposure by facility.",
     decision: "Will parts be on the shelf when the engine arrives?",
     icon: "package",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "supply-chain",
