@@ -61,7 +61,7 @@ export default function EngineExplorerPage() {
               </p>
             </div>
             <div className="flex flex-wrap gap-8">
-              <HeroStat label="Below EGT red line" value={summary.belowEgtRedLine} tone="red" caption={`< ${EGT_MARGIN_THRESHOLDS.red}°C margin`} />
+              <HeroStat label="Below EGT red line" value={summary.belowEgtRedLine} tone="red" caption={`≤ ${EGT_MARGIN_THRESHOLDS.red}°C margin`} />
               <HeroStat label="Shop visit ≤ 90 days" value={summary.shopVisitWithin90Days} tone="amber" caption="projected removal" />
               <HeroStat label="Red, no work order" value={summary.unassignedRedEngines} tone="red" caption="nobody owns these yet" />
             </div>

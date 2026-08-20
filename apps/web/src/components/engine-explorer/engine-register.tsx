@@ -185,8 +185,10 @@ export function EngineRegister({
     const link = document.createElement("a");
     link.href = url;
     link.download = `engine-register-${viewId}-${filtered.length}.csv`;
+    document.body.append(link);
     link.click();
-    URL.revokeObjectURL(url);
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 0);
   }
 
   const columns: Column<EngineRegisterRow>[] = [
