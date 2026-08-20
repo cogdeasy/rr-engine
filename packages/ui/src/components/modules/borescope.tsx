@@ -33,6 +33,8 @@ export interface BorescopeFrameProps {
   status: StatusLevel;
   timestamp?: string;
   probe?: string;
+  /** Distinguishes SVG element ids when the same seed is rendered twice on a page. */
+  instance?: string;
   className?: string;
 }
 
@@ -55,6 +57,7 @@ export function BorescopeFrame({
   status,
   timestamp,
   probe,
+  instance,
   className,
 }: BorescopeFrameProps) {
   const rng = seededRandom(seed);
@@ -63,8 +66,9 @@ export function BorescopeFrame({
   const angle = ((clockPosition % 12) / 12) * Math.PI * 2 - Math.PI / 2;
   const damageX = 160 + Math.cos(angle) * (46 + rng() * 22);
   const damageY = 120 + Math.sin(angle) * (32 + rng() * 16);
-  const gradientId = `bs-vignette-${hashId(seed)}`;
-  const glowId = `bs-glow-${hashId(seed)}`;
+  const frameId = hashId(instance ? `${seed}#${instance}` : seed);
+  const gradientId = `bs-vignette-${frameId}`;
+  const glowId = `bs-glow-${frameId}`;
 
   return (
     <figure className={cn("relative overflow-hidden rounded-sm border border-rr-ink/12 bg-rr-ink", className)}>

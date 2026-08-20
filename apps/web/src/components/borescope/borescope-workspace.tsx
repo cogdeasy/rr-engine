@@ -337,6 +337,7 @@ function ComparisonFrame({
     <div>
       <BorescopeFrame
         seed={seed}
+        instance="comparison"
         damageType={finding.damageType}
         location={finding.stage}
         clockPosition={finding.clockPosition}

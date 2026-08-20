@@ -50,7 +50,6 @@ interface ModuleInspectionSpec {
   damage: DamageSpec[];
   /** Relative likelihood the module is covered by a given inspection. */
   coverage: number;
-  ataChapter: string;
 }
 
 const MODULE_SPECS: ModuleInspectionSpec[] = [
@@ -59,7 +58,6 @@ const MODULE_SPECS: ModuleInspectionSpec[] = [
     stages: ["Fan stage 1", "LPC stage 1", "LPC stage 2"],
     bladesPerStage: 22,
     coverage: 0.5,
-    ataChapter: "72-30",
     damage: [
       { damageType: "FOD dent", dimension: "depth", unit: "mm", serviceableMax: 0.8, repairableMax: 1.6, weight: 40, growthPerKCycles: 0.02 },
       { damageType: "nick", dimension: "depth", unit: "mm", serviceableMax: 0.5, repairableMax: 1.1, weight: 25, growthPerKCycles: 0.015 },
@@ -72,7 +70,6 @@ const MODULE_SPECS: ModuleInspectionSpec[] = [
     stages: ["IPC stage 3", "IPC stage 5", "IPC stage 8"],
     bladesPerStage: 46,
     coverage: 0.45,
-    ataChapter: "72-40",
     damage: [
       { damageType: "erosion", dimension: "depth", unit: "mm", serviceableMax: 0.9, repairableMax: 1.8, weight: 35, growthPerKCycles: 0.06 },
       { damageType: "coating loss", dimension: "area", unit: "mm²", serviceableMax: 90, repairableMax: 220, weight: 30, growthPerKCycles: 7 },
@@ -85,7 +82,6 @@ const MODULE_SPECS: ModuleInspectionSpec[] = [
     stages: ["HPC stage 1", "HPC stage 3", "HPC stage 6"],
     bladesPerStage: 58,
     coverage: 0.7,
-    ataChapter: "72-45",
     damage: [
       { damageType: "coating loss", dimension: "area", unit: "mm²", serviceableMax: 70, repairableMax: 180, weight: 32, growthPerKCycles: 9 },
       { damageType: "tip curl", dimension: "length", unit: "mm", serviceableMax: 1.2, repairableMax: 2.4, weight: 26, growthPerKCycles: 0.11 },
@@ -98,7 +94,6 @@ const MODULE_SPECS: ModuleInspectionSpec[] = [
     stages: ["Combustor outer tiles", "Combustor inner tiles", "Fuel spray nozzles"],
     bladesPerStage: 40,
     coverage: 0.9,
-    ataChapter: "72-50",
     damage: [
       { damageType: "spallation", dimension: "area", unit: "mm²", serviceableMax: 120, repairableMax: 320, weight: 34, growthPerKCycles: 16 },
       { damageType: "burn-through", dimension: "area", unit: "mm²", serviceableMax: 25, repairableMax: 70, weight: 20, growthPerKCycles: 5 },
@@ -111,7 +106,6 @@ const MODULE_SPECS: ModuleInspectionSpec[] = [
     stages: ["HPT stage 1 blades", "HPT stage 1 NGVs", "HPT stage 2 blades"],
     bladesPerStage: 68,
     coverage: 1,
-    ataChapter: "72-55",
     damage: [
       { damageType: "coating loss", dimension: "area", unit: "mm²", serviceableMax: 60, repairableMax: 150, weight: 30, growthPerKCycles: 12 },
       { damageType: "cooling-hole blockage", dimension: "area", unit: "mm²", serviceableMax: 12, repairableMax: 30, weight: 18, growthPerKCycles: 2.4 },
@@ -125,7 +119,6 @@ const MODULE_SPECS: ModuleInspectionSpec[] = [
     stages: ["IPT stage 1 blades", "IPT stage 1 NGVs"],
     bladesPerStage: 74,
     coverage: 0.55,
-    ataChapter: "72-56",
     damage: [
       { damageType: "coating loss", dimension: "area", unit: "mm²", serviceableMax: 80, repairableMax: 200, weight: 34, growthPerKCycles: 9 },
       { damageType: "crack", dimension: "length", unit: "mm", serviceableMax: 3.5, repairableMax: 7.0, weight: 26, growthPerKCycles: 0.34 },
@@ -138,7 +131,6 @@ const MODULE_SPECS: ModuleInspectionSpec[] = [
     stages: ["LPT stage 2 blades", "LPT stage 4 blades", "LPT stage 6 blades"],
     bladesPerStage: 96,
     coverage: 0.35,
-    ataChapter: "72-60",
     damage: [
       { damageType: "erosion", dimension: "depth", unit: "mm", serviceableMax: 1.4, repairableMax: 2.8, weight: 40, growthPerKCycles: 0.05 },
       { damageType: "crack", dimension: "length", unit: "mm", serviceableMax: 4.0, repairableMax: 8.0, weight: 24, growthPerKCycles: 0.28 },
@@ -157,9 +149,13 @@ export const BORESCOPE_LIMITS: BorescopeLimit[] = MODULE_SPECS.flatMap((spec) =>
     unit: damage.unit,
     serviceableMax: damage.serviceableMax,
     repairableMax: damage.repairableMax,
-    reference: `EM ${spec.ataChapter}-00 Insp/Check-01`,
+    reference: emReference(spec.moduleCode),
   })),
 );
+
+function emReference(code: ModuleCode): string {
+  return `EM ${ENGINE_MODULES.find((m) => m.code === code)?.ataChapter ?? "72-00"}-00 Insp/Check-01`;
+}
 
 export function borescopeModuleLabel(code: ModuleCode): string {
   return ENGINE_MODULES.find((m) => m.code === code)?.label ?? code;
@@ -493,8 +489,8 @@ function makeFinding(args: {
     serviceableLimit: spec.serviceableMax,
     repairableLimit: spec.repairableMax,
     limitRatio: ratio,
-    exceedsServiceable: measured > spec.serviceableMax,
-    exceedsRepairable: measured > spec.repairableMax,
+    exceedsServiceable: ratio > 1,
+    exceedsRepairable: ratio > repairRatio,
     severity: severityFor(ratio),
     status: statusFor(disposition),
     disposition,
@@ -509,7 +505,7 @@ function makeFinding(args: {
     observedAt: args.observedAt,
     inspector: args.inspector,
     notes: `${spec.damageType} observed at ${args.clock} o'clock${args.blade ? `, aerofoil ${args.blade}` : ""}; probe measurement taken with 3D phase measurement, ${rand.int(rng, 2, 4)} passes.`,
-    limitReference: `EM ${ENGINE_MODULES.find((m) => m.code === args.moduleCode)?.ataChapter ?? "72-00"}-00 Insp/Check-01`,
+    limitReference: emReference(args.moduleCode),
   };
 }
 
@@ -662,11 +658,12 @@ export function getBorescopeModuleTrends(): BorescopeModuleTrend[] {
 
 function quarterBuckets(count: number): { label: string; from: string; to: string }[] {
   const buckets: { label: string; from: string; to: string }[] = [];
+  const currentQuarterMonth = Math.floor(NOW.getUTCMonth() / 3) * 3;
   for (let i = count - 1; i >= 0; i -= 1) {
-    const end = new Date(NOW.getFullYear(), NOW.getMonth() - i * 3 + 1, 1);
-    const start = new Date(NOW.getFullYear(), NOW.getMonth() - i * 3 - 2, 1);
+    const start = new Date(Date.UTC(NOW.getUTCFullYear(), currentQuarterMonth - i * 3, 1));
+    const end = new Date(Date.UTC(NOW.getUTCFullYear(), currentQuarterMonth - i * 3 + 3, 1));
     buckets.push({
-      label: `Q${Math.floor(start.getMonth() / 3) + 1} ${String(start.getFullYear()).slice(2)}`,
+      label: `Q${Math.floor(start.getUTCMonth() / 3) + 1} ${String(start.getUTCFullYear()).slice(2)}`,
       from: start.toISOString(),
       to: end.toISOString(),
     });
