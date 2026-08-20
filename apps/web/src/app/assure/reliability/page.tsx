@@ -17,7 +17,7 @@ export default function ReliabilityPage() {
   const offTarget = scorecard.filter((row) => row.status !== "green");
   const worst = [...scorecard].sort((a, b) => a.attainmentPct - b.attainmentPct)[0];
   const worstDefinition = definitions.find((d) => d.id === worst.metricId)!;
-  const improving = scorecard.filter((row) => {
+  const improving = offTarget.filter((row) => {
     const direction = definitions.find((d) => d.id === row.metricId)!.direction;
     return row.trend !== "flat" && (row.trend === "up") === (direction === "higher-is-better");
   }).length;
