@@ -252,7 +252,14 @@ export function TriageConsole({
                     aria-label="Select all alerts in view"
                     checked={visibleRows.length > 0 && checkedInView.length === visibleRows.length}
                     onChange={(event) =>
-                      setChecked(() => (event.target.checked ? new Set(visibleRows.map((item) => item.alert.id)) : new Set()))
+                      setChecked((prev) => {
+                        const next = new Set(prev);
+                        for (const item of visibleRows) {
+                          if (event.target.checked) next.add(item.alert.id);
+                          else next.delete(item.alert.id);
+                        }
+                        return next;
+                      })
                     }
                   />
                   Select all in view

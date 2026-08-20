@@ -38,13 +38,15 @@ function hoursBetween(from: Date, to: Date): number {
   return Math.round(((to.getTime() - from.getTime()) / HOUR_MS) * 10) / 10;
 }
 
-/** Severity weighting used to rank the queue: severity first, urgency second. */
-function priorityScore(alert: Alert, hoursToNextSector: number | null): number {
+/**
+ * Severity weighting used to rank the queue: severity first, then how much of
+ * the action window is left (deadline is `raisedAt + timeToActionHours`).
+ */
+function priorityScore(alert: Alert, hoursRemaining: number | null, hoursToNextSector: number | null): number {
   const severity = severityRank(alert.severity) * 1000;
-  const tta = alert.timeToActionHours;
-  const urgency = tta === null ? 0 : Math.max(0, 500 - Math.min(500, tta));
-  const overdue = tta !== null && tta <= 0 ? 400 : 0;
-  const sector = hoursToNextSector !== null && tta !== null && tta <= hoursToNextSector ? 300 : 0;
+  const urgency = hoursRemaining === null ? 0 : Math.max(0, 500 - Math.min(500, Math.max(0, hoursRemaining)));
+  const overdue = hoursRemaining !== null && hoursRemaining <= 0 ? 400 : 0;
+  const sector = hoursToNextSector !== null && hoursRemaining !== null && hoursRemaining <= hoursToNextSector ? 300 : 0;
   const confidence = Math.round((alert.confidence ?? 0.5) * 100);
   return severity + urgency + overdue + sector + confidence;
 }
@@ -62,8 +64,9 @@ export function getTriageQueue(includeClosed = false): TriageAlert[] {
       const operator = data.operators.find((o) => o.id === alert.operatorId);
       const next = aircraft ? nextSectorAt(aircraft.id, aircraft.status) : null;
       const hoursToNextSector = next ? hoursBetween(now, next) : null;
-      const needsActionBeforeNextSector =
-        hoursToNextSector !== null && alert.timeToActionHours !== null && alert.timeToActionHours <= hoursToNextSector;
+      const ageHours = Math.max(0, hoursBetween(new Date(alert.raisedAt), now));
+      const hoursRemaining = alert.timeToActionHours === null ? null : alert.timeToActionHours - ageHours;
+      const needsActionBeforeNextSector = hoursToNextSector !== null && hoursRemaining !== null && hoursRemaining <= hoursToNextSector;
       const workOrder = data.workOrders.find(
         (w) => w.id === alert.relatedWorkOrderId || w.triggeringAlertIds.includes(alert.id),
       );
@@ -84,8 +87,8 @@ export function getTriageQueue(includeClosed = false): TriageAlert[] {
         hoursToNextSector,
         nextSectorAt: next ? next.toISOString() : null,
         needsActionBeforeNextSector,
-        ageHours: Math.max(0, hoursBetween(new Date(alert.raisedAt), now)),
-        priorityScore: priorityScore(alert, hoursToNextSector),
+        ageHours,
+        priorityScore: priorityScore(alert, hoursRemaining, hoursToNextSector),
         relatedOpenAlerts: data.alerts.filter(
           (a) => a.engineId === alert.engineId && a.id !== alert.id && OPEN_STATES.includes(a.state),
         ).length,

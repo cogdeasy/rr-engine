@@ -24,7 +24,8 @@ export default function AlertTriagePage() {
 
   return (
     <div className="space-y-6">
-      <section className="rr-hero-gradient rr-grid-lines relative overflow-hidden rounded-sm px-8 py-8 text-white">
+      <section className="rr-hero-gradient relative overflow-hidden rounded-sm px-8 py-8 text-white">
+        <span aria-hidden className="rr-grid-lines pointer-events-none absolute inset-0" />
         <div className="relative flex flex-wrap items-end justify-between gap-8">
           <div className="max-w-2xl">
             <p className="rr-label text-rr-blue-200">Operate · Alert triage</p>

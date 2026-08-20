@@ -49,8 +49,9 @@ export function AlertDetail({
   return (
     <div className="space-y-4">
       <Panel padded={false}>
-        <div className="rr-hero-gradient rr-grid-lines px-6 py-5 text-white">
-          <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="rr-hero-gradient relative overflow-hidden px-6 py-5 text-white">
+          <span aria-hidden className="rr-grid-lines pointer-events-none absolute inset-0" />
+          <div className="relative flex flex-wrap items-start justify-between gap-4">
             <div className="max-w-xl">
               <p className="rr-label text-rr-blue-200">
                 {item.alert.id} · {item.alert.source} · ATA {item.alert.ataChapter}
@@ -68,7 +69,7 @@ export function AlertDetail({
             </div>
           </div>
 
-          <dl className="mt-6 grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-4">
+          <dl className="relative mt-6 grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-4">
             <HeroFigure
               label="Time to action"
               value={remaining === null ? "—" : overdue ? `+${formatHours(-remaining)}` : formatHours(remaining)}
