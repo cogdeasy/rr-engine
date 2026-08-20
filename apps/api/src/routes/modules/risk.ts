@@ -4,7 +4,8 @@ import { getRiskBoard } from "@rr/data";
 
 /**
  * Failure risk board (`risk`, /predict/risk): the fleet risk matrix, the ranked
- * register and the exposure trend, optionally narrowed to one fleet segment.
+ * register and the exposure trend. The aggregates are always fleet-wide; the
+ * query only narrows and pages the `items` register.
  */
 export async function registerRiskRoutes(app: FastifyInstance): Promise<void> {
   app.get<{ Querystring: { status?: StatusLevel; consequence?: RiskConsequenceClass; operatorId?: string; limit?: string } }>(
