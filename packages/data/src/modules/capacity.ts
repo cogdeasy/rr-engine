@@ -491,7 +491,7 @@ export function capacityOverview(): CapacityOverview {
       kind: facility.kind as ShopFacilityKind,
       bays: facilityBays,
       technicians: dataset.technicians.filter((t) => t.facilityId === facility.id).length,
-      wipEngines: workOrders.filter((w) => w.state === "in-progress" || w.state === "awaiting-parts").length,
+      wipEngines: shopWork.filter((w) => w.state === "in-progress" || w.state === "awaiting-parts").length,
       queueLength: queue.length,
       averageTatDays,
       throughputPerYear: Math.round((facilityBays * 365) / Math.max(1, averageTatDays)),
