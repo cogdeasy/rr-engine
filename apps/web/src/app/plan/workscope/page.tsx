@@ -11,8 +11,22 @@ export default async function WorkscopePage({ searchParams }: { searchParams: Pr
   const { engine } = await searchParams;
   const candidates = workscopeQueue(QUEUE_SIZE);
   const summary = workscopeQueueSummary(QUEUE_SIZE);
-  const selectedId = candidates.some((c) => c.engineId === engine) ? engine! : candidates[0]!.engineId;
-  const workscope = buildEngineWorkscope(selectedId)!;
+  const first = candidates[0];
+  const selectedId = candidates.some((c) => c.engineId === engine) ? engine! : first?.engineId;
+  const workscope = selectedId ? buildEngineWorkscope(selectedId) : undefined;
+
+  if (!workscope) {
+    return (
+      <Panel>
+        <p className="rr-label text-rr-slate">Plan · Shop visit workscoping</p>
+        <p className="mt-2 text-sm text-rr-ink">
+          No engine in the managed fleet is currently a workscope candidate — nothing is inside its removal window or
+          flagged for a shop visit.
+        </p>
+      </Panel>
+    );
+  }
+
   const recommended = workscope.scenarios.find((s) => s.id === workscope.recommendedScenarioId)!;
 
   return (

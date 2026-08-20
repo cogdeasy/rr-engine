@@ -299,9 +299,15 @@ const SCENARIO_RULES: ScenarioRule[] = [
   },
 ];
 
+/**
+ * A module below the scenario's severity threshold stays closed unless it holds
+ * a mandatory LLP: that part cannot be deferred, so the module has to come
+ * apart far enough to change it.
+ */
 function scenarioLevel(rule: ScenarioRule, assessment: ModuleAssessment): WorkscopeLevel {
-  if (assessment.severityIndex <= rule.openAbove) return "inspect";
-  return maxLevel(rule.floor, minLevel(rule.ceiling, assessment.recommendedLevel));
+  const forced = assessment.llps.some((llp) => llp.mandatory);
+  if (assessment.severityIndex <= rule.openAbove) return forced ? "repair" : "inspect";
+  return maxLevel(forced ? "repair" : rule.floor, maxLevel(rule.floor, minLevel(rule.ceiling, assessment.recommendedLevel)));
 }
 
 function buildScenario(engine: Engine, assessments: ModuleAssessment[], rule: ScenarioRule): WorkscopeScenario {
@@ -311,7 +317,9 @@ function buildScenario(engine: Engine, assessments: ModuleAssessment[], rule: Sc
   const modules: WorkscopeModuleLine[] = assessments.map((assessment) => {
     const level = scenarioLevel(rule, assessment);
     const factor = LEVEL_COST_FACTOR[level];
-    const llps = assessment.llps.filter((llp) => level !== "inspect" && llp.cyclesRemaining < rule.llpThreshold);
+    const llps = assessment.llps.filter(
+      (llp) => llp.mandatory || (level !== "inspect" && llp.cyclesRemaining < rule.llpThreshold),
+    );
     const labourHours = Math.round(assessment.referenceHours * factor);
     const labourUsd = labourHours * LABOUR_RATE_USD_PER_HOUR;
     const materialUsd =
