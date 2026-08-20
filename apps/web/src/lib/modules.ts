@@ -214,7 +214,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Sand, dust and salt exposure accumulated per engine and route.",
     decision: "Should we rotate engines away from harsh-environment routes?",
     icon: "wind",
-    implemented: false,
+    implemented: true,
   },
 
   // Plan

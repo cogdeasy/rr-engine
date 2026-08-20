@@ -15,3 +15,4 @@ export * from "./performance";
 export * from "./inventory";
 export * from "./reliability";
 export * from "./hot-section";
+export * from "./environment";
