@@ -8,6 +8,7 @@ import { registerFleetMapRoutes } from "./modules/fleet-map";
 import { registerWorkscopeRoutes } from "./workscope";
 import { registerTelemetryQualityRoutes } from "./telemetry-quality";
 import { registerComplianceRoutes } from "./compliance";
+import { registerScheduleRoutes } from "./modules/schedule";
 
 /**
  * Feature-module routes.
@@ -29,4 +30,5 @@ export async function registerModuleRoutes(app: FastifyInstance): Promise<void> 
   await registerWorkscopeRoutes(app);
   await registerTelemetryQualityRoutes(app);
   await registerComplianceRoutes(app);
+  await registerScheduleRoutes(app);
 }
