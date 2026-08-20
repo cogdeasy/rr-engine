@@ -56,6 +56,8 @@ const WORKSCOPE_TAT: Record<Workscope, number> = {
 /* ------------------------------------------------------------------ */
 
 const HORIZON_START = new Date(Date.UTC(NOW.getUTCFullYear(), NOW.getUTCMonth(), 1));
+/** Day index of today; slots are never advertised before it. */
+const TODAY_INDEX = Math.floor((NOW.getTime() - HORIZON_START.getTime()) / MS_DAY);
 
 function monthKeyOf(date: Date): string {
   return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}`;
@@ -114,6 +116,13 @@ export function facilityCapabilities(facilityId: string): FacilityCapability[] {
   const facility = getDataset().facilities.find((f) => f.id === facilityId);
   if (!facility) return [];
   const dataset = getDataset();
+  const familyOf = engineFamilyById();
+  const inWork = dataset.workOrders.filter(
+    (w) =>
+      w.facilityId === facility.id &&
+      (w.type === "shop-visit" || w.type === "module-swap") &&
+      (w.state === "in-progress" || w.state === "awaiting-parts"),
+  );
   return ENGINE_FAMILIES.map((spec) => {
     const rng = createRng(`capacity:cap:${facilityId}:${spec.family}`);
     const certified = facility.icao === "EGNX" ? true : facility.kind === "overhaul-base" ? rand.bool(rng, 0.78) : rand.bool(rng, 0.55);
@@ -122,9 +131,13 @@ export function facilityCapabilities(facilityId: string): FacilityCapability[] {
       family: spec.family,
       certified,
       averageTatDays: Math.round(clamp(spec.overhaulIntervalCycles / 90 + rand.int(rng, -6, 12) + penalty, 34, 104)),
-      inductions: dataset.engines.filter((e) => e.family === spec.family && e.location === facility.icao).length,
+      inductions: inWork.filter((w) => familyOf.get(w.engineId) === spec.family).length,
     };
   });
+}
+
+function engineFamilyById(): Map<string, EngineFamily> {
+  return new Map(getDataset().engines.map((e) => [e.id, e.family]));
 }
 
 function capabilityIndex(): Map<string, FacilityCapability[]> {
@@ -481,7 +494,7 @@ export function capacityOverview(): CapacityOverview {
     const peak = [...facilityCells].sort((a, b) => b.utilisationPct - a.utilisationPct)[0];
     const utilisationPct = Math.round(facilityCells.reduce((s, c) => s + c.utilisationPct, 0) / Math.max(1, facilityCells.length));
     const overloadedMonths = facilityCells.filter((c) => c.status === "red").length;
-    const free = earliestStart(occupancy.get(facility.id)!, facilityBays, 0, NOMINAL_SLOT_DAYS);
+    const free = earliestStart(occupancy.get(facility.id)!, facilityBays, TODAY_INDEX, NOMINAL_SLOT_DAYS);
 
     return {
       facilityId: facility.id,
