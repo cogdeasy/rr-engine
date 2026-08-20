@@ -100,7 +100,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Aircraft on ground events with recovery clock and escalation state.",
     decision: "What is the fastest path to returning this aircraft to service?",
     icon: "siren",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "notifications",
