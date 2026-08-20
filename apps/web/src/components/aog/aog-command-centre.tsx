@@ -164,20 +164,20 @@ function EventDetail({
               <p className="rr-label text-rr-slate">On ground</p>
               <RecoveryClock sinceIso={event.groundedAt} initialHours={event.hoursGrounded} status={event.status} size="lg" />
               <p className="mt-1 text-[11px] text-rr-slate">
-                Since {new Date(event.groundedAt).toLocaleString("en-GB", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })} UTC
+                Since {new Date(event.groundedAt).toLocaleString("en-GB", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit", timeZone: "UTC" })} UTC
               </p>
             </div>
             <div>
               <p className="rr-label text-rr-slate">Target RTS</p>
               <p className="rr-numeric mt-1 text-2xl font-semibold text-rr-ink">
-                {new Date(event.targetRtsAt).toLocaleString("en-GB", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })}
+                {new Date(event.targetRtsAt).toLocaleString("en-GB", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit", timeZone: "UTC" })}
               </p>
               <TargetCountdown targetIso={event.targetRtsAt} initialHours={event.hoursToTarget} className="mt-1 block" />
             </div>
             <div>
               <p className="rr-label text-rr-slate">Projected RTS</p>
               <p className={cn("rr-numeric mt-1 text-2xl font-semibold", event.slipHours > 0 ? "text-status-red" : "text-status-green")}>
-                {new Date(event.projectedRtsAt).toLocaleString("en-GB", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })}
+                {new Date(event.projectedRtsAt).toLocaleString("en-GB", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit", timeZone: "UTC" })}
               </p>
               <p className="mt-1 text-[11px] text-rr-slate">
                 {event.slipHours > 0 ? `${event.slipHours.toFixed(1)}h slip against target` : "Inside the contractual window"}
