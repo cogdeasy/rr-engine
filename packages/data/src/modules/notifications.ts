@@ -161,7 +161,7 @@ function buildEscalation(alert: Alert): Escalation {
   const ackMinutes =
     acknowledgementState === "unacknowledged"
       ? null
-      : Math.max(2, Math.min(raisedMinutesAgo, Math.round(baseSla * rand.float(rng, 0.15, 3.2))));
+      : Math.min(raisedMinutesAgo, Math.max(2, Math.round(baseSla * rand.float(rng, 0.15, 3.2))));
   const elapsedMinutes = ackMinutes ?? raisedMinutesAgo;
   const escalationSteps = Math.min(3 - baseIndex, Math.floor(elapsedMinutes / Math.max(1, baseSla)));
   const tier = TIER_ORDER[Math.min(3, baseIndex + escalationSteps)]!;
@@ -448,7 +448,7 @@ export function getAckTimeTrend(hours = 60, bucketHours = 4): Point[] {
   const all = getEscalations().filter((e) => e.acknowledgedAt !== null);
   const bucketMs = bucketHours * 3600000;
   const points: Point[] = [];
-  let carried = 0;
+  let carried: number | null = null;
   for (let start = NOW.getTime() - hours * 3600000; start < NOW.getTime(); start += bucketMs) {
     const rows = all.filter((e) => {
       const t = new Date(e.raisedAt).getTime();
@@ -457,6 +457,9 @@ export function getAckTimeTrend(hours = 60, bucketHours = 4): Point[] {
     if (rows.length) {
       carried = round(rows.reduce((s, e) => s + e.elapsedMinutes, 0) / rows.length, 1);
     }
+    // Leading buckets with no acknowledgement data are dropped rather than
+    // plotted as a zero that would read as instant acknowledgement.
+    if (carried === null) continue;
     points.push({ t: new Date(start).toISOString(), v: carried });
   }
   return points;

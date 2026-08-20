@@ -33,6 +33,10 @@ export type SlaTable = Record<Severity, Record<EscalationTier, number>>;
 
 type FilterId = "unacknowledged" | "breached" | "all";
 
+function minutesSinceRaised(escalation: Escalation, nowIso: string): number {
+  return Math.max(0, Math.round((new Date(nowIso).getTime() - new Date(escalation.raisedAt).getTime()) / 60000));
+}
+
 const FILTERS: { id: FilterId; label: string }[] = [
   { id: "unacknowledged", label: "Unacknowledged" },
   { id: "breached", label: "SLA breached" },
@@ -97,6 +101,9 @@ export function EscalationInbox({
 
   function acknowledge(escalation: Escalation): void {
     if (escalation.acknowledgementState !== "unacknowledged") return;
+    // The clock stops at acknowledgement, so freeze elapsed and the countdown here.
+    const elapsedMinutes = minutesSinceRaised(escalation, nowIso);
+    const slaRemainingMinutes = escalation.slaMinutes - elapsedMinutes;
     applyEvent(
       escalation,
       {
@@ -111,23 +118,24 @@ export function EscalationInbox({
         acknowledgementState: "acknowledged",
         acknowledgedAt: nowIso,
         acknowledgedBy: escalation.owner.name,
-        status: escalation.breached ? "amber" : "green",
+        elapsedMinutes,
+        slaRemainingMinutes,
+        breached: slaRemainingMinutes < 0,
+        status: slaRemainingMinutes < 0 ? "red" : "amber",
       },
     );
   }
 
   function escalateTier(escalation: Escalation): void {
     const index = TIER_ORDER.indexOf(escalation.tier);
-    if (index >= TIER_ORDER.length - 1) return;
+    if (index >= TIER_ORDER.length - 1 || escalation.acknowledgementState === "resolved") return;
     const nextTier = TIER_ORDER[index + 1]!;
     const meta = tiers.find((t) => t.tier === nextTier);
     const nextOwner = standbyOwners.find((o) => o.tier === nextTier) ?? escalation.owner;
     // The tighter window applies from the original raise, so the countdown and
     // breach flag have to be recomputed against it.
     const slaMinutes = slaTable[escalation.severity][nextTier];
-    const elapsedMinutes = Math.round(
-      (new Date(nowIso).getTime() - new Date(escalation.raisedAt).getTime()) / 60000,
-    );
+    const elapsedMinutes = minutesSinceRaised(escalation, nowIso);
     const slaRemainingMinutes = slaMinutes - elapsedMinutes;
     applyEvent(
       escalation,
@@ -473,7 +481,12 @@ function EscalationDetail({
         <Button size="sm" onClick={onAcknowledge} disabled={escalation.acknowledgementState !== "unacknowledged"}>
           Acknowledge
         </Button>
-        <Button size="sm" variant="secondary" onClick={onEscalate} disabled={escalation.tier === "T4"}>
+        <Button
+          size="sm"
+          variant="secondary"
+          onClick={onEscalate}
+          disabled={escalation.tier === "T4" || escalation.acknowledgementState === "resolved"}
+        >
           Escalate a tier
         </Button>
       </div>
