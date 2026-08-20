@@ -14,3 +14,4 @@ export * from "./notifications";
 export * from "./engine-explorer";
 export * from "./reports";
 export * from "./fleet-map";
+export * from "./workscope";
