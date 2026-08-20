@@ -136,7 +136,8 @@ function EventDetail({
 }) {
   const recommended = event.options[0]!;
   const blocking = event.steps.find((step) => step.blocking)!;
-  const nearest = event.facilities.find((facility) => facility.capableTechnicians > 0) ?? event.facilities[0]!;
+  const crewIcao = event.technicians[0]?.facilityIcao;
+  const nearest = event.facilities.find((facility) => facility.icao === crewIcao) ?? event.facilities[0]!;
 
   return (
     <div className="grid gap-5 xl:grid-cols-3">
@@ -393,7 +394,7 @@ function EventDetail({
         </Panel>
 
         <Panel>
-          <PanelHeader title="Technician availability" subtitle={`${event.engineFamily} certified, ${nearest.icao}`} />
+          <PanelHeader title="Technician availability" subtitle={`${event.engineFamily} certified, ${crewIcao ?? nearest.icao}`} />
           <ul className="space-y-2">
             {event.technicians.map((technician) => (
               <li key={technician.technicianId} className="flex items-center justify-between gap-3 border-b border-rr-ink/5 pb-2 last:border-0 last:pb-0">

@@ -279,6 +279,11 @@ function buildSteps(
   return { steps, blockingStepId, remainingHours };
 }
 
+/** The shop the ferry option routes to: nearest facility with both crew and a free slot. */
+function ferryTargetFor(facilities: AogFacilityOption[]): AogFacilityOption {
+  return facilities.find((f) => f.capableTechnicians > 0 && f.slotsFree > 0) ?? facilities[0]!;
+}
+
 function buildOptions(
   rng: Rng,
   remainingHours: number,
@@ -289,7 +294,7 @@ function buildOptions(
 ): AogRecoveryOption[] {
   const blockingPart = parts.find((p) => p.status !== "green") ?? parts[0]!;
   const nearestSource = blockingPart.sources[0];
-  const nearestCapable = facilities.find((f) => f.capableTechnicians > 0 && f.slotsFree > 0) ?? facilities[0]!;
+  const nearestCapable = ferryTargetFor(facilities);
   const options: AogRecoveryOption[] = [];
 
   if (blockingPart.onHandAtStation >= blockingPart.requiredQty) {
@@ -360,9 +365,12 @@ function buildOptions(
   return options;
 }
 
+let cache: { dataset: ReturnType<typeof getDataset>; events: AogEvent[] } | null = null;
+
 /** Every grounded aircraft, expanded into a full recovery case and ranked by urgency. */
 export function getAogEvents(): AogEvent[] {
   const dataset = getDataset();
+  if (cache?.dataset === dataset) return cache.events;
   const grounded = dataset.aircraft.filter((a) => a.status === "aog");
 
   const events = grounded.map((aircraft, index) => {
@@ -406,6 +414,11 @@ export function getAogEvents(): AogEvent[] {
 
     const costPerHourUsd = COST_PER_HOUR_USD[aircraft.type] ?? 12_000;
     const options = buildOptions(rng, remainingHours, parts, facilities, costPerHourUsd, engine.esn);
+    // Always surface the facilities the rest of the case refers to (crew source and ferry
+    // target) even when they are not among the four closest.
+    const surfacedFacilities = [...new Set([...facilities.slice(0, 4), nearestCapable, ferryTargetFor(facilities)])].sort(
+      (a, b) => a.distanceKm - b.distanceKm,
+    );
     const workOrder = dataset.workOrders.find((w) => w.engineId === engine.id && w.state !== "complete");
 
     const seats = SEATS[aircraft.type] ?? 300;
@@ -453,7 +466,7 @@ export function getAogEvents(): AogEvent[] {
       steps,
       blockingStepId,
       parts,
-      facilities: facilities.slice(0, 4),
+      facilities: surfacedFacilities,
       technicians,
       options,
 
@@ -464,9 +477,11 @@ export function getAogEvents(): AogEvent[] {
     } satisfies AogEvent;
   });
 
-  return events.sort(
+  const sorted = events.sort(
     (a, b) => rankStatus(b.status) - rankStatus(a.status) || b.exposureUsd - a.exposureUsd,
   );
+  cache = { dataset, events: sorted };
+  return sorted;
 }
 
 function rankStatus(status: StatusLevel): number {
