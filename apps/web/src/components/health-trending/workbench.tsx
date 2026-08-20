@@ -21,6 +21,7 @@ import {
 import { monthDate, seriesColour } from "./chart-theme";
 import { FleetCompareChart, type CompareRow } from "./fleet-compare-chart";
 import { TrendChart, type TrendChartEvent, type TrendChartRow } from "./trend-chart";
+import { windowStatistics } from "./window-stats";
 
 const MAX_ENGINES = 6;
 const RANGE_OPTIONS = [60, 90, 180] as const;
@@ -42,6 +43,8 @@ export function TrendingWorkbench({ data }: { data: TrendingWorkbenchData }) {
   const [rangeDays, setRangeDays] = React.useState<number>(data.windowDays);
   const [compare, setCompare] = React.useState(false);
   const [query, setQuery] = React.useState("");
+  /** Brush selection inside the window; null means the whole window. */
+  const [brush, setBrush] = React.useState<{ from: string; to: string } | null>(null);
 
   const bundleIndex = React.useMemo(() => {
     const map = new Map<string, TrendSeriesBundle>();
@@ -59,11 +62,40 @@ export function TrendingWorkbench({ data }: { data: TrendingWorkbenchData }) {
   const focusParameter = data.parameters.find((p) => p.id === focus) ?? data.parameters[0]!;
   const primaryBundle = bundleFor(primaryEngineId, focusParameter.id);
 
+
   const cutoff = React.useMemo(
     () => new Date(new Date(data.generatedAt).getTime() - rangeDays * 86400000).getTime(),
     [data.generatedAt, rangeDays],
   );
   const inRange = React.useCallback((t: string) => new Date(t).getTime() >= cutoff, [cutoff]);
+
+  /** Chart rows follow the window buttons only; the brush then narrows everything derived from them. */
+  const inView = React.useCallback(
+    (t: string) => {
+      if (!inRange(t)) return false;
+      if (!brush) return true;
+      const ms = new Date(t).getTime();
+      return ms >= new Date(brush.from).getTime() && ms <= new Date(brush.to).getTime();
+    },
+    [inRange, brush],
+  );
+
+  React.useEffect(() => setBrush(null), [rangeDays, focus, primaryEngineId]);
+
+  /** Refits statistics over whatever slice of the series is currently on screen. */
+  const viewBundle = React.useCallback(
+    (bundle: TrendSeriesBundle): TrendSeriesBundle => {
+      const points = bundle.series.points.filter((p) => inView(p.t));
+      if (points.length === bundle.series.points.length || points.length < 3) return bundle;
+      const events = data.events.filter((e) => e.engineId === bundle.engineId && inView(e.at));
+      return {
+        ...bundle,
+        series: { ...bundle.series, points },
+        statistics: windowStatistics(bundle.statistics, points, events, data.generatedAt),
+      };
+    },
+    [inView, data.events, data.generatedAt],
+  );
 
   const chartSeries = React.useMemo(
     () =>
@@ -114,9 +146,9 @@ export function TrendingWorkbench({ data }: { data: TrendingWorkbenchData }) {
   const primaryEvents = React.useMemo(
     () =>
       data.events
-        .filter((event) => event.engineId === primaryEngineId && inRange(event.at))
+        .filter((event) => event.engineId === primaryEngineId && inView(event.at))
         .filter((event) => event.kind !== "alert" || event.parameter === focusParameter.id),
-    [data.events, primaryEngineId, inRange, focusParameter.id],
+    [data.events, primaryEngineId, inView, focusParameter.id],
   );
 
   const chartEvents = React.useMemo<TrendChartEvent[]>(
@@ -152,9 +184,15 @@ export function TrendingWorkbench({ data }: { data: TrendingWorkbenchData }) {
       engineIds.flatMap((engineId) =>
         parameters
           .map((parameter) => bundleFor(engineId, parameter))
-          .filter((b): b is TrendSeriesBundle => b !== undefined),
+          .filter((b): b is TrendSeriesBundle => b !== undefined)
+          .map(viewBundle),
       ),
-    [engineIds, parameters, bundleFor],
+    [engineIds, parameters, bundleFor, viewBundle],
+  );
+
+  const primaryView = React.useMemo(
+    () => (primaryBundle ? viewBundle(primaryBundle) : undefined),
+    [primaryBundle, viewBundle],
   );
 
   const activeRecommendations = React.useMemo(
@@ -203,7 +241,10 @@ export function TrendingWorkbench({ data }: { data: TrendingWorkbenchData }) {
           subtitle={`Overlay up to ${MAX_ENGINES} engines and any combination of trended parameters`}
           actions={
             <FilterBar>
-              <SearchInput value={query} onChange={setQuery} placeholder="Filter engines" />
+              <label className="contents">
+                <span className="sr-only">Filter engines by serial number, family, operator or tail</span>
+                <SearchInput value={query} onChange={setQuery} placeholder="Filter engines" />
+              </label>
               <Button
                 variant={compare ? "primary" : "secondary"}
                 size="sm"
@@ -311,7 +352,13 @@ export function TrendingWorkbench({ data }: { data: TrendingWorkbenchData }) {
           <PanelHeader
             title={`${focusParameter.label} — ${engineIds.length} engine${engineIds.length === 1 ? "" : "s"}`}
             subtitle={`ATA ${focusParameter.ataChapter} · ${focusParameter.direction === "higher-is-worse" ? "higher is worse" : "lower is worse"} · shaded regions are limit exceedances for ${primaryEngine.esn}`}
-            actions={<Badge variant="brand">{rangeDays} day window</Badge>}
+            actions={
+              <Badge variant="brand">
+                {brush
+                  ? `${monthDate(brush.from)} – ${monthDate(brush.to)} (brushed)`
+                  : `${rangeDays} day window`}
+              </Badge>
+            }
           />
           <Tabs
             className="mb-3"
@@ -329,14 +376,21 @@ export function TrendingWorkbench({ data }: { data: TrendingWorkbenchData }) {
             amber={focusParameter.amberThreshold}
             red={focusParameter.redThreshold}
             direction={focusParameter.direction}
-            exceedances={primaryBundle?.statistics.exceedances.filter((e) => inRange(e.to)) ?? []}
+            exceedances={primaryView?.statistics.exceedances.filter((e) => inRange(e.to)) ?? []}
             events={chartEvents}
+            onRangeChange={(range) =>
+              setBrush(
+                focusRows.length > 0 && range.from === focusRows[0]!.t && range.to === focusRows[focusRows.length - 1]!.t
+                  ? null
+                  : range,
+              )
+            }
           />
           <EventLegend events={primaryEvents} esn={primaryEngine.esn} />
         </Panel>
 
         <div className="space-y-5">
-          {primaryBundle ? <TrendStatsPanel bundle={primaryBundle} parameterLabel={focusParameter.shortLabel} /> : null}
+          {primaryView ? <TrendStatsPanel bundle={primaryView} parameterLabel={focusParameter.shortLabel} /> : null}
         </div>
       </div>
 
@@ -431,8 +485,9 @@ export function TrendingWorkbench({ data }: { data: TrendingWorkbenchData }) {
             <p className="rr-label text-rr-blue">Trend statistics</p>
             <h2 className="mt-1 text-lg font-semibold text-rr-ink">Deterioration rates and projections</h2>
             <p className="mt-1 text-xs text-rr-slate">
-              Slopes are least-squares fits over the {rangeDays === data.windowDays ? data.windowDays : data.windowDays}
-              -day sample window and converted to the engine&apos;s own utilisation.
+              Slopes are least-squares fits over{" "}
+              {brush ? `the brushed range ${monthDate(brush.from)} – ${monthDate(brush.to)}` : `the ${rangeDays}-day window`}{" "}
+              and converted to the engine&apos;s own utilisation.
             </p>
           </div>
           <Badge variant="outline">{statRows.length} series</Badge>
