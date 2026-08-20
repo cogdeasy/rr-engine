@@ -1,4 +1,5 @@
 import type { FastifyInstance } from "fastify";
+import { registerHealthTrendingRoutes } from "./health-trending";
 import { registerContractRoutes } from "./contracts";
 import { registerAlertRoutes } from "./alerts";
 import { registerNotificationRoutes } from "./notifications";
@@ -48,6 +49,7 @@ import { registerVibrationRoutes } from "./vibration";
 import { registerTaskCardRoutes } from "./task-cards";
 
 export async function registerModuleRoutes(app: FastifyInstance): Promise<void> {
+  await registerHealthTrendingRoutes(app);
   await registerAogRoutes(app);
   await registerContractRoutes(app);
   await registerAlertRoutes(app);

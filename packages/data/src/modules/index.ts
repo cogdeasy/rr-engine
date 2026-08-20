@@ -7,6 +7,7 @@
  */
 
 export {};
+export * from "./health-trending";
 export * from "./aog";
 export * from "./contracts";
 export * from "./alerts";
