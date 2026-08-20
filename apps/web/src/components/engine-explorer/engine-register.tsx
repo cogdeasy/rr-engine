@@ -284,14 +284,14 @@ export function EngineRegister({
     },
     {
       key: "trend",
-      header: "30 sectors",
+      header: "Recent sectors",
       width: "108px",
       sortValue: (row) => row.egtMarginDecayPer100Cycles,
       render: (row) => (
         <div className="w-24">
           <Sparkline points={row.egtTrend} status={row.egtMarginStatus} height={22} />
           <p className="rr-numeric mt-0.5 text-[10px] text-rr-slate">
-            −{row.egtMarginDecayPer100Cycles.toFixed(1)}°C / 100 cyc
+            −{row.egtMarginDecayPer100Cycles.toFixed(1)}°C / 100 sectors
           </p>
         </div>
       ),

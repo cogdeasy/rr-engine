@@ -14,7 +14,7 @@ export function PriorityQueue({ rows }: { rows: EngineRegisterRow[] }) {
         <article key={row.engineId} className="rounded-sm border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <p className="rr-label text-rr-blue-200">Work order {row.priorityRank}</p>
+              <p className="rr-label text-rr-blue-200">Priority {row.priorityRank}</p>
               <Link href={`/engines/${row.engineId}`} className="rr-numeric text-lg font-semibold text-white hover:underline">
                 {row.esn}
               </Link>

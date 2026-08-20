@@ -36,6 +36,7 @@ export default function EngineExplorerPage() {
       red: engines.filter((e) => e.status === "red").length,
       amber: engines.filter((e) => e.status === "amber").length,
       green: engines.filter((e) => e.status === "green").length,
+      grey: engines.filter((e) => e.status === "grey").length,
       medianEgt: median(engines.map((e) => e.egtMargin)),
     };
   });
@@ -98,6 +99,7 @@ export default function EngineExplorerPage() {
                   {row.red > 0 ? <div className="bg-status-red" style={{ width: `${(row.red / row.total) * 100}%` }} /> : null}
                   {row.amber > 0 ? <div className="bg-status-amber" style={{ width: `${(row.amber / row.total) * 100}%` }} /> : null}
                   {row.green > 0 ? <div className="bg-status-green" style={{ width: `${(row.green / row.total) * 100}%` }} /> : null}
+                  {row.grey > 0 ? <div className="bg-status-grey" style={{ width: `${(row.grey / row.total) * 100}%` }} /> : null}
                 </div>
                 <div className="rr-numeric w-24 shrink-0 text-right text-[11px] text-rr-slate">
                   <span className="font-semibold text-status-red">{row.red}</span> /{" "}
