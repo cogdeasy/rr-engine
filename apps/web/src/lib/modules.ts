@@ -110,7 +110,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Escalation workflow, ownership and acknowledgement trail.",
     decision: "Has every red condition been acknowledged by an accountable owner?",
     icon: "inbox",
-    implemented: false,
+    implemented: true,
   },
 
   // Diagnose
