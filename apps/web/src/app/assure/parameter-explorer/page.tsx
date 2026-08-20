@@ -37,7 +37,8 @@ export default async function ParameterExplorerPage({
   );
 
   const strong = signals.filter((signal) => Math.abs(signal.correlation) >= SHORTLIST_CORRELATION).length;
-  const earliest = picks.reduce((best, signal) => (signal.leadDays > best.leadDays ? signal : best), picks[0]!);
+  // A sweep can legitimately come back with nothing that clears the thresholds.
+  const bestLeadDays = picks.reduce((best, signal) => Math.max(best, signal.leadDays), 0);
   const systemSpread = picks.reduce<Record<string, number>>((acc, signal) => {
     acc[signal.parameter.system] = (acc[signal.parameter.system] ?? 0) + 1;
     return acc;
@@ -55,7 +56,7 @@ export default async function ParameterExplorerPage({
             <p className="mt-3 max-w-xl text-sm leading-relaxed text-rr-cloud">
               Data exploration is the longest phase of every continuous DN. The sweep scores every parameter in the
               schema against a confirmed event population, then strips out the collinear ones — leaving the shortlist a
-              data scientist takes into model development, with {earliest.leadDays} days of warning at best.
+              data scientist takes into model development, with {bestLeadDays} days of warning at best.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link
@@ -160,7 +161,7 @@ export default async function ParameterExplorerPage({
                   <div className="mt-1 h-1 w-full bg-rr-mist">
                     <div
                       className="h-1 bg-rr-blue"
-                      style={{ width: `${(count / picks.length) * 100}%` }}
+                      style={{ width: `${(count / Math.max(picks.length, 1)) * 100}%` }}
                     />
                   </div>
                 </li>

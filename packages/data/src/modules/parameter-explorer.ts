@@ -212,6 +212,15 @@ function strengthOf(correlation: number, leadDays: number): StatusLevel {
 const signalCache = new Map<string, ParameterSignal[]>();
 
 /**
+ * The measurement a code belongs to, i.e. everything before the trailing
+ * phase / statistic / variant tokens. Measure codes contain underscores of
+ * their own (`OIL_P`, `VIB_N1`), so the first token is not the measurement.
+ */
+function measureOf(code: string): string {
+  return code.split("_").slice(0, -3).join("_");
+}
+
+/**
  * Every catalogue parameter scored against one investigation, strongest
  * absolute correlation first.
  */
@@ -253,10 +262,8 @@ export function parameterSignals(investigationId: string): ParameterSignal[] {
   const withRedundancy = scored.map((signal, index) => {
     if (index === 0) return signal;
     const rng = createRng(`redundancy:${investigationId}:${signal.parameter.code}`);
-    const family = signal.parameter.code.split("_")[0];
-    const duplicateFamily = scored
-      .slice(0, index)
-      .some((higher) => higher.parameter.code.split("_")[0] === family);
+    const family = measureOf(signal.parameter.code);
+    const duplicateFamily = scored.slice(0, index).some((higher) => measureOf(higher.parameter.code) === family);
     return {
       ...signal,
       redundancy: duplicateFamily ? rand.float(rng, 0.72, 0.97, 2) : rand.float(rng, 0.05, 0.55, 2),
@@ -313,7 +320,8 @@ export function parameterTrace(investigationId: string, parameterCode: string): 
   const points: ParameterTracePoint[] = [];
   for (let day = -90; day <= 0; day += 3) {
     // The event population departs the normal band once inside the lead window.
-    const intoLead = Math.max(0, (day + signal.leadDays) / signal.leadDays);
+    const lead = Math.max(signal.leadDays, 1);
+    const intoLead = Math.max(0, (day + lead) / lead);
     const drift = signal.separationSigma * intoLead * (signal.correlation < 0 ? -1 : 1);
     points.push({
       day,
@@ -327,14 +335,14 @@ export function parameterTrace(investigationId: string, parameterCode: string): 
 
 export function parameterExplorerSummary(): ParameterExplorerSummary {
   const all = investigations();
-  const shortlists = all.map((inv) => shortlist(inv.id, 24));
+  const shortlists = all.map((inv) => shortlist(inv.id));
   const flat = shortlists.flat();
   return {
     investigations: all.length,
     parametersInScope: parameterCatalogue().length,
     dataPointsM: all.reduce((sum, inv) => sum + inv.dataPointsM, 0),
     candidateSignals: flat.length,
-    bestLeadDays: Math.max(...flat.map((signal) => signal.leadDays)),
+    bestLeadDays: flat.reduce((best, signal) => Math.max(best, signal.leadDays), 0),
     unexploited: flat.filter((signal) => !signal.inLiveAnalytic).length,
     sweepMinutes: all.reduce((sum, inv) => sum + inv.sweepMinutes, 0),
   };
