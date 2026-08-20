@@ -15,6 +15,7 @@ import {
 } from "@rr/ui";
 import { fleetSummary, getDataset, getOpenAlerts } from "@rr/data";
 import { ModuleIcon } from "@/components/icon";
+import { WatchlistTable } from "@/components/fleet-overview/watchlist-table";
 
 export default function FleetOverviewPage() {
   const data = getDataset();
@@ -113,43 +114,20 @@ export default function FleetOverviewPage() {
               </Link>
             }
           />
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-rr-ink/8">
-                  <th className="rr-label py-2 text-left text-rr-slate">Engine</th>
-                  <th className="rr-label py-2 text-left text-rr-slate">Operator</th>
-                  <th className="rr-label py-2 text-right text-rr-slate">EGT margin</th>
-                  <th className="rr-label py-2 text-right text-rr-slate">Cycles left</th>
-                  <th className="rr-label py-2 text-right text-rr-slate">Alerts</th>
-                  <th className="rr-label py-2 text-right text-rr-slate">Health</th>
-                </tr>
-              </thead>
-              <tbody>
-                {watchlist.map(({ engine, operator, aircraft, alerts: count }) => (
-                  <tr key={engine.id} className="border-b border-rr-ink/5 last:border-0">
-                    <td className={cn("py-3 pl-3 border-l-2", engine.status === "red" ? "border-status-red" : engine.status === "amber" ? "border-status-amber" : "border-status-green")}>
-                      <Link href={`/engines/${engine.id}`} className="font-semibold text-rr-ink hover:text-rr-blue">
-                        {engine.esn}
-                      </Link>
-                      <p className="text-[11px] text-rr-slate">
-                        {engine.family} · {aircraft?.tail ?? "off wing"}
-                      </p>
-                    </td>
-                    <td className="py-3 text-rr-slate">{operator?.name}</td>
-                    <td className={cn("rr-numeric py-3 text-right font-semibold", engine.egtMargin < 12 ? "text-status-red" : engine.egtMargin < 25 ? "text-status-amber" : "text-rr-ink")}>
-                      {engine.egtMargin}°C
-                    </td>
-                    <td className="rr-numeric py-3 text-right text-rr-slate">{formatNumber(engine.rulCycles)}</td>
-                    <td className="rr-numeric py-3 text-right text-rr-slate">{count}</td>
-                    <td className="py-3 text-right">
-                      <StatusPill status={engine.status}>{engine.healthScore}</StatusPill>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <WatchlistTable
+            rows={watchlist.map(({ engine, operator, aircraft, alerts: count }) => ({
+              engineId: engine.id,
+              esn: engine.esn,
+              family: engine.family,
+              tail: aircraft?.tail ?? "off wing",
+              operator: operator?.name ?? "Unassigned",
+              egtMargin: engine.egtMargin,
+              rulCycles: engine.rulCycles,
+              alerts: count,
+              healthScore: engine.healthScore,
+              status: engine.status,
+            }))}
+          />
         </Panel>
 
         {/* Alerts */}

@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BrandLockup, StatusDot, cn } from "@rr/ui";
+import { BrandLockup, RrMark, StatusDot, cn } from "@rr/ui";
 import { MODULE_GROUPS, MODULES } from "@/lib/modules";
 import { ModuleIcon } from "./icon";
 
@@ -27,7 +27,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <div className="flex h-[72px] items-center justify-between border-b border-rr-ink/10 px-4">
           {collapsed ? (
             <Link href="/" aria-label="Rolls-Royce Engine Health home" className="mx-auto">
-              <span className="flex h-7 w-6 items-center justify-center bg-rr-blue text-[11px] font-semibold text-white">RR</span>
+              <RrMark size={24} />
             </Link>
           ) : (
             <Link href="/">

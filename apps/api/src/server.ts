@@ -11,7 +11,9 @@ export function buildServer(): FastifyInstance {
     },
   });
 
-  app.register(cors, { origin: true });
+  // Allow-list driven: CORS_ORIGINS is a comma-separated list, defaulting to the local console.
+  const allowedOrigins = (process.env.CORS_ORIGINS ?? "http://localhost:3000").split(",").map((o) => o.trim());
+  app.register(cors, { origin: allowedOrigins });
 
   app.get("/health", async () => ({ status: "ok", service: "rr-engine-api", at: new Date().toISOString() }));
 
