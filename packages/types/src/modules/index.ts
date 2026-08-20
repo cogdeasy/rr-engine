@@ -19,3 +19,4 @@ export * from "./telemetry-quality";
 export * from "./compliance";
 export * from "./schedule";
 export * from "./oil-debris";
+export * from "./work-orders";

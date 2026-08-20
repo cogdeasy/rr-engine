@@ -20,6 +20,8 @@ import { registerOilDebrisRoutes } from "./oil-debris";
  */
 import { registerAogRoutes } from "./aog";
 
+import { registerWorkOrderRoutes } from "./work-orders";
+
 export async function registerModuleRoutes(app: FastifyInstance): Promise<void> {
   await registerAogRoutes(app);
   await registerContractRoutes(app);
@@ -33,4 +35,5 @@ export async function registerModuleRoutes(app: FastifyInstance): Promise<void> 
   await registerComplianceRoutes(app);
   await registerScheduleRoutes(app);
   await registerOilDebrisRoutes(app);
+  await registerWorkOrderRoutes(app);
 }
