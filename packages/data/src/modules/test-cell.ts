@@ -366,9 +366,10 @@ export function getTestCellRuns(): TestCellRun[] {
     runs.push(first);
 
     let previous = first;
+    let previousDays = firstDays;
     for (let attempt = 2; attempt <= 3 && previous.outcome === "fail"; attempt += 1) {
-      const gapDays = rand.int(rng, 4, 26);
-      const nextDays = Math.max(0, firstDays - gapDays * (attempt - 1));
+      // Count back from the previous attempt so retests stay in chronological order.
+      const nextDays = Math.max(0, previousDays - rand.int(rng, 4, 26));
       n += 1;
       const retest = buildRun(
         engine,
@@ -384,6 +385,7 @@ export function getTestCellRuns(): TestCellRun[] {
       );
       runs.push(retest);
       previous = retest;
+      previousDays = nextDays;
     }
   }
 
@@ -439,13 +441,14 @@ function firstPassYieldFor(runs: TestCellRun[]): number {
   return round((passedFirst / engines.size) * 100, 1);
 }
 
-/** Twelve-month first-pass yield history, bucketed by run start month. */
+/** Ten-month first-pass yield history, bucketed by run start month. */
 function yieldHistory(runs: TestCellRun[]): Point[] {
   const points: Point[] = [];
   for (let i = 9; i >= 0; i -= 1) {
     const from = daysAgo((i + 1) * 30).getTime();
     const to = daysAgo(i * 30).getTime();
     const bucket = runs.filter((r) => {
+      if (r.attempt !== 1) return false;
       const t = new Date(r.startedAt).getTime();
       return t >= from && t < to;
     });
@@ -470,7 +473,8 @@ export function testCellFleetSummary(runs = getTestCellRuns()): TestCellFleetSum
     meanEgtMarginAtTestC: mean(completed.map((r) => r.egtMarginAtTestC)),
     meanDurationMinutes: mean(completed.map((r) => r.durationMinutes), 0),
     retestCostUsd: retests.length * TEST_CELL_RUN_COST_USD,
-    awaitingRelease: runs.filter((r) => r.outcome !== "running" && !r.releasedToService).length,
+    // Failed runs are counted separately — they need rework, not a release decision.
+    awaitingRelease: runs.filter((r) => r.outcome === "conditional" && !r.releasedToService).length,
     firstPassYieldHistory: yieldHistory(runs),
   };
 }
