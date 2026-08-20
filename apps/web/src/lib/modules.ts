@@ -436,7 +436,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Roles, thresholds, integrations and notification preferences.",
     decision: "Who can act on what, and at which thresholds do we alert?",
     icon: "settings",
-    implemented: false,
+    implemented: true,
   },
 ];
 
