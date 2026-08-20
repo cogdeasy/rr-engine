@@ -9,6 +9,11 @@ import {
   recentDebrisEvents,
 } from "@rr/data";
 
+function positiveInt(raw: string | undefined, fallback: number): number {
+  const parsed = Number(raw);
+  return Number.isFinite(parsed) && parsed >= 0 ? Math.floor(parsed) : fallback;
+}
+
 /**
  * Oil & debris monitoring endpoints — the evidence behind an off-wing decision.
  */
@@ -18,7 +23,7 @@ export async function registerOilDebrisRoutes(app: FastifyInstance): Promise<voi
   app.get<{ Querystring: { status?: string; limit?: string } }>("/oil/engines", async (request) => {
     const { status, limit } = request.query;
     const conditions = status ? oilConditions().filter((c) => c.status === status) : oilConditions();
-    return conditions.slice(0, Number(limit ?? 100));
+    return conditions.slice(0, positiveInt(limit, 100));
   });
 
   app.get<{ Params: { engineId: string } }>("/oil/engines/:engineId", async (request, reply) => {
@@ -34,6 +39,6 @@ export async function registerOilDebrisRoutes(app: FastifyInstance): Promise<voi
   });
 
   app.get<{ Querystring: { days?: string; limit?: string } }>("/oil/debris", async (request) =>
-    recentDebrisEvents(Number(request.query.days ?? 30), Number(request.query.limit ?? 40)),
+    recentDebrisEvents(positiveInt(request.query.days, 30), positiveInt(request.query.limit, 40)),
   );
 }
