@@ -394,7 +394,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Dispatch reliability, IFSD rate, MTBUR and unscheduled removals.",
     decision: "Is fleet reliability trending toward or away from target?",
     icon: "chart-line",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "compliance",
