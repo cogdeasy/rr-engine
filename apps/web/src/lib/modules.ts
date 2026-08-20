@@ -298,7 +298,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Inspection findings, imagery and repeat-inspection intervals.",
     decision: "Does the observed damage exceed serviceable limits?",
     icon: "search",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "test-cell",

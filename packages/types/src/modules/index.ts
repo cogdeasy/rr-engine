@@ -31,3 +31,4 @@ export * from "./reliability";
 export * from "./hot-section";
 export * from "./test-cell";
 export * from "./environment";
+export * from "./borescope";

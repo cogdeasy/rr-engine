@@ -21,6 +21,7 @@ import { registerReliabilityRoutes } from "./modules/reliability";
 import { registerHotSectionRoutes } from "./hot-section";
 import { registerTestCellRoutes } from "./modules/test-cell";
 import { registerEnvironmentRoutes } from "./modules/environment";
+import { registerBorescopeRoutes } from "./borescope";
 
 /**
  * Feature-module routes.
@@ -59,4 +60,5 @@ export async function registerModuleRoutes(app: FastifyInstance): Promise<void> 
   await registerHotSectionRoutes(app);
   await registerTestCellRoutes(app);
   await registerEnvironmentRoutes(app);
+  await registerBorescopeRoutes(app);
 }
