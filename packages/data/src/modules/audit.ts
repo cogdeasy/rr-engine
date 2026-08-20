@@ -380,7 +380,8 @@ function configurationRecords(rng: Rng, ctx: Ctx): DraftRecord[] {
   models.forEach((version, index) => {
     const at = iso(addHours(NOW, -rand.float(rng, 48, 1400, 1) - index));
     out.push({
-      id: `AR-CFG-MODEL-${version.replace(/[^a-zA-Z0-9]/g, "")}`,
+      // Index keeps ids unique even for versions differing only in punctuation.
+      id: `AR-CFG-MODEL-${index + 1}-${version.replace(/[^a-zA-Z0-9]/g, "")}`,
       at,
       actor: actorByHandle("prognostics-pipeline"),
       action: "configuration.model-deployed",

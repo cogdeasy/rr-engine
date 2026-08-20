@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import type { AuditCategory, AuditEntityType, AuditRecord } from "@rr/types";
-import { Button, FilterBar, FilterChip, Panel, PanelHeader, SearchInput, cn } from "@rr/ui";
+import { Button, FilterBar, FilterChip, Panel, PanelHeader, SearchInput, cn, formatNumber } from "@rr/ui";
 import { AuditRecordCard } from "./audit-record-card";
 import { CATEGORY_LABELS, ENTITY_LABELS, formatDay } from "./format";
 
@@ -124,7 +124,7 @@ export function AuditExplorer({
     <Panel>
       <PanelHeader
         title="Ledger"
-        subtitle={`Append-only, newest first. ${filtered.length.toLocaleString("en-GB")} of ${records.length.toLocaleString("en-GB")} loaded records match — ledger holds ${totalRecords.toLocaleString("en-GB")}.`}
+        subtitle={`Append-only, newest first. ${formatNumber(filtered.length)} of ${formatNumber(records.length)} loaded records match — ledger holds ${formatNumber(totalRecords)}.`}
         actions={
           filtersActive ? (
             <Button variant="ghost" size="sm" onClick={reset}>

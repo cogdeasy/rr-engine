@@ -31,7 +31,7 @@ export default async function AuditTrailPage({ searchParams }: { searchParams: P
             <h1 className="mt-2 text-3xl font-semibold leading-tight tracking-tight">
               {overdue > 0
                 ? `${overdue} decisions cannot yet be substantiated`
-                : "Every decision in the last 120 days is substantiated"}
+                : "Every decision in the ledger is substantiated"}
             </h1>
             <p className="mt-3 max-w-xl text-sm leading-relaxed text-rr-cloud">
               Who decided what, when, and on what evidence. Every alert disposition, work order state change, sign-off
