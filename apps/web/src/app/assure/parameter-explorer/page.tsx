@@ -32,8 +32,10 @@ export default async function ParameterExplorerPage({
   const top = signals.slice(0, TABLE_ROWS);
   const picks = shortlist(active.id);
   const matrix = correlationMatrix(active.id);
+  // Every row the table can select needs a trace, not just the shortlisted ones.
+  const traceable = [...picks, ...top].map((signal) => signal.parameter.code);
   const traces = Object.fromEntries(
-    picks.map((signal) => [signal.parameter.code, parameterTrace(active.id, signal.parameter.code)]),
+    [...new Set(traceable)].map((code) => [code, parameterTrace(active.id, code)]),
   );
 
   const strong = signals.filter((signal) => Math.abs(signal.correlation) >= SHORTLIST_CORRELATION).length;

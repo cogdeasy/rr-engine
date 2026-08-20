@@ -73,7 +73,12 @@ export function SignalWorkbench({
     setSelected(shortlist[0]?.parameter.code ?? "");
   }, [investigationId, shortlist]);
 
-  const selectedSignal = shortlist.find((signal) => signal.parameter.code === selected) ?? shortlist[0];
+  // Selection comes from the chips, the heatmap or any ranked row, so resolve
+  // against the full sweep rather than the shortlist alone.
+  const selectedSignal =
+    shortlist.find((signal) => signal.parameter.code === selected) ??
+    signals.find((signal) => signal.parameter.code === selected) ??
+    shortlist[0];
 
   const visible = React.useMemo(() => {
     const needle = query.trim().toLowerCase();
