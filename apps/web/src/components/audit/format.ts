@@ -5,38 +5,48 @@ import type { AuditCategory, AuditEntityType } from "@rr/types";
  * parts keeps server and client renders byte-identical regardless of the
  * viewer's timezone.
  */
-const dayFormatter = new Intl.DateTimeFormat("en-GB", {
-  timeZone: "UTC",
-  weekday: "long",
-  day: "numeric",
-  month: "long",
-  year: "numeric",
-});
+const WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const MONTHS = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 
-const timeFormatter = new Intl.DateTimeFormat("en-GB", {
-  timeZone: "UTC",
-  hour: "2-digit",
-  minute: "2-digit",
-  hour12: false,
-});
-
-const shortFormatter = new Intl.DateTimeFormat("en-GB", {
-  timeZone: "UTC",
-  day: "2-digit",
-  month: "short",
-  year: "numeric",
-});
+const pad = (value: number) => String(value).padStart(2, "0");
 
 export function formatDay(iso: string): string {
-  return dayFormatter.format(new Date(iso));
+  const date = new Date(iso);
+  return `${WEEKDAYS[date.getUTCDay()]} ${date.getUTCDate()} ${MONTHS[date.getUTCMonth()]} ${date.getUTCFullYear()}`;
 }
 
 export function formatTimeUtc(iso: string): string {
-  return `${timeFormatter.format(new Date(iso))}Z`;
+  const date = new Date(iso);
+  return `${pad(date.getUTCHours())}:${pad(date.getUTCMinutes())}Z`;
 }
 
 export function formatShortUtc(iso: string): string {
-  return shortFormatter.format(new Date(iso));
+  const date = new Date(iso);
+  return `${pad(date.getUTCDate())} ${MONTHS[date.getUTCMonth()].slice(0, 3)} ${date.getUTCFullYear()}`;
+}
+
+const ISO_LIKE = /^\d{4}-\d{2}-\d{2}T/;
+
+/** Change values are stored verbatim; render timestamps in the ledger's UTC style. */
+export function formatChangeValue(value: string | number | null | undefined): string {
+  if (value === null || value === undefined || value === "") return "—";
+  if (typeof value === "string" && ISO_LIKE.test(value)) {
+    return `${formatShortUtc(value)} ${formatTimeUtc(value)}`;
+  }
+  return String(value);
 }
 
 export function formatAge(hours: number): string {

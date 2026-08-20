@@ -4,7 +4,16 @@ import * as React from "react";
 import Link from "next/link";
 import type { AuditRecord } from "@rr/types";
 import { Badge, StatusPill, cn, statusStyles } from "@rr/ui";
-import { actionLabel, CATEGORY_LABELS, ENTITY_LABELS, formatAge, formatShortUtc, formatTimeUtc, initials } from "./format";
+import {
+  actionLabel,
+  CATEGORY_LABELS,
+  ENTITY_LABELS,
+  formatAge,
+  formatChangeValue,
+  formatShortUtc,
+  formatTimeUtc,
+  initials,
+} from "./format";
 
 const EVIDENCE_LABELS: Record<AuditRecord["evidence"][number]["kind"], string> = {
   telemetry: "Telemetry",
@@ -87,9 +96,9 @@ export function AuditRecordCard({
             {record.changes.slice(0, open ? record.changes.length : 2).map((c) => (
               <span key={c.field} className="rr-numeric inline-flex items-center gap-1 rounded-sm bg-rr-mist px-2 py-0.5 text-[11px] text-rr-slate">
                 <span className="text-rr-ink/70">{c.field}</span>
-                <span className="line-through opacity-60">{c.before ?? "—"}</span>
+                <span className="line-through opacity-60">{formatChangeValue(c.before)}</span>
                 <span aria-hidden>→</span>
-                <span className="font-semibold text-rr-ink">{c.after ?? "—"}</span>
+                <span className="font-semibold text-rr-ink">{formatChangeValue(c.after)}</span>
               </span>
             ))}
             {!open && record.changes.length > 2 ? (
@@ -146,8 +155,8 @@ export function AuditRecordCard({
                     {record.changes.map((c) => (
                       <tr key={c.field} className="border-t border-rr-ink/8">
                         <td className="py-1 pr-2 text-rr-slate">{c.field}</td>
-                        <td className="rr-numeric py-1 pr-2 text-rr-slate">{c.before ?? "—"}</td>
-                        <td className="rr-numeric py-1 font-semibold text-rr-ink">{c.after ?? "—"}</td>
+                        <td className="rr-numeric py-1 pr-2 text-rr-slate">{formatChangeValue(c.before)}</td>
+                        <td className="rr-numeric py-1 font-semibold text-rr-ink">{formatChangeValue(c.after)}</td>
                       </tr>
                     ))}
                   </tbody>

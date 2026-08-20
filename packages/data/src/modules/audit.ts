@@ -339,7 +339,9 @@ function taskCardRecords(rng: Rng, taskCards: TaskCard[], workOrders: WorkOrder[
     const actor = technicianActor(technician, facility ? `${facility.name} (${facility.icao})` : "Rolls-Royce Services");
     const started = wo?.actualStart ?? wo?.scheduledStart ?? wo?.raisedAt ?? iso(NOW);
     const startedAt = new Date(started) > NOW ? new Date(wo?.raisedAt ?? iso(NOW)) : new Date(started);
-    const signOffAt = iso(new Date(Math.min(NOW.getTime(), addHours(startedAt, rand.float(rng, 2, 200, 1)).getTime())));
+    const proposed = addHours(startedAt, rand.float(rng, 2, 200, 1));
+    // Sign-offs cannot be recorded in the future; fall back into the recent past.
+    const signOffAt = iso(proposed > NOW ? addHours(NOW, -rand.float(rng, 1, 96, 1)) : proposed);
     const actualHours = Math.round((card.estimatedHours * rand.float(rng, 0.7, 1.45, 3)) * 10) / 10;
     const hoursOver = actualHours - card.estimatedHours;
     out.push({

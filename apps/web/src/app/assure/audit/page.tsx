@@ -24,7 +24,7 @@ export default async function AuditTrailPage({ searchParams }: { searchParams: P
 
   return (
     <div className="space-y-7">
-      <section className="rr-hero-gradient rr-grid-lines relative overflow-hidden rounded-sm px-8 py-9 text-white">
+      <section className="rr-hero-gradient relative overflow-hidden rounded-sm px-8 py-9 text-white">
         <div className="relative flex flex-wrap items-end justify-between gap-8">
           <div className="max-w-2xl">
             <p className="rr-label text-rr-blue-200">Assure · Audit trail</p>
@@ -147,7 +147,7 @@ export default async function AuditTrailPage({ searchParams }: { searchParams: P
             <ul className="divide-y divide-rr-ink/8">
               {attention.map(({ record, reason, ageHours }) => (
                 <li key={record.id} className="flex flex-wrap items-start justify-between gap-4 py-3">
-                  <div className="min-w-0">
+                  <div className="min-w-0 flex-1 basis-[24rem]">
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="text-[13px] font-semibold text-rr-ink">{actionLabel(record.action)}</span>
                       <Badge variant="outline">{CATEGORY_LABELS[record.category]}</Badge>
