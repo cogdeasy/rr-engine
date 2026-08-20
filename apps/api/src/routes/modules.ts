@@ -33,6 +33,7 @@ import { registerSimulationRoutes } from "./modules/simulation";
 import { registerEngineDetailRoutes } from "./engine-detail";
 import { registerCostsRoutes } from "./modules/costs";
 import { registerChangePackRoutes } from "./change-packs";
+import { registerEhmFactoryRoutes } from "./ehm-factory";
 
 /**
  * Feature-module routes.
@@ -89,4 +90,5 @@ export async function registerModuleRoutes(app: FastifyInstance): Promise<void> 
   await registerEngineDetailRoutes(app);
   await registerCostsRoutes(app);
   await registerChangePackRoutes(app);
+  await registerEhmFactoryRoutes(app);
 }

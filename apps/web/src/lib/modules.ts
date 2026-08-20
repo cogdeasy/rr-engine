@@ -436,6 +436,16 @@ export const MODULES: ModuleDefinition[] = [
     icon: "badge-check",
     implemented: true,
   },
+  {
+    id: "ehm-factory",
+    group: "assure",
+    label: "EHM analytics factory",
+    href: "/assure/ehm-factory",
+    summary: "DN development cycle time, analytic noise and disruption avoided across both data strands.",
+    decision: "Where is analytic development time going, and which analytics are too noisy to trust?",
+    icon: "chart-line",
+    implemented: true,
+  },
 
   // Platform
   {
