@@ -24,3 +24,4 @@ export * from "./performance";
 export * from "./risk";
 export * from "./audit";
 export * from "./inventory";
+export * from "./supply-chain";

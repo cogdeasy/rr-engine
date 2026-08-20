@@ -340,7 +340,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Supplier lead times, purchase order status and shortage risk.",
     decision: "Which shortages will delay a shop visit in the next 90 days?",
     icon: "truck",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "warranty",
