@@ -97,7 +97,7 @@ export interface FleetPerformanceSummary {
   meanSfcDeviationPct: number;
   annualFuelPenaltyUsd: number;
   annualCo2PenaltyTonnes: number;
-  /** Portion of the penalty a wash programme would recover. */
+  /** Portion of the penalty washing could recover across the whole fleet, whether or not the wash is economic. */
   recoverableUsd: number;
   recoverableCo2Tonnes: number;
   recoverableFuelKg: number;

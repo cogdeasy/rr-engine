@@ -168,7 +168,9 @@ function washCaseFor(
     rationale = "Marginal gain — keep on trend watch and revisit after the next 200 cycles.";
   } else {
     recommendation = "not-worthwhile";
-    status = "grey";
+    // Green, not grey: grey is reserved for "no data", and this is a data-backed
+    // verdict that no wash action is needed.
+    status = "green";
     rationale = "Deterioration is hardware-driven; washing would not repay the downtime.";
   }
 

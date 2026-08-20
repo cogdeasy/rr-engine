@@ -20,9 +20,11 @@ export async function registerPerformanceRoutes(app: FastifyInstance): Promise<v
       let rows = getFleetPerformance();
       if (recommendation) rows = rows.filter((r) => r.washCase.recommendation === recommendation);
       if (operatorId) rows = rows.filter((r) => r.operatorId === operatorId);
+      const parsedLimit = Number(limit);
+      const take = Number.isFinite(parsedLimit) && parsedLimit > 0 ? Math.floor(parsedLimit) : rows.length;
       return {
         summary: getFleetPerformanceSummary(),
-        items: limit ? rows.slice(0, Number(limit)) : rows,
+        items: rows.slice(0, take),
         total: rows.length,
       };
     },

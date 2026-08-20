@@ -16,12 +16,6 @@ const CAUSE_FILL: Record<DeteriorationSlice["cause"], string> = {
   seals: "bg-rr-cloud",
 };
 
-const CAUSE_SWATCH: Record<DeteriorationSlice["cause"], string> = {
-  fouling: "bg-rr-blue",
-  "hot-section": "bg-rr-navy-500",
-  seals: "bg-rr-cloud",
-};
-
 export function DeteriorationSplitBar({
   slices,
   height = 8,
@@ -54,7 +48,7 @@ export function DeteriorationLegend({ slices, className }: { slices: Deteriorati
       {slices.map((slice) => (
         <li key={slice.cause} className="flex items-center justify-between gap-3 text-xs">
           <span className="flex items-center gap-2 text-rr-slate">
-            <span className={cn("h-2 w-2 shrink-0 rounded-full", CAUSE_SWATCH[slice.cause])} aria-hidden />
+            <span className={cn("h-2 w-2 shrink-0 rounded-full", CAUSE_FILL[slice.cause])} aria-hidden />
             {slice.label}
           </span>
           <span className="flex items-baseline gap-2">
@@ -109,8 +103,15 @@ export function RecoveryBar({
         </span>
       </div>
       <div className="relative h-2 w-full overflow-hidden rounded-full bg-rr-mist">
-        <div className="absolute inset-y-0 left-0 bg-rr-navy-500/30" style={{ width: `${pct(before)}%` }} />
-        <div className="absolute inset-y-0 left-0 bg-rr-blue" style={{ width: `${pct(after)}%` }} />
+        {/* Wider band first so the shorter one stays visible whichever direction is better. */}
+        {[
+          { width: pct(before), fill: "bg-rr-navy-500/30" },
+          { width: pct(after), fill: "bg-rr-blue" },
+        ]
+          .sort((a, b) => b.width - a.width)
+          .map((band) => (
+            <div key={band.fill} className={cn("absolute inset-y-0 left-0", band.fill)} style={{ width: `${band.width}%` }} />
+          ))}
       </div>
     </div>
   );
