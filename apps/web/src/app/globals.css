@@ -1,0 +1,21 @@
+@import "tailwindcss";
+@import "@rr/ui/theme.css";
+
+/* Tailwind v4 scans source outside the app directory only when told to. */
+@source "../../../../packages/ui/src";
+@source "../../src";
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background-color: var(--color-rr-mist);
+  color: var(--color-rr-ink);
+}
+
+::selection {
+  background-color: var(--color-rr-blue);
+  color: #ffffff;
+}
