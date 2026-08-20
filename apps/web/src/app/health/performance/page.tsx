@@ -258,7 +258,7 @@ export default function PerformancePage() {
           </thead>
           <tbody>
             {operators.map((operator) => {
-              const worst = operators[0]?.annualFuelPenaltyUsd ?? 1;
+              const worst = operators[0]?.annualFuelPenaltyUsd || 1;
               const status =
                 operator.meanSfcDeviationPct >= PERFORMANCE_THRESHOLDS.redSfcDeviationPct
                   ? "red"
