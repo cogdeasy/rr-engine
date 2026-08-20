@@ -227,7 +227,7 @@ export function CapacityWorkspace({ overview }: { overview: CapacityOverview }) 
               title={`${facility.name} — induction queue`}
               subtitle={
                 month
-                  ? `Filtered context: ${overview.months.find((m) => m.key === month)?.label ?? month}`
+                  ? `Full queue — ${overview.months.find((m) => m.key === month)?.label ?? month} highlighted in the shop detail`
                   : "Slots in date order, worst slip first when sorted"
               }
               actions={<StatusPill status={facility.status}>{facility.icao}</StatusPill>}
