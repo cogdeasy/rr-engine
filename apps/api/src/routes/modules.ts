@@ -32,6 +32,7 @@ import { registerLlpRoutes } from "./llp";
 import { registerSimulationRoutes } from "./modules/simulation";
 import { registerEngineDetailRoutes } from "./engine-detail";
 import { registerCostsRoutes } from "./modules/costs";
+import { registerChangePackRoutes } from "./change-packs";
 
 /**
  * Feature-module routes.
@@ -87,4 +88,5 @@ export async function registerModuleRoutes(app: FastifyInstance): Promise<void> 
   await registerTaskCardRoutes(app);
   await registerEngineDetailRoutes(app);
   await registerCostsRoutes(app);
+  await registerChangePackRoutes(app);
 }

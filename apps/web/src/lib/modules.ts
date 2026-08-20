@@ -426,6 +426,16 @@ export const MODULES: ModuleDefinition[] = [
     icon: "download",
     implemented: true,
   },
+  {
+    id: "change-packs",
+    group: "assure",
+    label: "DN change packs",
+    href: "/assure/change-packs",
+    summary: "End-to-end DN lifecycle: Design, Build and Release with Definition of Done and gate sign-off.",
+    decision: "Which analytic change packs are held at a gate, and what is outstanding?",
+    icon: "badge-check",
+    implemented: true,
+  },
 
   // Platform
   {
