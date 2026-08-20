@@ -3,6 +3,7 @@ import { registerContractRoutes } from "./contracts";
 import { registerAlertRoutes } from "./alerts";
 import { registerNotificationRoutes } from "./notifications";
 import { registerEngineExplorerRoutes } from "./engine-explorer";
+import { registerReportsRoutes } from "./modules/reports";
 
 /**
  * Feature-module routes.
@@ -19,4 +20,5 @@ export async function registerModuleRoutes(app: FastifyInstance): Promise<void> 
   await registerAlertRoutes(app);
   await registerNotificationRoutes(app);
   await registerEngineExplorerRoutes(app);
+  await registerReportsRoutes(app);
 }

@@ -424,7 +424,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Scheduled fleet reports and data exports for customers and audits.",
     decision: "What goes into this month's customer review pack?",
     icon: "download",
-    implemented: false,
+    implemented: true,
   },
 
   // Platform
