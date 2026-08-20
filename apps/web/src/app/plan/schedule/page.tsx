@@ -32,9 +32,14 @@ export default function Page() {
             </p>
           </div>
           <div className="flex flex-wrap gap-8">
-            <HeroStat label="Unscheduled" value={kpis.unscheduledRed} tone="red" caption="no slot before RUL" />
+            <HeroStat label="Unscheduled" value={kpis.unscheduledRed} tone={kpis.unscheduledRed > 0 ? "red" : "green"} caption="no slot before RUL" />
             <HeroStat label="Capacity breaches" value={kpis.capacityConflicts} tone={kpis.capacityConflicts > 0 ? "red" : "green"} caption="shop months over capacity" />
-            <HeroStat label="Availability at risk" value={`${kpis.availabilityAtRiskPct}%`} tone="amber" caption="of managed engines" />
+            <HeroStat
+              label="Availability at risk"
+              value={`${kpis.availabilityAtRiskPct}%`}
+              tone={kpis.availabilityAtRiskPct >= 10 ? "red" : kpis.availabilityAtRiskPct > 0 ? "amber" : "green"}
+              caption="of managed engines"
+            />
           </div>
         </div>
       </section>
