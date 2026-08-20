@@ -18,10 +18,10 @@ import {
  * same document, including a ready-to-attach CSV.
  */
 export async function registerReportsRoutes(app: FastifyInstance): Promise<void> {
-  app.get("/reports/catalogue", async () => ({
-    reports: REPORT_DEFINITIONS,
-    overview: reportsOverview(buildReportFacts(), listScheduledReports()),
-  }));
+  app.get("/reports/catalogue", async () => {
+    const facts = buildReportFacts();
+    return { reports: REPORT_DEFINITIONS, overview: reportsOverview(facts, listScheduledReports(facts)) };
+  });
 
   app.get("/reports/schedules", async () => ({ schedules: listScheduledReports() }));
 

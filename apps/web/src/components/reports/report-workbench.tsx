@@ -57,7 +57,7 @@ export function ReportWorkbench({
     anchor.href = url;
     anchor.download = reportFileName(doc);
     anchor.click();
-    URL.revokeObjectURL(url);
+    setTimeout(() => URL.revokeObjectURL(url), 0);
   }
 
   return (

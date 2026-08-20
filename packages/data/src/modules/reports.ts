@@ -254,8 +254,7 @@ export function buildReportFacts(): ReportFacts {
         status: l.status,
       };
     })
-    .sort((a, b) => a.cyclesRemaining - b.cyclesRemaining)
-    .slice(0, 120);
+    .sort((a, b) => a.cyclesRemaining - b.cyclesRemaining);
 
   const monthKey = new Map<string, ReportFlightMonthFact>();
   for (const flight of d.flights) {
@@ -762,7 +761,15 @@ function reliabilityKpiSection(facts: ReportFacts, s: ScopedFacts): ReportSectio
     metrics: [
       ...facts.kpis
         .filter((k) => wanted.includes(k.id))
-        .map((k) => metric(k.label, num(k.value, k.value < 1 ? 3 : 0), k.status, `Target ${num(k.target, k.target < 1 ? 3 : 0)} ${k.unit}`, k.unit)),
+        .map((k) =>
+          metric(
+            k.label,
+            num(k.value, k.unit === "%" ? 2 : k.value < 1 ? 3 : 0),
+            k.status,
+            `Target ${num(k.target, k.unit === "%" ? 2 : k.target < 1 ? 3 : 0)} ${k.unit}`,
+            k.unit,
+          ),
+        ),
       metric("Removals in period", num(removals), removals > 6 ? "amber" : "green", "Shop visits and module swaps"),
     ],
     colourNote: "Indicator colour is the platform KPI status: red where the measure is outside its contractual target.",
