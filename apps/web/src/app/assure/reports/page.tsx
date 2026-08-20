@@ -125,7 +125,7 @@ export default function Page() {
           {actions.map((action) => (
             <li
               key={`${action.id}-${action.title}`}
-              className={cn("rounded-sm border border-rr-ink/8 border-l-2 bg-white px-4 py-3", statusStyles[action.status].border.replace("border-", "border-l-"))}
+              className={cn("rounded-sm border border-rr-ink/8 border-l-2 bg-surface px-4 py-3", statusStyles[action.status].border.replace("border-", "border-l-"))}
             >
               <div className="flex items-start justify-between gap-3">
                 <p className="text-[13px] font-semibold text-rr-ink">{action.title}</p>

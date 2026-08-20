@@ -11,13 +11,13 @@ export function TrendArrow({ trend, good }: { trend: Trend; good?: boolean }) {
 export function KpiTile({ kpi, className }: { kpi: KpiSnapshot; className?: string }) {
   const dp = Math.abs(kpi.value) < 10 && !Number.isInteger(kpi.value) ? 3 : kpi.unit === "%" ? 2 : 0;
   return (
-    <div className={cn("rr-panel flex flex-col gap-3 p-4", className)}>
+    <div className={cn("rr-panel flex flex-col gap-4 p-5", className)}>
       <div className="flex items-start justify-between gap-2">
         <span className="rr-label text-rr-slate">{kpi.label}</span>
         <span className={cn("h-1.5 w-1.5 rounded-full", statusStyles[kpi.status].dot)} aria-label={kpi.status} />
       </div>
       <div className="flex items-baseline gap-1.5">
-        <span className={cn("rr-numeric text-3xl font-semibold tracking-tight", statusStyles[kpi.status].text)}>
+        <span className={cn("rr-numeric text-[2.5rem] font-semibold leading-none tracking-tight", statusStyles[kpi.status].text)}>
           {formatNumber(kpi.value, dp)}
         </span>
         <span className="text-xs font-medium text-rr-slate">{kpi.unit}</span>
@@ -54,13 +54,13 @@ export function StatTile({
   className?: string;
 }) {
   return (
-    <div className={cn("rr-panel p-4", className)}>
+    <div className={cn("rr-panel p-5", className)}>
       <p className="rr-label text-rr-slate">{label}</p>
-      <p className={cn("rr-numeric mt-2 text-3xl font-semibold", status === "grey" ? "text-rr-ink" : statusStyles[status].text)}>
+      <p className={cn("rr-numeric mt-3 text-[2.5rem] font-semibold leading-none", status === "grey" ? "text-rr-ink" : statusStyles[status].text)}>
         {value}
-        {unit ? <span className="ml-1 text-sm font-medium text-rr-slate">{unit}</span> : null}
+        {unit ? <span className="ml-1.5 text-sm font-medium text-rr-slate">{unit}</span> : null}
       </p>
-      {caption ? <p className="mt-1 text-[11px] text-rr-slate">{caption}</p> : null}
+      {caption ? <p className="mt-3 text-[11px] leading-relaxed text-rr-slate">{caption}</p> : null}
     </div>
   );
 }

@@ -121,7 +121,7 @@ export default function ContractsPage() {
             {watchlist.map((position) => (
               <article
                 key={position.contract.id}
-                className={cn("rounded-sm border-l-2 bg-white p-4 ring-1 ring-rr-ink/8", statusStyles[position.status].dot.replace("bg-", "border-l-"))}
+                className={cn("rounded-sm border-l-2 bg-surface p-4 ring-1 ring-rr-ink/8", statusStyles[position.status].dot.replace("bg-", "border-l-"))}
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>

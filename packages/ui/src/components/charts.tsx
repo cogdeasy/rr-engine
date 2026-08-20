@@ -38,7 +38,7 @@ export function Sparkline({
       return `${i === 0 ? "M" : "L"}${x.toFixed(2)},${y.toFixed(2)}`;
     })
     .join(" ");
-  const stroke = { red: "#d81e2b", amber: "#f08c00", green: "#0a8754", grey: "#6b7089" }[status];
+  const stroke = { red: "#ff5f6d", amber: "#ffb43d", green: "#2fd39b", grey: "#8f96bb" }[status];
   return (
     <svg viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" className={cn("w-full", className)} style={{ height }}>
       <path d={path} fill="none" stroke={stroke} strokeWidth={1.6} vectorEffect="non-scaling-stroke" />
@@ -72,12 +72,12 @@ export function TrendChart({
       <svg viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" className="w-full" style={{ height }}>
         <defs>
           <linearGradient id={`grad-${series.id}`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#10069f" stopOpacity="0.22" />
-            <stop offset="100%" stopColor="#10069f" stopOpacity="0" />
+            <stop offset="0%" stopColor="#6a63ff" stopOpacity="0.22" />
+            <stop offset="100%" stopColor="#6a63ff" stopOpacity="0" />
           </linearGradient>
         </defs>
         {[0.25, 0.5, 0.75].map((f) => (
-          <line key={f} x1={0} x2={width} y1={height * f} y2={height * f} stroke="#05061f" strokeOpacity={0.06} strokeWidth={1} />
+          <line key={f} x1={0} x2={width} y1={height * f} y2={height * f} stroke="#e7eaf8" strokeOpacity={0.132} strokeWidth={1} />
         ))}
         {showThresholds && series.amberThreshold !== undefined && series.amberThreshold > min && series.amberThreshold < max ? (
           <line
@@ -85,7 +85,7 @@ export function TrendChart({
             x2={width}
             y1={toY(series.amberThreshold)}
             y2={toY(series.amberThreshold)}
-            stroke="#f08c00"
+            stroke="#ffb43d"
             strokeDasharray="6 4"
             strokeWidth={1.2}
           />
@@ -96,13 +96,13 @@ export function TrendChart({
             x2={width}
             y1={toY(series.redThreshold)}
             y2={toY(series.redThreshold)}
-            stroke="#d81e2b"
+            stroke="#ff5f6d"
             strokeDasharray="6 4"
             strokeWidth={1.2}
           />
         ) : null}
         <path d={area} fill={`url(#grad-${series.id})`} />
-        <path d={line} fill="none" stroke="#10069f" strokeWidth={1.8} vectorEffect="non-scaling-stroke" />
+        <path d={line} fill="none" stroke="#6a63ff" strokeWidth={1.8} vectorEffect="non-scaling-stroke" />
       </svg>
       <div className="mt-1 flex justify-between text-[11px] text-rr-slate">
         <span>{new Date(points[0]!.t).toLocaleDateString("en-GB", { month: "short", year: "2-digit" })}</span>
@@ -132,7 +132,7 @@ export function Gauge({
   const pct = Math.max(0, Math.min(1, value / max));
   const radius = size / 2 - 8;
   const circumference = Math.PI * radius * 2 * 0.75;
-  const stroke = { red: "#d81e2b", amber: "#f08c00", green: "#0a8754", grey: "#6b7089" }[status];
+  const stroke = { red: "#ff5f6d", amber: "#ffb43d", green: "#2fd39b", grey: "#8f96bb" }[status];
   return (
     <div className="flex flex-col items-center" style={{ width: size }}>
       <svg width={size} height={size * 0.78} viewBox={`0 0 ${size} ${size * 0.78}`}>
@@ -140,7 +140,7 @@ export function Gauge({
           <circle
             r={radius}
             fill="none"
-            stroke="#eef0f5"
+            stroke="#232a52"
             strokeWidth={8}
             strokeLinecap="round"
             strokeDasharray={`${circumference} ${circumference * 2}`}
@@ -154,7 +154,7 @@ export function Gauge({
             strokeDasharray={`${circumference * pct} ${circumference * 2}`}
           />
         </g>
-        <text x={size / 2} y={size / 2} textAnchor="middle" className="rr-numeric" fontSize={size * 0.22} fontWeight={600} fill="#05061f">
+        <text x={size / 2} y={size / 2} textAnchor="middle" className="rr-numeric" fontSize={size * 0.22} fontWeight={600} fill="#e7eaf8">
           {Math.round(value)}
         </text>
       </svg>

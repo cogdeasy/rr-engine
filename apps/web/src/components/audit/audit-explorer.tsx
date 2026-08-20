@@ -164,7 +164,7 @@ export function AuditExplorer({
               id="audit-entity-type"
               value={entityType}
               onChange={(event) => setEntityType(event.target.value as AuditEntityType | "all")}
-              className="h-8 rounded-full border border-rr-ink/12 bg-white px-3 text-xs text-rr-ink focus:border-rr-blue focus:outline-none"
+              className="h-8 rounded-full border border-rr-ink/12 bg-surface px-3 text-xs text-rr-ink focus:border-rr-blue focus:outline-none"
             >
               <option value="all">All types</option>
               {(Object.keys(ENTITY_LABELS) as AuditEntityType[]).map((type) => (
@@ -180,7 +180,7 @@ export function AuditExplorer({
               id="audit-actor"
               value={actorHandle}
               onChange={(event) => setActorHandle(event.target.value)}
-              className="h-8 max-w-56 rounded-full border border-rr-ink/12 bg-white px-3 text-xs text-rr-ink focus:border-rr-blue focus:outline-none"
+              className="h-8 max-w-56 rounded-full border border-rr-ink/12 bg-surface px-3 text-xs text-rr-ink focus:border-rr-blue focus:outline-none"
             >
               <option value="all">All actors</option>
               {actorOptions.map((actor) => (

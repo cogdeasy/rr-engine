@@ -12,9 +12,9 @@ import { cn } from "../../utils";
  */
 
 const TRACES = [
-  { key: "consumption", colour: "#10069f", label: "Oil consumption" },
-  { key: "vibration", colour: "#00a3d3", label: "Vibration N3" },
-  { key: "egtMargin", colour: "#7b4bd8", label: "EGT margin" },
+  { key: "consumption", colour: "#6a63ff", label: "Oil consumption" },
+  { key: "vibration", colour: "#35c8ff", label: "Vibration N3" },
+  { key: "egtMargin", colour: "#b07cff", label: "EGT margin" },
 ] as const;
 
 type TraceKey = (typeof TRACES)[number]["key"];
@@ -97,14 +97,14 @@ export function OilCorrelationChart({
         aria-label="Oil consumption, vibration and EGT margin against a common timeline with debris indications"
       >
         {[0.25, 0.5, 0.75].map((f) => (
-          <line key={f} x1={0} x2={width} y1={plotHeight * f} y2={plotHeight * f} stroke="#05061f" strokeOpacity={0.06} strokeWidth={1} />
+          <line key={f} x1={0} x2={width} y1={plotHeight * f} y2={plotHeight * f} stroke="#e7eaf8" strokeOpacity={0.132} strokeWidth={1} />
         ))}
-        <line x1={0} x2={width} y1={plotHeight} y2={plotHeight} stroke="#05061f" strokeOpacity={0.12} strokeWidth={1} />
+        <line x1={0} x2={width} y1={plotHeight} y2={plotHeight} stroke="#e7eaf8" strokeOpacity={0.264} strokeWidth={1} />
 
         {stepX !== null ? (
           <g>
-            <rect x={stepX} y={0} width={Math.max(0, width - stepX)} height={plotHeight} fill="#d81e2b" opacity={0.045} />
-            <line x1={stepX} x2={stepX} y1={0} y2={height} stroke="#d81e2b" strokeWidth={1.4} strokeDasharray="5 4" />
+            <rect x={stepX} y={0} width={Math.max(0, width - stepX)} height={plotHeight} fill="#ff5f6d" opacity={0.045} />
+            <line x1={stepX} x2={stepX} y1={0} y2={height} stroke="#ff5f6d" strokeWidth={1.4} strokeDasharray="5 4" />
           </g>
         ) : null}
 
@@ -129,7 +129,7 @@ export function OilCorrelationChart({
               y={height - barHeight}
               width={3}
               height={barHeight}
-              fill={point.v >= maxDebris * 0.6 ? "#d81e2b" : "#f08c00"}
+              fill={point.v >= maxDebris * 0.6 ? "#ff5f6d" : "#ffb43d"}
               rx={1}
             />
           );

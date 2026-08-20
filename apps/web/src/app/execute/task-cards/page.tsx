@@ -48,7 +48,7 @@ export default function TaskCardsPage() {
     <div className="space-y-7">
       <section
         className="rr-hero-gradient relative overflow-hidden rounded-sm px-8 py-8 text-white"
-        style={{ backgroundColor: "#05061f" }}
+        style={{ backgroundColor: "#05061a" }}
       >
         <div className="rr-grid-lines pointer-events-none absolute inset-0" aria-hidden />
         <div className="relative flex flex-wrap items-end justify-between gap-8">

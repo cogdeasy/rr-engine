@@ -294,7 +294,7 @@ export function WorkOrdersConsole({ views, stages, blockers, priorityQueue }: Wo
               id="wo-facility"
               value={facility}
               onChange={(event) => setFacility(event.target.value)}
-              className="h-8 rounded-full border border-rr-ink/12 bg-white px-3 text-xs text-rr-ink focus:border-rr-blue focus:outline-none"
+              className="h-8 rounded-full border border-rr-ink/12 bg-surface px-3 text-xs text-rr-ink focus:border-rr-blue focus:outline-none"
             >
               <option value="all">All facilities</option>
               {facilities.map((icao) => (

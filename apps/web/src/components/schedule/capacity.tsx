@@ -32,7 +32,7 @@ export function FacilityCapacityGrid({
       <table className="w-full border-separate border-spacing-0 text-xs">
         <thead>
           <tr>
-            <th className="rr-label sticky left-0 z-10 bg-white py-2 pr-3 text-left text-rr-slate">Facility</th>
+            <th className="rr-label sticky left-0 z-10 bg-surface py-2 pr-3 text-left text-rr-slate">Facility</th>
             {months.map((month) => (
               <th key={month.index} className="rr-label px-0 pb-2 text-center text-[9px] text-rr-slate">
                 {month.index % 3 === 0 ? month.label : ""}
@@ -44,7 +44,7 @@ export function FacilityCapacityGrid({
         <tbody>
           {rows.map((row) => (
             <tr key={row.facilityId}>
-              <td className="sticky left-0 z-10 bg-white py-1 pr-3">
+              <td className="sticky left-0 z-10 bg-surface py-1 pr-3">
                 <button
                   type="button"
                   onClick={() => onSelectFacility(selectedFacilityId === row.facilityId ? null : row.facilityId)}

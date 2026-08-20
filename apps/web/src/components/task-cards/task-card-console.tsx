@@ -233,7 +233,7 @@ export function TaskCardConsole({
             id="task-card-facility"
             value={facilityId}
             onChange={(event) => setFacilityId(event.target.value)}
-            className="h-8 rounded-full border border-rr-ink/12 bg-white px-3 text-xs text-rr-ink focus:border-rr-blue focus:outline-none"
+            className="h-8 rounded-full border border-rr-ink/12 bg-surface px-3 text-xs text-rr-ink focus:border-rr-blue focus:outline-none"
           >
             <option value="all">All facilities</option>
             {facilities.map((facility) => (
@@ -249,7 +249,7 @@ export function TaskCardConsole({
             id="task-card-skill"
             value={skill}
             onChange={(event) => setSkill(event.target.value)}
-            className="h-8 rounded-full border border-rr-ink/12 bg-white px-3 text-xs text-rr-ink focus:border-rr-blue focus:outline-none"
+            className="h-8 rounded-full border border-rr-ink/12 bg-surface px-3 text-xs text-rr-ink focus:border-rr-blue focus:outline-none"
           >
             <option value="all">All skills</option>
             {skills.map((item) => (

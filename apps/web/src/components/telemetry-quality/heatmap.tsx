@@ -187,7 +187,7 @@ export function TelemetryHeatmap({
                       selected?.engineId === row.engineId && "bg-rr-blue-50/60",
                     )}
                   >
-                    <th scope="row" className="sticky left-0 z-10 bg-white px-4 py-1.5 text-left font-normal">
+                    <th scope="row" className="sticky left-0 z-10 bg-surface px-4 py-1.5 text-left font-normal">
                       <button
                         type="button"
                         onClick={() => setSelectedId(row.engineId)}
@@ -211,7 +211,7 @@ export function TelemetryHeatmap({
                           className={cn(
                             "block h-6 w-full rounded-[2px]",
                             CELL_TONE[cell.status],
-                            !cell.fitted && "bg-[repeating-linear-gradient(45deg,#c9cbe0,#c9cbe0_2px,#eceefb_2px,#eceefb_4px)]",
+                            !cell.fitted && "bg-[repeating-linear-gradient(45deg,#c9cbe0,#c9cbe0_2px,#1a1f45_2px,#1a1f45_4px)]",
                           )}
                         >
                           <span className="sr-only">{cellTitle(row, cell)}</span>
@@ -237,7 +237,7 @@ export function TelemetryHeatmap({
           <LegendSwatch tone="bg-status-green/70" label="Nominal" />
           <LegendSwatch tone="bg-rr-cloud" label="No data" />
           <LegendSwatch
-            tone="bg-[repeating-linear-gradient(45deg,#c9cbe0,#c9cbe0_2px,#eceefb_2px,#eceefb_4px)]"
+            tone="bg-[repeating-linear-gradient(45deg,#c9cbe0,#c9cbe0_2px,#1a1f45_2px,#1a1f45_4px)]"
             label="Sensor not fitted"
           />
         </div>

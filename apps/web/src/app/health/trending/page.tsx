@@ -15,7 +15,7 @@ const HERO_SURFACE: React.CSSProperties = {
     "linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px)",
     "linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px)",
     "radial-gradient(120% 100% at 80% 0%, rgba(59, 50, 194, 0.55) 0%, rgba(11, 13, 51, 0) 60%)",
-    "linear-gradient(160deg, #0b0d33 0%, #05061f 60%, #10069f 240%)",
+    "linear-gradient(155deg, #131a4d 0%, #0a0d2e 45%, #05061a 100%)",
   ].join(", "),
   backgroundSize: "48px 48px, 48px 48px, auto, auto",
 };
@@ -45,7 +45,7 @@ export default function Page() {
 
   return (
     <div className="space-y-7">
-      <section className="relative overflow-hidden rounded-sm bg-rr-ink px-8 py-9 text-white" style={HERO_SURFACE}>
+      <section className="relative overflow-hidden rounded-sm bg-rr-abyss px-8 py-9 text-white" style={HERO_SURFACE}>
         <div className="relative flex flex-wrap items-end justify-between gap-8">
           <div className="max-w-2xl">
             <p className="rr-label text-rr-blue-200">Diagnose · Health trending</p>

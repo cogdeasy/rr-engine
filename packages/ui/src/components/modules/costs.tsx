@@ -9,20 +9,20 @@ import { cn } from "../../utils";
  */
 
 const STATUS_FILL: Record<StatusLevel, string> = {
-  red: "#d81e2b",
-  amber: "#f08c00",
-  green: "#0a8754",
-  grey: "#6b7089",
+  red: "#ff5f6d",
+  amber: "#ffb43d",
+  green: "#2fd39b",
+  grey: "#8f96bb",
 };
 
-const RR_BLUE = "#10069f";
+const RR_BLUE = "#6a63ff";
 
 export const COST_CATEGORY_FILL: Record<string, string> = {
-  labour: "#10069f",
+  labour: "#6a63ff",
   materials: "#3f37c9",
   llp: "#6b74d8",
   transport: "#9aa1e6",
-  penalties: "#7b4bd8",
+  penalties: "#b07cff",
 };
 
 function money(value: number, dp = 0): string {
@@ -71,7 +71,7 @@ export function CostBridgeChart({
     <div className={cn("w-full", className)}>
       <svg viewBox={`0 0 ${width} ${height}`} className="w-full" style={{ height }} role="img" aria-label="Cost per engine flight hour bridge">
         {[0, 0.25, 0.5, 0.75, 1].map((f) => (
-          <line key={f} x1={0} x2={width} y1={plot * f} y2={plot * f} stroke="#05061f" strokeOpacity={0.07} strokeWidth={1} />
+          <line key={f} x1={0} x2={width} y1={plot * f} y2={plot * f} stroke="#e7eaf8" strokeOpacity={0.154} strokeWidth={1} />
         ))}
         {steps.map((step, index) => {
           const centre = slot * index + slot / 2;
@@ -101,7 +101,7 @@ export function CostBridgeChart({
                   x2={x}
                   y1={y(previous.end)}
                   y2={y(previous.end)}
-                  stroke="#05061f"
+                  stroke="#e7eaf8"
                   strokeOpacity={0.25}
                   strokeDasharray="3 3"
                   strokeWidth={1}
@@ -114,7 +114,7 @@ export function CostBridgeChart({
                 textAnchor="middle"
                 fontSize={12}
                 fontWeight={600}
-                fill={isTotal ? "#05061f" : fill}
+                fill={isTotal ? "#e7eaf8" : fill}
                 className="rr-numeric"
               >
                 {isTotal
@@ -126,7 +126,7 @@ export function CostBridgeChart({
               <text x={centre} y={plot + 16} textAnchor="middle" fontSize={10.5} fill="#4b5068">
                 {step.label.length > 18 ? `${step.label.slice(0, 17)}…` : step.label}
               </text>
-              <text x={centre} y={plot + 29} textAnchor="middle" fontSize={9.5} fill="#8b90a4">
+              <text x={centre} y={plot + 29} textAnchor="middle" fontSize={9.5} fill="#8f96bb">
                 {isTotal ? "USD/EFH" : step.category ? "category" : "volume"}
               </text>
             </g>
@@ -189,11 +189,11 @@ export function CostForecastChart({
     <div className={cn("w-full", className)}>
       <svg viewBox={`0 0 ${width} ${height}`} className="w-full" style={{ height }} role="img" aria-label="Unit cost forecast against plan">
         {[0.25, 0.5, 0.75].map((f) => (
-          <line key={f} x1={0} x2={width} y1={plot * f} y2={plot * f} stroke="#05061f" strokeOpacity={0.06} strokeWidth={1} />
+          <line key={f} x1={0} x2={width} y1={plot * f} y2={plot * f} stroke="#e7eaf8" strokeOpacity={0.132} strokeWidth={1} />
         ))}
         <path d={band} fill={RR_BLUE} fillOpacity={0.1} />
-        <line x1={0} x2={width} y1={y(budget)} y2={y(budget)} stroke="#0a8754" strokeDasharray="6 4" strokeWidth={1.4} />
-        <text x={6} y={y(budget) - 6} fontSize={10} fill="#0a8754" className="rr-numeric">
+        <line x1={0} x2={width} y1={y(budget)} y2={y(budget)} stroke="#2fd39b" strokeDasharray="6 4" strokeWidth={1.4} />
+        <text x={6} y={y(budget) - 6} fontSize={10} fill="#2fd39b" className="rr-numeric">
           PLAN {money(budget, 0)} USD/EFH
         </text>
         <path d={actualPath} fill="none" stroke={RR_BLUE} strokeWidth={2} />
@@ -205,12 +205,12 @@ export function CostForecastChart({
         )}
         {series.map((point, index) =>
           index % 3 === 0 ? (
-            <text key={`l-${point.label}`} x={x(index)} y={plot + 17} textAnchor="middle" fontSize={10} fill="#8b90a4">
+            <text key={`l-${point.label}`} x={x(index)} y={plot + 17} textAnchor="middle" fontSize={10} fill="#8f96bb">
               {point.label}
             </text>
           ) : null,
         )}
-        <line x1={x(firstForecast)} x2={x(firstForecast)} y1={0} y2={plot} stroke="#05061f" strokeOpacity={0.18} strokeWidth={1} />
+        <line x1={x(firstForecast)} x2={x(firstForecast)} y1={0} y2={plot} stroke="#e7eaf8" strokeOpacity={0.396} strokeWidth={1} />
       </svg>
     </div>
   );

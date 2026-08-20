@@ -24,7 +24,7 @@ export function EnginePicker({
               aria-current={selected ? "true" : undefined}
               className={cn(
                 "block rounded-sm border px-3 py-2.5 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-rr-blue",
-                selected ? "border-rr-blue bg-rr-blue-50" : "border-rr-ink/8 bg-white hover:border-rr-blue/40",
+                selected ? "border-rr-blue bg-rr-blue-50" : "border-rr-ink/8 bg-surface hover:border-rr-blue/40",
               )}
             >
               <div className="flex items-center justify-between gap-2">

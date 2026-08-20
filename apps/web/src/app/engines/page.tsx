@@ -19,7 +19,7 @@ const HERO_SURFACE: CSSProperties = {
     "linear-gradient(rgba(255,255,255,0.045) 1px, transparent 1px)",
     "linear-gradient(90deg, rgba(255,255,255,0.045) 1px, transparent 1px)",
     "radial-gradient(120% 100% at 80% 0%, rgba(59,50,194,0.55) 0%, rgba(11,13,51,0) 60%)",
-    "linear-gradient(160deg, #0b0d33 0%, #05061f 60%, #10069f 240%)",
+    "linear-gradient(155deg, #131a4d 0%, #0a0d2e 45%, #05061a 100%)",
   ].join(", "),
   backgroundSize: "48px 48px, 48px 48px, auto, auto",
 };

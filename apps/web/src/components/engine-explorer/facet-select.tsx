@@ -65,7 +65,7 @@ export function FacetSelect({
       </button>
 
       {open ? (
-        <div className="absolute left-0 top-9 z-30 max-h-72 w-64 overflow-y-auto rounded-sm border border-rr-ink/10 bg-white p-1 shadow-[0_8px_24px_rgba(5,6,31,0.08)]">
+        <div className="absolute left-0 top-9 z-30 max-h-72 w-64 overflow-y-auto rounded-sm border border-rr-ink/10 bg-surface p-1 shadow-[0_8px_24px_rgba(5,6,31,0.08)]">
           {options.map((option) => (
             <label
               key={option.value}

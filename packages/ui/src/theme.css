@@ -1,62 +1,66 @@
 /**
  * Rolls-Royce design tokens.
  *
- * Aligned to rolls-royce.com: the deep RR blue as the single dominant brand
- * colour, near-black navy for dark surfaces, generous whitespace, and a
- * restrained operational status palette layered on top.
+ * Aligned to rolls-royce.com: an "above the clouds" near-black navy canvas,
+ * large editorial type, generous whitespace, RR blue as the single brand
+ * accent, and a restrained operational status palette layered on top.
  */
 
 @theme {
-  /* Brand */
-  --color-rr-blue: #10069f;
-  --color-rr-blue-600: #0d0580;
-  --color-rr-blue-400: #3b32c2;
-  --color-rr-blue-200: #a9a5e6;
-  --color-rr-blue-50: #eeedfa;
+  /* Brand — RR blue, lifted for legibility on the dark canvas */
+  --color-rr-blue: #6a63ff;
+  --color-rr-blue-600: #564fe8;
+  --color-rr-blue-400: #8b85ff;
+  --color-rr-blue-200: #bcb9ff;
+  --color-rr-blue-50: rgba(106, 99, 255, 0.16);
+  --color-rr-blue-deep: #10069f;
 
-  /* Dark surfaces (the "above the clouds" hero palette) */
-  --color-rr-ink: #05061f;
-  --color-rr-navy: #0b0d33;
-  --color-rr-navy-700: #14174a;
-  --color-rr-navy-500: #232766;
-  --color-rr-slate: #4b4f77;
-  --color-rr-cloud: #c9cbe0;
-  --color-rr-mist: #f4f5fa;
+  /* Canvas and surfaces */
+  --color-rr-abyss: #05061a;
+  --color-rr-ink: #eef0fa;
+  --color-rr-navy: #0a0d28;
+  --color-rr-navy-700: #121738;
+  --color-rr-navy-500: #1b2150;
+  --color-rr-slate: #98a0c6;
+  --color-rr-cloud: #c8cde6;
+  --color-rr-mist: rgba(255, 255, 255, 0.05);
+  --color-surface: #0e1230;
 
   /* Operational status */
-  --color-status-red: #d81e2b;
-  --color-status-red-soft: #fde8ea;
-  --color-status-amber: #f08c00;
-  --color-status-amber-soft: #fef1e0;
-  --color-status-green: #0a8754;
-  --color-status-green-soft: #e4f4ed;
-  --color-status-grey: #6b7089;
-  --color-status-grey-soft: #eef0f5;
+  --color-status-red: #ff5f6d;
+  --color-status-red-soft: rgba(255, 95, 109, 0.15);
+  --color-status-amber: #ffb43d;
+  --color-status-amber-soft: rgba(255, 180, 61, 0.15);
+  --color-status-green: #2fd39b;
+  --color-status-green-soft: rgba(47, 211, 155, 0.15);
+  --color-status-grey: #8f96bb;
+  --color-status-grey-soft: rgba(143, 150, 187, 0.14);
 
   /* Data visualisation ramp */
-  --color-viz-1: #10069f;
-  --color-viz-2: #3b32c2;
-  --color-viz-3: #00a3d3;
-  --color-viz-4: #0a8754;
-  --color-viz-5: #f08c00;
-  --color-viz-6: #d81e2b;
-  --color-viz-7: #7b4bd8;
+  --color-viz-1: #6a63ff;
+  --color-viz-2: #8b85ff;
+  --color-viz-3: #35c8ff;
+  --color-viz-4: #2fd39b;
+  --color-viz-5: #ffb43d;
+  --color-viz-6: #ff5f6d;
+  --color-viz-7: #b07cff;
 
   --font-sans: var(--font-inter), "Inter", "Helvetica Neue", Arial, sans-serif;
   --font-mono: "JetBrains Mono", "SF Mono", ui-monospace, monospace;
 
-  --radius-panel: 2px;
-  --shadow-panel: 0 1px 2px rgba(5, 6, 31, 0.06), 0 8px 24px -12px rgba(5, 6, 31, 0.18);
+  --radius-panel: 3px;
+  --shadow-panel: 0 24px 60px -36px rgba(0, 0, 0, 0.9);
 }
 
 @layer base {
   :root {
-    color-scheme: light;
+    color-scheme: dark;
   }
 
   body {
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
 
   /* RR headings are tightly tracked and sentence case. */
@@ -64,48 +68,88 @@
   h2,
   h3,
   h4 {
-    letter-spacing: -0.015em;
+    letter-spacing: -0.02em;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.12);
+    border: 3px solid transparent;
+    background-clip: content-box;
+    border-radius: 999px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
   }
 }
 
 @layer utilities {
+  /* The signature surface: dawn light breaking over cloud, seen from above. */
   .rr-hero-gradient {
-    background:
-      radial-gradient(120% 100% at 80% 0%, rgba(59, 50, 194, 0.55) 0%, rgba(11, 13, 51, 0) 60%),
-      linear-gradient(160deg, #0b0d33 0%, #05061f 60%, #10069f 240%);
+    background-color: #070926;
+    background-image:
+      radial-gradient(75% 120% at 12% 108%, rgba(255, 214, 176, 0.5) 0%, rgba(255, 168, 140, 0.16) 26%, rgba(7, 9, 38, 0) 62%),
+      radial-gradient(60% 90% at 78% 4%, rgba(126, 116, 255, 0.42) 0%, rgba(7, 9, 38, 0) 66%),
+      radial-gradient(130% 90% at 50% 130%, rgba(196, 202, 240, 0.34) 0%, rgba(7, 9, 38, 0) 55%),
+      linear-gradient(168deg, #10143d 0%, #0a0d2c 42%, #05061a 100%);
+  }
+
+  /* A quieter version of the hero for secondary bands. */
+  .rr-sky-gradient {
+    background-image:
+      radial-gradient(90% 140% at 100% 0%, rgba(106, 99, 255, 0.22) 0%, rgba(5, 6, 26, 0) 60%),
+      linear-gradient(160deg, #0c1030 0%, #05061a 100%);
   }
 
   .rr-panel {
-    background-color: #ffffff;
-    border: 1px solid rgba(5, 6, 31, 0.08);
-    border-radius: 2px;
-    box-shadow: 0 1px 2px rgba(5, 6, 31, 0.06);
+    background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.055) 0%, rgba(255, 255, 255, 0.022) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 3px;
+    box-shadow: 0 24px 60px -40px rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(10px);
   }
 
   .rr-panel-dark {
     background-color: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 2px;
+    border-radius: 3px;
     backdrop-filter: blur(6px);
   }
 
   .rr-grid-lines {
     background-image:
-      linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
-    background-size: 48px 48px;
+      linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 64px 64px;
   }
 
   .rr-label {
     font-size: 0.6875rem;
     line-height: 1rem;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  /* Editorial display type, as used on rolls-royce.com hero panels. */
+  .rr-display {
+    font-size: clamp(2.25rem, 3.4vw, 3.5rem);
+    line-height: 1.04;
+    letter-spacing: -0.028em;
     font-weight: 600;
   }
 
   .rr-numeric {
     font-variant-numeric: tabular-nums;
     font-feature-settings: "tnum";
+  }
+
+  .rr-hairline {
+    border-color: rgba(255, 255, 255, 0.09);
   }
 }

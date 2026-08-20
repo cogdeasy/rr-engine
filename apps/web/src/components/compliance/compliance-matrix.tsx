@@ -85,7 +85,7 @@ export function ComplianceMatrix({ matrix, tasks }: { matrix: Matrix; tasks: Com
           <table className="w-full border-separate border-spacing-0 text-sm">
             <thead>
               <tr>
-                <th className="rr-label sticky left-0 z-10 bg-white pb-2 pr-3 text-left align-bottom text-rr-slate">Engine</th>
+                <th className="rr-label sticky left-0 z-10 bg-surface pb-2 pr-3 text-left align-bottom text-rr-slate">Engine</th>
                 {matrix.bulletins.map((bulletin) => (
                   <th key={bulletin.id} className="px-0.5 pb-2 align-bottom">
                     <span
@@ -106,7 +106,7 @@ export function ComplianceMatrix({ matrix, tasks }: { matrix: Matrix; tasks: Com
                   <th
                     scope="row"
                     className={cn(
-                      "sticky left-0 z-10 border-l-2 bg-white py-1 pl-2 pr-3 text-left font-normal group-hover:bg-rr-blue-50/50",
+                      "sticky left-0 z-10 border-l-2 bg-surface py-1 pl-2 pr-3 text-left font-normal group-hover:bg-rr-blue-50/50",
                       row.status === "red" ? "border-status-red" : row.status === "amber" ? "border-status-amber" : "border-status-green",
                     )}
                   >

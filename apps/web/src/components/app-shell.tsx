@@ -20,8 +20,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <div className="flex min-h-screen">
       <aside
         className={cn(
-          "sticky top-0 flex h-screen shrink-0 flex-col border-r border-white/8 bg-rr-ink text-rr-cloud transition-[width]",
-          collapsed ? "w-[68px]" : "w-[268px]",
+          "sticky top-0 flex h-screen shrink-0 flex-col border-r border-white/8 bg-black/25 text-rr-cloud backdrop-blur-xl transition-[width]",
+          collapsed ? "w-[68px]" : "w-[276px]",
         )}
       >
         <div className="flex h-16 items-center justify-between border-b border-white/8 px-4">
@@ -61,7 +61,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                           title={collapsed ? mod.label : mod.summary}
                           className={cn(
                             "group flex items-center gap-3 rounded px-3 py-2 text-[13px] transition-colors",
-                            active ? "bg-rr-blue text-white" : "text-rr-cloud/80 hover:bg-white/6 hover:text-white",
+                            active
+                              ? "bg-white/10 text-white shadow-[inset_2px_0_0_0_var(--color-rr-blue)]"
+                              : "text-rr-cloud/70 hover:bg-white/[0.06] hover:text-white",
                             collapsed && "justify-center px-0",
                           )}
                         >
@@ -103,7 +105,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       <div className="flex min-w-0 flex-1 flex-col">
         <TopBar pathname={pathname} />
-        <main className="flex-1 px-8 py-7">{children}</main>
+        <main className="flex-1 px-10 py-12 xl:px-14">
+          <div className="mx-auto w-full max-w-[1600px] space-y-10">{children}</div>
+        </main>
       </div>
     </div>
   );
@@ -114,10 +118,10 @@ function TopBar({ pathname }: { pathname: string }) {
     MODULES.filter((m) => isActive(pathname, m.href) && m.href !== "/").sort((a, b) => b.href.length - a.href.length)[0] ??
     MODULES[0];
   return (
-    <header className="sticky top-0 z-20 flex h-16 items-center justify-between gap-6 border-b border-rr-ink/8 bg-white/90 px-8 backdrop-blur">
+    <header className="sticky top-0 z-20 flex h-[72px] items-center justify-between gap-6 border-b border-white/8 bg-rr-abyss/70 px-10 backdrop-blur-xl xl:px-14">
       <div className="min-w-0">
-        <p className="rr-label text-rr-slate">{MODULE_GROUPS.find((g) => g.id === mod?.group)?.label}</p>
-        <h2 className="truncate text-sm font-semibold text-rr-ink">{mod?.label}</h2>
+        <p className="rr-label text-rr-slate/70">{MODULE_GROUPS.find((g) => g.id === mod?.group)?.label}</p>
+        <h2 className="truncate text-[15px] font-semibold tracking-tight text-rr-ink">{mod?.label}</h2>
       </div>
       <div className="flex items-center gap-5">
         <div className="hidden items-center gap-4 text-[11px] text-rr-slate lg:flex">

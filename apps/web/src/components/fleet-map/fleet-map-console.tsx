@@ -284,7 +284,7 @@ export function FleetMapConsole({ snapshot }: { snapshot: FleetMapSnapshot }) {
                 aria-pressed={active}
                 className={cn(
                   "rounded-sm border border-l-2 px-3 py-3 text-left transition-colors hover:border-rr-blue/40",
-                  active ? "border-rr-blue bg-rr-blue-50" : "border-rr-ink/8 bg-white",
+                  active ? "border-rr-blue bg-rr-blue-50" : "border-rr-ink/8 bg-surface",
                   summary.status === "red" && "border-l-status-red",
                   summary.status === "amber" && "border-l-status-amber",
                   summary.status === "green" && "border-l-status-green",

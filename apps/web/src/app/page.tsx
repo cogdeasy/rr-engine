@@ -48,37 +48,38 @@ export default function FleetOverviewPage() {
     .slice(0, 6);
 
   return (
-    <div className="space-y-7">
-      {/* Hero */}
-      <section className="rr-hero-gradient rr-grid-lines relative overflow-hidden rounded-sm px-8 py-9 text-white">
-        <div className="relative flex flex-wrap items-end justify-between gap-8">
-          <div className="max-w-2xl">
-            <p className="rr-label text-rr-blue-200">Fleet services operations centre</p>
-            <h1 className="mt-2 text-3xl font-semibold leading-tight tracking-tight">
-              {formatNumber(summary.engines)} engines under management, {summary.byStatus.red} flagged red
-            </h1>
-            <p className="mt-3 max-w-xl text-sm leading-relaxed text-rr-cloud">
-              Live engine health, prognostics and maintenance execution across the managed Trent and UltraFan fleet.
-              Every red condition on this page has an owner, a recommended action and a deadline.
-            </p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Link
-                href="/alerts"
-                className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-rr-blue transition-colors hover:bg-rr-blue-50"
-              >
-                Triage {summary.openAlerts} open alerts
-                <span aria-hidden>›</span>
-              </Link>
-              <Link
-                href="/engines"
-                className="inline-flex items-center gap-2 rounded-full border border-white/60 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-white/10"
-              >
-                Engine explorer
-              </Link>
-            </div>
+    <div className="space-y-12">
+      {/* Hero — full-bleed dawn-above-cloud surface, editorial headline, translucent stat cards */}
+      <section className="rr-hero-gradient relative -mx-10 -mt-12 overflow-hidden px-10 pb-10 pt-20 text-white xl:-mx-14 xl:px-14 xl:pt-28">
+        <div className="rr-grid-lines pointer-events-none absolute inset-0 opacity-60" aria-hidden />
+        <div className="relative mx-auto w-full max-w-[1600px]">
+          <p className="rr-label text-rr-blue-200">Fleet services operations centre</p>
+          <h1 className="rr-display mt-6 max-w-4xl text-white">
+            {formatNumber(summary.engines)} engines under management.
+            <br />
+            <span className="text-white/55">{summary.byStatus.red} flagged red this morning.</span>
+          </h1>
+          <p className="mt-8 max-w-xl text-[15px] leading-relaxed text-rr-cloud">
+            Live engine health, prognostics and maintenance execution across the managed Trent and UltraFan fleet.
+            Every red condition here has an owner, a recommended action and a deadline.
+          </p>
+          <div className="mt-10 flex flex-wrap gap-3">
+            <Link
+              href="/alerts"
+              className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-semibold text-rr-blue-deep transition-colors hover:bg-rr-cloud"
+            >
+              Triage {summary.openAlerts} open alerts
+              <span aria-hidden>›</span>
+            </Link>
+            <Link
+              href="/engines"
+              className="inline-flex items-center gap-2 rounded-full border border-white/50 px-7 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/10"
+            >
+              Engine explorer
+            </Link>
           </div>
 
-          <div className="flex flex-wrap gap-8">
+          <div className="mt-20 grid gap-px overflow-hidden rounded-sm border border-white/15 bg-white/10 sm:grid-cols-2 xl:grid-cols-4">
             <HeroStat label="Red" value={summary.byStatus.red} tone="red" caption="immediate action" />
             <HeroStat label="Amber" value={summary.byStatus.amber} tone="amber" caption="on watchlist" />
             <HeroStat label="Green" value={summary.byStatus.green} tone="green" caption="within limits" />
@@ -88,20 +89,20 @@ export default function FleetOverviewPage() {
       </section>
 
       {/* KPI strip */}
-      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+      <section className="grid gap-5 sm:grid-cols-2 xl:grid-cols-5">
         {data.kpis.slice(0, 5).map((kpi) => (
           <KpiTile key={kpi.id} kpi={kpi} />
         ))}
       </section>
 
-      <section className="grid gap-4 lg:grid-cols-4">
+      <section className="grid gap-5 lg:grid-cols-4">
         <StatTile label="Average EGT margin" value={summary.averageEgtMargin} unit="°C" status={summary.averageEgtMargin < 30 ? "amber" : "green"} caption="Fleet mean, all build standards" />
         <StatTile label="Open work orders" value={summary.activeWorkOrders} status="amber" caption="In progress or awaiting parts" />
         <StatTile label="Critical alerts" value={summary.criticalAlerts} status={summary.criticalAlerts > 0 ? "red" : "green"} caption="Action required inside 48h" />
         <StatTile label="Managed operators" value={summary.operators} caption={`${summary.aircraft} aircraft`} />
       </section>
 
-      <div className="grid gap-5 xl:grid-cols-3">
+      <div className="grid gap-6 xl:grid-cols-3">
         {/* Watchlist */}
         <Panel className="xl:col-span-2">
           <PanelHeader
@@ -116,7 +117,7 @@ export default function FleetOverviewPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-rr-ink/8">
+                <tr className="border-b border-white/10">
                   <th className="rr-label py-2 text-left text-rr-slate">Engine</th>
                   <th className="rr-label py-2 text-left text-rr-slate">Operator</th>
                   <th className="rr-label py-2 text-right text-rr-slate">EGT margin</th>
@@ -127,7 +128,7 @@ export default function FleetOverviewPage() {
               </thead>
               <tbody>
                 {watchlist.map(({ engine, operator, aircraft, alerts: count }) => (
-                  <tr key={engine.id} className="border-b border-rr-ink/5 last:border-0">
+                  <tr key={engine.id} className="border-b border-white/[0.06] last:border-0">
                     <td className={cn("py-3 pl-3 border-l-2", engine.status === "red" ? "border-status-red" : engine.status === "amber" ? "border-status-amber" : "border-status-green")}>
                       <Link href={`/engines/${engine.id}`} className="font-semibold text-rr-ink hover:text-rr-blue">
                         {engine.esn}
@@ -183,7 +184,7 @@ export default function FleetOverviewPage() {
         </Panel>
       </div>
 
-      <div className="grid gap-5 xl:grid-cols-3">
+      <div className="grid gap-6 xl:grid-cols-3">
         {/* Operator status */}
         <Panel className="xl:col-span-2">
           <PanelHeader title="Status by operator" subtitle="Engine condition distribution for the top exposure customers" />
@@ -196,7 +197,7 @@ export default function FleetOverviewPage() {
                     {operator.code} · {operator.region}
                   </p>
                 </div>
-                <div className="flex h-3 flex-1 overflow-hidden rounded-full bg-rr-mist">
+                <div className="flex h-3 flex-1 overflow-hidden rounded-full bg-white/10">
                   {red > 0 ? <div className="bg-status-red" style={{ width: `${(red / total) * 100}%` }} /> : null}
                   {amber > 0 ? <div className="bg-status-amber" style={{ width: `${(amber / total) * 100}%` }} /> : null}
                   {green > 0 ? <div className="bg-status-green" style={{ width: `${(green / total) * 100}%` }} /> : null}
@@ -240,7 +241,7 @@ export default function FleetOverviewPage() {
             const engine = data.engines.find((e) => e.id === wo.engineId);
             const facility = data.facilities.find((f) => f.id === wo.facilityId);
             return (
-              <div key={wo.id} className="rounded-sm border border-rr-ink/8 p-4">
+              <div key={wo.id} className="rounded-sm border border-white/10 bg-white/[0.02] p-5">
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <p className="text-[13px] font-semibold text-rr-ink">{wo.reference}</p>
@@ -274,7 +275,7 @@ export default function FleetOverviewPage() {
         </div>
       </Panel>
 
-      <Panel className="flex flex-wrap items-center justify-between gap-4 bg-rr-blue-50/60">
+      <Panel className="flex flex-wrap items-center justify-between gap-4 border-rr-blue/30 bg-rr-blue-50">
         <div className="flex items-center gap-3">
           <ModuleIcon name="cube" className="h-5 w-5 text-rr-blue" />
           <div>
@@ -300,13 +301,13 @@ function HeroStat({ label, value, tone, caption }: { label: string; value: numbe
   const colour = { red: "text-status-red", amber: "text-status-amber", green: "text-status-green" }[tone];
   const dot = { red: "bg-status-red", amber: "bg-status-amber", green: "bg-status-green" }[tone];
   return (
-    <div>
-      <p className="rr-label flex items-center gap-1.5 text-rr-cloud/70">
+    <div className="bg-white/[0.06] px-6 py-7 backdrop-blur-md">
+      <p className="rr-label flex items-center gap-2 text-rr-cloud/70">
         <span className={cn("h-1.5 w-1.5 rounded-full", dot)} />
         {label}
       </p>
-      <p className={cn("rr-numeric mt-1 text-4xl font-semibold", colour)}>{value}</p>
-      <p className="text-[11px] text-rr-cloud/70">{caption}</p>
+      <p className={cn("rr-numeric mt-4 text-5xl font-semibold leading-none", colour)}>{value}</p>
+      <p className="mt-3 text-[11px] text-rr-cloud/70">{caption}</p>
     </div>
   );
 }

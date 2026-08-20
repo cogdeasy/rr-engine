@@ -12,7 +12,7 @@ import { cn, statusStyles } from "../../utils";
  */
 
 export const EXPOSURE_DRIVER_TINTS: Record<ExposureDriverId, string> = {
-  dust: "#10069F",
+  dust: "#6a63ff",
   sand: "#3B2FC0",
   salinity: "#6B63D6",
   pollution: "#9B95E4",
@@ -146,17 +146,17 @@ export function ExposureScatter({
           const value = yMin + (yMax - yMin) * f;
           return (
             <g key={f}>
-              <line x1={pad.left} x2={width - pad.right} y1={y(value)} y2={y(value)} stroke="#05061f" strokeOpacity={0.07} />
-              <text x={pad.left - 8} y={y(value) + 3} textAnchor="end" fontSize={9} fill="#6b7089" className="rr-numeric">
+              <line x1={pad.left} x2={width - pad.right} y1={y(value)} y2={y(value)} stroke="#e7eaf8" strokeOpacity={0.154} />
+              <text x={pad.left - 8} y={y(value) + 3} textAnchor="end" fontSize={9} fill="#8f96bb" className="rr-numeric">
                 {value.toFixed(0)}
               </text>
             </g>
           );
         })}
-        <rect x={x(45)} y={pad.top} width={x(62) - x(45)} height={height - pad.top - pad.bottom} fill="#f08c00" fillOpacity={0.06} />
-        <rect x={x(62)} y={pad.top} width={width - pad.right - x(62)} height={height - pad.top - pad.bottom} fill="#d81e2b" fillOpacity={0.06} />
+        <rect x={x(45)} y={pad.top} width={x(62) - x(45)} height={height - pad.top - pad.bottom} fill="#ffb43d" fillOpacity={0.06} />
+        <rect x={x(62)} y={pad.top} width={width - pad.right - x(62)} height={height - pad.top - pad.bottom} fill="#ff5f6d" fillOpacity={0.06} />
         {[0, 20, 40, 60, 80, 100].map((v) => (
-          <text key={v} x={x(v)} y={height - 10} textAnchor="middle" fontSize={9} fill="#6b7089" className="rr-numeric">
+          <text key={v} x={x(v)} y={height - 10} textAnchor="middle" fontSize={9} fill="#8f96bb" className="rr-numeric">
             {v}
           </text>
         ))}
@@ -166,13 +166,13 @@ export function ExposureScatter({
             cx={x(p.severityIndex)}
             cy={y(p.deteriorationRate)}
             r={hovered === p.engineId ? 5 : 3}
-            fill={{ red: "#d81e2b", amber: "#f08c00", green: "#0a8754", grey: "#6b7089" }[p.status]}
+            fill={{ red: "#ff5f6d", amber: "#ffb43d", green: "#2fd39b", grey: "#8f96bb" }[p.status]}
             fillOpacity={hovered && hovered !== p.engineId ? 0.25 : 0.72}
             onMouseEnter={() => setHovered(p.engineId)}
             onMouseLeave={() => setHovered(null)}
           />
         ))}
-        <line x1={x(xMin)} y1={y(fitFrom)} x2={x(xMax)} y2={y(fitTo)} stroke="#10069F" strokeWidth={2} strokeDasharray="7 4" />
+        <line x1={x(xMin)} y1={y(fitFrom)} x2={x(xMax)} y2={y(fitTo)} stroke="#6a63ff" strokeWidth={2} strokeDasharray="7 4" />
       </svg>
       <div className="flex items-center justify-between text-[11px] text-rr-slate">
         <span className="rr-label">Severity index →</span>
@@ -220,7 +220,7 @@ export function ExposureGeography({
     <div className={cn("w-full", className)}>
       <svg
         viewBox={`0 0 ${width} ${height}`}
-        className="w-full rounded-sm bg-rr-ink"
+        className="w-full rounded-sm bg-rr-abyss"
         role="img"
         aria-label="Geographic distribution of airport environmental severity across the flown network"
       >
@@ -247,7 +247,7 @@ export function ExposureGeography({
               key={route.label}
               d={`M${a.cx},${a.cy} Q${mx},${my} ${b.cx},${b.cy}`}
               fill="none"
-              stroke={{ red: "#d81e2b", amber: "#f08c00", green: "#0a8754", grey: "#6b7089" }[route.status]}
+              stroke={{ red: "#ff5f6d", amber: "#ffb43d", green: "#2fd39b", grey: "#8f96bb" }[route.status]}
               strokeOpacity={0.55}
               strokeWidth={1.2}
             />
@@ -256,7 +256,7 @@ export function ExposureGeography({
         {airports.map((airport) => {
           const { cx, cy } = project(airport.lat, airport.lon);
           const r = 4 + (airport.sectors / maxSectors) * 8;
-          const colour = { red: "#d81e2b", amber: "#f08c00", green: "#0a8754", grey: "#6b7089" }[airport.status];
+          const colour = { red: "#ff5f6d", amber: "#ffb43d", green: "#2fd39b", grey: "#8f96bb" }[airport.status];
           /* Nudge labels of tightly clustered stations so codes stay legible. */
           const crowded = placed.filter((p) => Math.abs(p.cx - cx) < 40 && Math.abs(p.cy - cy) < 14).length;
           placed.push({ cx, cy });

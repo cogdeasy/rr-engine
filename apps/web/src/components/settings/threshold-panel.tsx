@@ -216,7 +216,7 @@ function LimitControl({
   published: number;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }) {
-  const accent = tone === "red" ? "accent-[#d81e2b]" : "accent-[#f08c00]";
+  const accent = tone === "red" ? "accent-[#ff5f6d]" : "accent-[#ffb43d]";
   const colour = tone === "red" ? "text-status-red" : "text-status-amber";
   const inputId = `${policy.id}-${tone}`;
   return (

@@ -69,13 +69,13 @@ export function DataTable<T>({
       <div className="overflow-x-auto">
         <table className="w-full border-collapse text-sm">
           <thead>
-            <tr className="border-b border-rr-ink/8 bg-rr-mist/60">
+            <tr className="border-b border-white/10 bg-white/[0.03]">
               {columns.map((column) => (
                 <th
                   key={column.key}
                   style={column.width ? { width: column.width } : undefined}
                   className={cn(
-                    "rr-label px-4 py-2.5 text-rr-slate",
+                    "rr-label px-5 py-3 text-rr-slate/80",
                     column.align === "right" && "text-right",
                     column.align === "center" && "text-center",
                     !column.align && "text-left",
@@ -114,16 +114,16 @@ export function DataTable<T>({
                     key={rowKey(row)}
                     onClick={onRowClick ? () => onRowClick(row) : undefined}
                     className={cn(
-                      "border-b border-rr-ink/5 last:border-0",
-                      onRowClick && "cursor-pointer hover:bg-rr-blue-50/60",
+                      "border-b border-white/[0.06] transition-colors last:border-0",
+                      onRowClick && "cursor-pointer hover:bg-white/[0.045]",
                     )}
                   >
                     {columns.map((column, index) => (
                       <td
                         key={column.key}
                         className={cn(
-                          "px-4 text-rr-ink",
-                          dense ? "py-2" : "py-3",
+                          "px-5 text-rr-ink",
+                          dense ? "py-2.5" : "py-3.5",
                           column.align === "right" && "text-right",
                           column.align === "center" && "text-center",
                           index === 0 && accent && `border-l-2 ${accent}`,

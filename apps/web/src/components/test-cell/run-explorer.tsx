@@ -157,7 +157,7 @@ function QueueCard({ run, selected, onSelect }: { run: TestCellRun; selected: bo
       aria-current={selected}
       className={cn(
         "flex flex-col gap-3 p-4 text-left transition-colors focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-rr-blue",
-        selected ? "bg-rr-blue-50" : "bg-white hover:bg-rr-mist",
+        selected ? "bg-rr-blue-50" : "bg-surface hover:bg-rr-mist",
       )}
     >
       <div className="flex items-start justify-between gap-3">

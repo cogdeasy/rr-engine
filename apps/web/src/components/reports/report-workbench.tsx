@@ -79,7 +79,7 @@ export function ReportWorkbench({
                     onClick={() => selectReport(def.id)}
                     className={cn(
                       "w-full rounded-sm border px-3.5 py-3 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rr-blue",
-                      active ? "border-rr-blue bg-rr-blue-50/70" : "border-rr-ink/10 bg-white hover:border-rr-blue/40",
+                      active ? "border-rr-blue bg-rr-blue-50/70" : "border-rr-ink/10 bg-surface hover:border-rr-blue/40",
                     )}
                   >
                     <div className="flex items-center justify-between gap-2">
@@ -105,7 +105,7 @@ export function ReportWorkbench({
               <select
                 value={scope.operatorId}
                 onChange={(event) => setScope((current) => ({ ...current, operatorId: event.target.value }))}
-                className="mt-1.5 h-9 w-full rounded-sm border border-rr-ink/12 bg-white px-2.5 text-[13px] text-rr-ink focus:border-rr-blue focus:outline-none"
+                className="mt-1.5 h-9 w-full rounded-sm border border-rr-ink/12 bg-surface px-2.5 text-[13px] text-rr-ink focus:border-rr-blue focus:outline-none"
               >
                 <option value="all">All managed operators</option>
                 {facts.operators.map((operator) => (
@@ -121,7 +121,7 @@ export function ReportWorkbench({
               <select
                 value={scope.family}
                 onChange={(event) => setScope((current) => ({ ...current, family: event.target.value as EngineFamily | "all" }))}
-                className="mt-1.5 h-9 w-full rounded-sm border border-rr-ink/12 bg-white px-2.5 text-[13px] text-rr-ink focus:border-rr-blue focus:outline-none"
+                className="mt-1.5 h-9 w-full rounded-sm border border-rr-ink/12 bg-surface px-2.5 text-[13px] text-rr-ink focus:border-rr-blue focus:outline-none"
               >
                 <option value="all">All families</option>
                 {families.map((family) => (
@@ -200,7 +200,7 @@ export function ReportWorkbench({
           </div>
         </div>
         <div className="max-h-[1180px] overflow-y-auto bg-rr-mist/40 p-5">
-          <div className="mx-auto max-w-4xl border border-rr-ink/10 bg-white">
+          <div className="mx-auto max-w-4xl border border-rr-ink/10 bg-surface">
             <ReportPreview doc={doc} />
           </div>
         </div>

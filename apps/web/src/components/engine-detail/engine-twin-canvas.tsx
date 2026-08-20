@@ -20,10 +20,10 @@ import { moduleCodeForGltfNode } from "@rr/data";
 const DRACO_DECODER_PATH = "https://www.gstatic.com/draco/versioned/decoders/1.5.6/";
 
 const STATUS_EMISSIVE: Record<StatusLevel, { colour: string; intensity: number }> = {
-  red: { colour: "#d81e2b", intensity: 0.55 },
-  amber: { colour: "#f08c00", intensity: 0.42 },
-  green: { colour: "#0a8754", intensity: 0.05 },
-  grey: { colour: "#6b7089", intensity: 0 },
+  red: { colour: "#ff5f6d", intensity: 0.55 },
+  amber: { colour: "#ffb43d", intensity: 0.42 },
+  green: { colour: "#2fd39b", intensity: 0.05 },
+  grey: { colour: "#8f96bb", intensity: 0 },
 };
 
 const SELECTED_EMISSIVE = { colour: "#3d31ff", intensity: 0.75 };
@@ -283,8 +283,8 @@ export function EngineTwinCanvas({
       gl={{ antialias: true, preserveDrawingBuffer: true }}
       className="h-full w-full"
     >
-      <color attach="background" args={["#05061f"]} />
-      <hemisphereLight intensity={0.55} groundColor="#05061f" />
+      <color attach="background" args={["#05061a"]} />
+      <hemisphereLight intensity={0.55} groundColor="#05061a" />
       <directionalLight position={[6, 8, 5]} intensity={1.5} castShadow />
       <directionalLight position={[-6, 3, -4]} intensity={0.5} color="#8f9bff" />
       <React.Suspense fallback={<LoadingCaption />}>

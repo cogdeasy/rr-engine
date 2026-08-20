@@ -83,7 +83,7 @@ export function SearchInput({
       onChange={(event) => onChange(event.target.value)}
       placeholder={placeholder}
       className={cn(
-        "h-8 w-56 rounded-full border border-rr-ink/12 bg-white px-3.5 text-xs text-rr-ink placeholder:text-rr-slate/70 focus:border-rr-blue focus:outline-none",
+        "h-8 w-56 rounded-full border border-rr-ink/12 bg-surface px-3.5 text-xs text-rr-ink placeholder:text-rr-slate/70 focus:border-rr-blue focus:outline-none",
         className,
       )}
     />

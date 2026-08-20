@@ -92,7 +92,7 @@ export function MarginCurveChart({ curve }: { curve: HotSectionMarginCurve }) {
   // engine ends the projection with margin left: that end point is the limit of
   // the forecast, not an exhaustion date.
   const exhausted = exhaustion.margin <= 0;
-  const endColour = exhausted ? "#d81e2b" : "#4b4f77";
+  const endColour = exhausted ? "#ff5f6d" : "#98a0c6";
 
   return (
     <figure className="w-full">
@@ -108,7 +108,7 @@ export function MarginCurveChart({ curve }: { curve: HotSectionMarginCurve }) {
           y={y(curve.amberThreshold)}
           width={WIDTH - PAD.left - PAD.right}
           height={Math.max(0, y(curve.redThreshold) - y(curve.amberThreshold))}
-          fill="#f08c00"
+          fill="#ffb43d"
           fillOpacity={0.07}
         />
         <rect
@@ -116,42 +116,42 @@ export function MarginCurveChart({ curve }: { curve: HotSectionMarginCurve }) {
           y={y(curve.redThreshold)}
           width={WIDTH - PAD.left - PAD.right}
           height={Math.max(0, HEIGHT - PAD.bottom - y(curve.redThreshold))}
-          fill="#d81e2b"
+          fill="#ff5f6d"
           fillOpacity={0.08}
         />
 
         {yTicks.map((tick) => (
           <g key={`y-${tick}`}>
-            <line x1={PAD.left} x2={WIDTH - PAD.right} y1={y(tick)} y2={y(tick)} stroke="#05061f" strokeOpacity={0.07} />
-            <text x={PAD.left - 8} y={y(tick) + 3.5} textAnchor="end" fontSize={10} fill="#4b4f77" className="rr-numeric">
+            <line x1={PAD.left} x2={WIDTH - PAD.right} y1={y(tick)} y2={y(tick)} stroke="#e7eaf8" strokeOpacity={0.154} />
+            <text x={PAD.left - 8} y={y(tick) + 3.5} textAnchor="end" fontSize={10} fill="#98a0c6" className="rr-numeric">
               {tick}
             </text>
           </g>
         ))}
         {xTicks.map((tick) => (
-          <text key={`x-${tick}`} x={x(tick)} y={HEIGHT - 10} textAnchor="middle" fontSize={10} fill="#4b4f77" className="rr-numeric">
+          <text key={`x-${tick}`} x={x(tick)} y={HEIGHT - 10} textAnchor="middle" fontSize={10} fill="#98a0c6" className="rr-numeric">
             {tick.toLocaleString("en-GB")}
           </text>
         ))}
 
-        {bandArea ? <path d={bandArea} fill="#10069f" fillOpacity={0.09} /> : null}
+        {bandArea ? <path d={bandArea} fill="#6a63ff" fillOpacity={0.09} /> : null}
         {band.length > 1 ? (
           <path d={line(band.map((b) => ({ cycles: b.cycles, margin: b.p50 })))} fill="none" stroke="#a9a5e6" strokeWidth={1.4} strokeDasharray="5 4" />
         ) : null}
 
-        <path d={line(history)} fill="none" stroke="#10069f" strokeWidth={2.2} />
-        <path d={line([current, ...projection])} fill="none" stroke="#d81e2b" strokeWidth={1.8} strokeDasharray="6 4" />
+        <path d={line(history)} fill="none" stroke="#6a63ff" strokeWidth={2.2} />
+        <path d={line([current, ...projection])} fill="none" stroke="#ff5f6d" strokeWidth={1.8} strokeDasharray="6 4" />
 
         {history
           .filter((p) => p.wash)
           .map((p) => (
-            <circle key={`wash-${p.cycles}`} cx={x(p.cycles)} cy={y(p.margin)} r={3.2} fill="#ffffff" stroke="#10069f" strokeWidth={1.4}>
+            <circle key={`wash-${p.cycles}`} cx={x(p.cycles)} cy={y(p.margin)} r={3.2} fill="#ffffff" stroke="#6a63ff" strokeWidth={1.4}>
               <title>{`Water wash at ${p.cycles.toLocaleString("en-GB")} cycles`}</title>
             </circle>
           ))}
 
-        <circle cx={x(current.cycles)} cy={y(current.margin)} r={4} fill="#10069f" />
-        <text x={x(current.cycles)} y={y(current.margin) - 10} textAnchor="middle" fontSize={11} fontWeight={600} fill="#10069f" className="rr-numeric">
+        <circle cx={x(current.cycles)} cy={y(current.margin)} r={4} fill="#6a63ff" />
+        <text x={x(current.cycles)} y={y(current.margin) - 10} textAnchor="middle" fontSize={11} fontWeight={600} fill="#6a63ff" className="rr-numeric">
           {current.margin}°C
         </text>
 
@@ -175,7 +175,7 @@ export function MarginCurveChart({ curve }: { curve: HotSectionMarginCurve }) {
           x={Math.min(WIDTH - 6, x(exhaustion.cycles) + 8)}
           y={y(exhaustion.margin) + 12}
           fontSize={10}
-          fill="#4b4f77"
+          fill="#98a0c6"
           className="rr-numeric"
         >
           {exhaustion.cycles.toLocaleString("en-GB")} cyc
@@ -184,15 +184,15 @@ export function MarginCurveChart({ curve }: { curve: HotSectionMarginCurve }) {
       <figcaption className="mt-1 flex flex-wrap items-center justify-between gap-3 text-[11px] text-rr-slate">
         <span className="rr-label">Cycles since overhaul →</span>
         <span className="flex flex-wrap items-center gap-4">
-          <LegendKey colour="#10069f">Observed margin</LegendKey>
-          <LegendKey colour="#10069f" faded>
+          <LegendKey colour="#6a63ff">Observed margin</LegendKey>
+          <LegendKey colour="#6a63ff" faded>
             Family p10-p90 band
           </LegendKey>
-          <LegendKey colour="#d81e2b" dashed>
+          <LegendKey colour="#ff5f6d" dashed>
             Projection at current rate
           </LegendKey>
           <span className="inline-flex items-center gap-1.5">
-            <span className="h-2 w-2 rounded-full border border-rr-blue bg-white" aria-hidden />
+            <span className="h-2 w-2 rounded-full border border-rr-blue bg-surface" aria-hidden />
             Water wash
           </span>
         </span>

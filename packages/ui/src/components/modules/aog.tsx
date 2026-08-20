@@ -18,7 +18,7 @@ export function RecoveryTimeline({ steps, className }: { steps: AogRecoveryStep[
             key={step.id}
             className={cn(
               "relative rounded-sm border p-3",
-              step.blocking ? "border-status-red/40 bg-status-red-soft" : "border-rr-ink/10 bg-white",
+              step.blocking ? "border-status-red/40 bg-status-red-soft" : "border-rr-ink/10 bg-surface",
             )}
           >
             <div className="flex items-center justify-between gap-2">

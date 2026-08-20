@@ -27,7 +27,7 @@ const LEVEL_LABEL: Record<WorkscopeLevel, string> = {
 /** Level is a workscope depth, not an alarm: only "replace" is an act-now cost. */
 function levelClasses(level: WorkscopeLevel): string {
   return {
-    inspect: "border-rr-ink/12 bg-white text-rr-slate",
+    inspect: "border-rr-ink/12 bg-surface text-rr-slate",
     repair: "border-rr-blue/20 bg-rr-blue-50 text-rr-blue",
     restore: "border-status-amber/30 bg-status-amber-soft text-status-amber",
     replace: "border-status-red/30 bg-status-red-soft text-status-red",

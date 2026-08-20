@@ -313,7 +313,7 @@ export function EscalationInbox({
           />
           <ul className="grid gap-3 md:grid-cols-3">
             {urgent.map((row) => (
-              <li key={row.id} className="rounded-sm border border-status-red/20 bg-white p-4">
+              <li key={row.id} className="rounded-sm border border-status-red/20 bg-surface p-4">
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
                     <p className="rr-numeric text-[13px] font-semibold text-rr-ink">{row.esn}</p>
@@ -496,7 +496,7 @@ function EscalationDetail({
         <select
           value=""
           onChange={(event) => onReassign(event.target.value)}
-          className="mt-1 h-8 w-full rounded-full border border-rr-ink/12 bg-white px-3 text-xs text-rr-ink focus:border-rr-blue focus:outline-none"
+          className="mt-1 h-8 w-full rounded-full border border-rr-ink/12 bg-surface px-3 text-xs text-rr-ink focus:border-rr-blue focus:outline-none"
         >
           <option value="">Select an on-shift owner…</option>
           {standbyOwners

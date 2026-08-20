@@ -34,19 +34,19 @@ export function ExposureTrend({ trend, height = HEIGHT }: { trend: RiskExposureT
       >
         <defs>
           <linearGradient id="risk-exposure-fill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#d81e2b" stopOpacity="0.18" />
-            <stop offset="100%" stopColor="#d81e2b" stopOpacity="0" />
+            <stop offset="0%" stopColor="#ff5f6d" stopOpacity="0.18" />
+            <stop offset="100%" stopColor="#ff5f6d" stopOpacity="0" />
           </linearGradient>
         </defs>
         {[0.25, 0.5, 0.75].map((f) => (
-          <line key={f} x1={0} x2={WIDTH} y1={height * f} y2={height * f} stroke="#05061f" strokeOpacity={0.06} strokeWidth={1} />
+          <line key={f} x1={0} x2={WIDTH} y1={height * f} y2={height * f} stroke="#e7eaf8" strokeOpacity={0.132} strokeWidth={1} />
         ))}
         <path d={`${grossLine} L${WIDTH},${height} L0,${height} Z`} fill="url(#risk-exposure-fill)" />
-        <path d={grossLine} fill="none" stroke="#d81e2b" strokeWidth={1.8} vectorEffect="non-scaling-stroke" />
+        <path d={grossLine} fill="none" stroke="#ff5f6d" strokeWidth={1.8} vectorEffect="non-scaling-stroke" />
         <path
           d={path(trend.residual)}
           fill="none"
-          stroke="#10069f"
+          stroke="#6a63ff"
           strokeWidth={1.6}
           strokeDasharray="6 4"
           vectorEffect="non-scaling-stroke"
@@ -55,8 +55,8 @@ export function ExposureTrend({ trend, height = HEIGHT }: { trend: RiskExposureT
       <div className="mt-2 flex items-center justify-between text-[11px] text-rr-slate">
         <span>{first ? new Date(first.t).toLocaleDateString("en-GB", { day: "2-digit", month: "short" }) : ""}</span>
         <span className="flex items-center gap-4">
-          <LegendKey colour="#d81e2b" label="Gross exposure" />
-          <LegendKey colour="#10069f" label="Residual after mitigation" dashed />
+          <LegendKey colour="#ff5f6d" label="Gross exposure" />
+          <LegendKey colour="#6a63ff" label="Residual after mitigation" dashed />
         </span>
         <span>{last ? new Date(last.t).toLocaleDateString("en-GB", { day: "2-digit", month: "short" }) : ""}</span>
       </div>

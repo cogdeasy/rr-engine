@@ -38,7 +38,7 @@ export interface BorescopeFrameProps {
   className?: string;
 }
 
-const RETICLE = { red: "#ff5766", amber: "#ffb454", green: "#3ddc9b", grey: "#9aa0bd" } as const;
+const RETICLE = { red: "#ff7a85", amber: "#ffc978", green: "#3ddc9b", grey: "#9aa0bd" } as const;
 
 /**
  * A synthetic borescope frame.
@@ -71,7 +71,7 @@ export function BorescopeFrame({
   const glowId = `bs-glow-${frameId}`;
 
   return (
-    <figure className={cn("relative overflow-hidden rounded-sm border border-rr-ink/12 bg-rr-ink", className)}>
+    <figure className={cn("relative overflow-hidden rounded-sm border border-rr-ink/12 bg-rr-abyss", className)}>
       <svg
         viewBox="0 0 320 240"
         className="block w-full"
@@ -82,7 +82,7 @@ export function BorescopeFrame({
           <radialGradient id={gradientId} cx="50%" cy="46%" r="62%">
             <stop offset="0%" stopColor="#2c3350" />
             <stop offset="55%" stopColor="#141a2e" />
-            <stop offset="100%" stopColor="#05061f" />
+            <stop offset="100%" stopColor="#05061a" />
           </radialGradient>
           <radialGradient id={glowId} cx="50%" cy="50%" r="50%">
             <stop offset="0%" stopColor={accent} stopOpacity="0.5" />
@@ -236,7 +236,7 @@ function DamageMark({
   if (damageType.includes("burn")) {
     return (
       <g>
-        <ellipse cx={x} cy={y} rx="11" ry="8" fill="#05061f" stroke={accent} strokeWidth="1.8" />
+        <ellipse cx={x} cy={y} rx="11" ry="8" fill="#05061a" stroke={accent} strokeWidth="1.8" />
         <ellipse cx={x} cy={y} rx="5" ry="3.5" fill={accent} fillOpacity="0.55" />
       </g>
     );

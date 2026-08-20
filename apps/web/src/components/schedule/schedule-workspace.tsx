@@ -88,7 +88,7 @@ export function ScheduleWorkspace({ schedule }: { schedule: MaintenanceSchedule 
             id="schedule-operator"
             value={operatorId}
             onChange={(event) => setOperatorId(event.target.value)}
-            className="h-8 rounded-full border border-rr-ink/12 bg-white px-3 text-xs font-medium text-rr-ink focus:border-rr-blue focus:outline-none"
+            className="h-8 rounded-full border border-rr-ink/12 bg-surface px-3 text-xs font-medium text-rr-ink focus:border-rr-blue focus:outline-none"
           >
             <option value="">All operators</option>
             {schedule.filters.operators.map((operator) => (
@@ -105,7 +105,7 @@ export function ScheduleWorkspace({ schedule }: { schedule: MaintenanceSchedule 
             id="schedule-family"
             value={family}
             onChange={(event) => setFamily(event.target.value)}
-            className="h-8 rounded-full border border-rr-ink/12 bg-white px-3 text-xs font-medium text-rr-ink focus:border-rr-blue focus:outline-none"
+            className="h-8 rounded-full border border-rr-ink/12 bg-surface px-3 text-xs font-medium text-rr-ink focus:border-rr-blue focus:outline-none"
           >
             <option value="">All families</option>
             {schedule.filters.families.map((item) => (
