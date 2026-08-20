@@ -27,7 +27,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <div className="flex h-[72px] items-center justify-between border-b border-rr-ink/10 px-4">
           {collapsed ? (
             <Link href="/" aria-label="Rolls-Royce Engine Health home" className="mx-auto">
-              <RrMark size={24} />
+              <RrMark size={26} />
             </Link>
           ) : (
             <Link href="/">
