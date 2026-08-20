@@ -19,6 +19,7 @@ import { registerWarrantyRoutes } from "./warranty";
 import { registerCapacityRoutes } from "./capacity";
 import { registerReliabilityRoutes } from "./modules/reliability";
 import { registerHotSectionRoutes } from "./hot-section";
+import { registerTestCellRoutes } from "./modules/test-cell";
 
 /**
  * Feature-module routes.
@@ -55,4 +56,5 @@ export async function registerModuleRoutes(app: FastifyInstance): Promise<void> 
   await registerCapacityRoutes(app);
   await registerReliabilityRoutes(app);
   await registerHotSectionRoutes(app);
+  await registerTestCellRoutes(app);
 }
