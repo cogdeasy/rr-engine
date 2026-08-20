@@ -31,7 +31,7 @@ export function TaskCardDetail({ execution }: { execution: TaskCardExecution }) 
     ...signOff,
     at: signOff.at ?? recorded[signOff.role] ?? null,
   }));
-  const mechanicSigned = signOffState.find((s) => s.role === "mechanic")?.at !== null;
+  const mechanicSigned = signOffState.some((s) => s.role === "mechanic" && s.at !== null);
 
   function record(role: TaskCardSignOffRole) {
     const signOff = execution.signOffs.find((s) => s.role === role);

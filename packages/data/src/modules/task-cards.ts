@@ -418,7 +418,14 @@ export function workOrderCardProgress(executions = activeTaskCardExecutions()): 
       0,
     );
     const worst = [...cards].sort((a, b) => rankStatus(b.status) - rankStatus(a.status) || b.varianceHours - a.varianceHours)[0];
-    const status: StatusLevel = blocked > 0 || variancePct >= 25 ? "red" : awaitingInspection > 0 || variancePct >= 10 ? "amber" : "green";
+    const notStarted = cards.every((c) => c.state === "open");
+    const status: StatusLevel = notStarted
+      ? "grey"
+      : blocked > 0 || variancePct >= 25
+        ? "red"
+        : awaitingInspection > 0 || variancePct >= 10
+          ? "amber"
+          : "green";
 
     rows.push({
       workOrderId,
