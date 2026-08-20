@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { BudgetVarianceRow, StatusLevel } from "@rr/types";
+import type { StatusLevel } from "@rr/types";
 import { COST_CATEGORIES } from "@rr/types";
 import { costAnalytics, costCategoryLabel } from "@rr/data";
 import {
@@ -17,6 +17,7 @@ import {
   statusStyles,
 } from "@rr/ui";
 import { AogExposureTable } from "@/components/costs/aog-exposure-table";
+import { BudgetTable } from "@/components/costs/budget-table";
 import { DriverTable } from "@/components/costs/driver-table";
 import { OperatorCostTable } from "@/components/costs/operator-cost-table";
 
@@ -281,17 +282,17 @@ export default function CostAnalyticsPage() {
 
       {/* Budget vs actual */}
       <div className="grid gap-5 xl:grid-cols-2">
-        <Panel>
+        <section className="space-y-3">
           <PanelHeader
             title="Budget versus actual, by category"
             subtitle={`${current.label} actual against the escalated plan. Red beyond ${tolerance.redPct}%.`}
           />
           <BudgetTable rows={categoryBudget} />
-        </Panel>
-        <Panel>
+        </section>
+        <section className="space-y-3">
           <PanelHeader title="Budget versus actual, worst operators" subtitle="The contracts carrying the fleet variance" />
           <BudgetTable rows={operatorBudget} />
-        </Panel>
+        </section>
       </div>
 
       {/* AOG exposure */}
@@ -337,42 +338,5 @@ function HeroStat({
       <p className={cn("rr-numeric mt-1 text-3xl font-semibold", tone ? statusStyles[tone].text : "text-white")}>{value}</p>
       <p className="mt-0.5 text-[11px] text-rr-cloud/70">{caption}</p>
     </div>
-  );
-}
-
-function BudgetTable({ rows }: { rows: BudgetVarianceRow[] }) {
-  return (
-    <table className="w-full text-sm">
-      <thead>
-        <tr className="border-b border-rr-ink/8">
-          <th className="rr-label py-2 text-left text-rr-slate">Line</th>
-          <th className="rr-label py-2 text-right text-rr-slate">Budget</th>
-          <th className="rr-label py-2 text-right text-rr-slate">Actual</th>
-          <th className="rr-label py-2 text-right text-rr-slate">Variance</th>
-          <th className="rr-label py-2 text-right text-rr-slate">%</th>
-        </tr>
-      </thead>
-      <tbody>
-        {rows.map((row) => (
-          <tr key={row.id} className="border-b border-rr-ink/5 last:border-0">
-            <td className={cn("py-2.5 pl-3 border-l-2", statusStyles[row.status].border)}>
-              <span className="font-medium text-rr-ink">{row.label}</span>
-            </td>
-            <td className="rr-numeric py-2.5 text-right text-rr-slate">{formatUsd(row.budgetUsd)}</td>
-            <td className="rr-numeric py-2.5 text-right text-rr-ink">{formatUsd(row.actualUsd)}</td>
-            <td className={cn("rr-numeric py-2.5 text-right font-semibold", statusStyles[row.status].text)}>
-              {row.varianceUsd >= 0 ? "+" : "−"}
-              {formatUsd(Math.abs(row.varianceUsd))}
-            </td>
-            <td className="py-2.5 text-right">
-              <StatusPill status={row.status}>
-                {row.variancePct >= 0 ? "+" : ""}
-                {row.variancePct.toFixed(1)}%
-              </StatusPill>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
   );
 }
