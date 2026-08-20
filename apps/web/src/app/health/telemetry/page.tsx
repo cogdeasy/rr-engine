@@ -182,7 +182,13 @@ export default function Page() {
         <StatTile
           label="Sectors with data loss"
           value={formatNumber(summary.flightsPartialData + summary.flightsMissingData)}
-          status={summary.flightsMissingData > 0 ? "red" : "amber"}
+          status={
+            summary.flightsMissingData > 0
+              ? "red"
+              : summary.flightsPartialData > 0
+                ? "amber"
+                : "green"
+          }
           caption={`${summary.flightsMissingData} with no snapshot at all`}
         />
       </section>

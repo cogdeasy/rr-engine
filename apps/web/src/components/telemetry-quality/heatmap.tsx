@@ -126,7 +126,7 @@ export function TelemetryHeatmap({
         <div className="p-5">
           <PanelHeader
             title="Data quality by engine and parameter"
-            subtitle="One cell per feed over the last 30 days. Grey means no data was received at all."
+            subtitle="Every engine needing attention, plus the lowest-trust nominal feeds. One cell per feed over the last 30 days; grey means no data was received at all."
             className="pb-3"
           />
           <FilterBar className="justify-between">

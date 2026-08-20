@@ -231,7 +231,8 @@ export function telemetryQualityReport(): TelemetryQualityReport {
 }
 
 export function buildTelemetryQualityReport(dataset: Dataset): TelemetryQualityReport {
-  const windowStart = daysAgo(WINDOW_DAYS);
+  // Start of the earliest day in the window, so every sector lands in an ingest bucket.
+  const windowStart = new Date(`${iso(daysAgo(WINDOW_DAYS - 1)).slice(0, 10)}T00:00:00.000Z`);
   const aircraftById = new Map(dataset.aircraft.map((a) => [a.id, a]));
   const operatorById = new Map(dataset.operators.map((o) => [o.id, o]));
 
@@ -245,6 +246,9 @@ export function buildTelemetryQualityReport(dataset: Dataset): TelemetryQualityR
     list.push(flight);
     sectorsByAircraft.set(flight.aircraftId, list);
   }
+
+  /** Per engine, how many parameters actually arrived for each sector it flew. */
+  const receiptsByEngine = new Map<string, Map<string, number>>();
 
   const engines: EngineFeedQuality[] = dataset.engines.map((engine) => {
     const aircraft = engine.aircraftId ? aircraftById.get(engine.aircraftId) : undefined;
@@ -270,6 +274,12 @@ export function buildTelemetryQualityReport(dataset: Dataset): TelemetryQualityR
     const degradedParameters = parameters.filter((p) => p.status === "red" || p.status === "amber").length;
     const frozenSignals = parameters.filter((p) => p.frozenSamples > 0).length;
     const outOfRangeSamples = parameters.reduce((s, p) => s + p.outOfRangeSamples, 0);
+
+    const receipts = new Map<string, number>();
+    sectors.forEach((sector, index) => {
+      receipts.set(sector.id, results.reduce((s, r) => s + (r.sectorFlags[index] ? 1 : 0), 0));
+    });
+    receiptsByEngine.set(engine.id, receipts);
 
     const sectorsReported = sectors.filter((_, index) => results.some((r) => r.sectorFlags[index])).length;
 
@@ -361,10 +371,8 @@ export function buildTelemetryQualityReport(dataset: Dataset): TelemetryQualityR
       for (const engineId of aircraft?.engineIds ?? []) {
         const feed = engineById.get(engineId);
         if (!feed) continue;
-        const fitted = PARAMETER_IDS.length - feed.unfittedParameters;
-        const jitter = rand.gaussian(createRng(`tq:ingest:${flight.id}:${engineId}`), 0, 0.04);
-        expected += fitted;
-        received += Math.round(fitted * clamp(feed.coveragePct / 100 + jitter, 0, 1));
+        expected += PARAMETER_IDS.length - feed.unfittedParameters;
+        received += receiptsByEngine.get(engineId)?.get(flight.id) ?? 0;
       }
     }
     const coveragePct = expected === 0 ? 0 : round((received / expected) * 100, 1);
@@ -378,10 +386,8 @@ export function buildTelemetryQualityReport(dataset: Dataset): TelemetryQualityR
     if (!aircraft) continue;
     const feeds = aircraft.engineIds.map((id) => engineById.get(id)).filter((f): f is EngineFeedQuality => !!f);
     if (feeds.length === 0) continue;
-    const rng = createRng(`tq:flight:${flight.id}`);
     const expectedParameters = feeds.reduce((s, f) => s + (PARAMETER_IDS.length - f.unfittedParameters), 0);
-    const meanCoverage = feeds.reduce((s, f) => s + f.coveragePct, 0) / feeds.length / 100;
-    const receivedParameters = Math.round(expectedParameters * clamp(meanCoverage + rand.gaussian(rng, 0, 0.05), 0, 1));
+    const receivedParameters = feeds.reduce((s, f) => s + (receiptsByEngine.get(f.engineId)?.get(flight.id) ?? 0), 0);
     const missingCount = expectedParameters - receivedParameters;
     // Only sectors that lost a material share of their snapshot are worth chasing.
     if (missingCount / expectedParameters < 0.1) continue;
@@ -416,7 +422,7 @@ export function buildTelemetryQualityReport(dataset: Dataset): TelemetryQualityR
     const received = feeds.reduce((s, f) => s + f.receivedSnapshots, 0);
     const coveragePct = expected === 0 ? 0 : round((received / expected) * 100, 1);
     const enginesAffected = engines.filter((e) =>
-      e.parameters.some((p) => analytic.dependsOn.includes(p.parameter) && p.status !== "green"),
+      e.parameters.some((p) => p.fitted && analytic.dependsOn.includes(p.parameter) && p.status !== "green"),
     ).length;
     const enginesBlind = engines.filter((e) =>
       e.parameters.some((p) => p.fitted && analytic.dependsOn.includes(p.parameter) && p.status === "grey"),
