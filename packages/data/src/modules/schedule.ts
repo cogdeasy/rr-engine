@@ -369,7 +369,8 @@ export function maintenanceSchedule(): MaintenanceSchedule {
     const aircraft = data.aircraft.find((a) => a.id === engine.aircraftId);
     const duration = shopVisitDurationDays(engine);
     const expiryMonth = Math.min(monthCount - 1, Math.max(0, monthIndexOf(expiry, windowStart)));
-    const spanMonths = Math.max(1, Math.ceil(duration / 30));
+    /** Last calendar month a visit starting on the 1st of month `m` still runs into. */
+    const endMonthOf = (m: number) => monthIndexOf(addDays(new Date(months[m]!.start), duration), windowStart);
 
     // Book the slot as late as possible before life expiry, preferring a shop in
     // the operator's own region and then the least loaded shop.
@@ -386,7 +387,7 @@ export function maintenanceSchedule(): MaintenanceSchedule {
     let chosenMonth: number | null = null;
     for (let m = expiryMonth; m >= 0 && chosenMonth === null; m -= 1) {
       for (const shop of ranked) {
-        if (hasCapacity(load, shop.id, m, m + spanMonths - 1, shop.capacity, monthCount)) {
+        if (hasCapacity(load, shop.id, m, endMonthOf(m), shop.capacity, monthCount)) {
           chosenFacilityId = shop.id;
           chosenMonth = m;
           break;
@@ -399,7 +400,7 @@ export function maintenanceSchedule(): MaintenanceSchedule {
     const startDate = new Date(months[startMonth]!.start);
     const endDate = addDays(startDate, duration);
     if (chosenFacilityId && chosenMonth !== null) {
-      occupy(load, chosenFacilityId, chosenMonth, chosenMonth + spanMonths - 1, monthCount);
+      occupy(load, chosenFacilityId, chosenMonth, monthIndexOf(endDate, windowStart), monthCount);
     }
     const facility = data.facilities.find((f) => f.id === chosenFacilityId);
     const slackDays = daysBetween(startDate, expiry);

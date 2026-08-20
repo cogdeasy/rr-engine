@@ -18,20 +18,26 @@ export function ScheduleWorkspace({ schedule }: { schedule: MaintenanceSchedule 
   const [query, setQuery] = React.useState("");
   const [selectedId, setSelectedId] = React.useState<string | null>(null);
 
-  const events = React.useMemo(() => {
+  // Everything except the status facet, so the status chips can show how much
+  // work sits in each category rather than collapsing to zero once one is set.
+  const scoped = React.useMemo(() => {
     const needle = query.trim().toLowerCase();
     return schedule.events.filter(
       (event) =>
         (!operatorId || event.operatorId === operatorId) &&
         (!family || event.family === family) &&
         (!facilityId || event.facilityId === facilityId) &&
-        (!status || event.status === status) &&
         (!needle ||
           event.esn.toLowerCase().includes(needle) ||
           event.reference.toLowerCase().includes(needle) ||
           (event.aircraftTail ?? "").toLowerCase().includes(needle)),
     );
-  }, [schedule.events, operatorId, family, facilityId, status, query]);
+  }, [schedule.events, operatorId, family, facilityId, query]);
+
+  const events = React.useMemo(
+    () => (status ? scoped.filter((event) => event.status === status) : scoped),
+    [scoped, status],
+  );
 
   const rows = React.useMemo(() => buildRows(events), [events]);
   const selected = React.useMemo(
@@ -55,11 +61,11 @@ export function ScheduleWorkspace({ schedule }: { schedule: MaintenanceSchedule 
 
   const counts = React.useMemo(
     () => ({
-      red: events.filter((e) => e.status === "red").length,
-      amber: events.filter((e) => e.status === "amber").length,
-      green: events.filter((e) => e.status === "green").length,
+      red: scoped.filter((e) => e.status === "red").length,
+      amber: scoped.filter((e) => e.status === "amber").length,
+      green: scoped.filter((e) => e.status === "green").length,
     }),
-    [events],
+    [scoped],
   );
 
   const selectEngine = (engineId: string) => {
@@ -164,7 +170,7 @@ export function ScheduleWorkspace({ schedule }: { schedule: MaintenanceSchedule 
           <Tabs
             tabs={[
               { id: "timeline", label: "Timeline", count: events.length },
-              { id: "capacity", label: "Facility capacity", count: schedule.facilityLoad.length },
+              { id: "capacity", label: "Facility capacity", count: facilityRows.length },
               { id: "conflicts", label: "Conflicts", count: visibleConflicts.length },
             ]}
             active={view}

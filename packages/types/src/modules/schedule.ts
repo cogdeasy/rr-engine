@@ -63,7 +63,7 @@ export interface ScheduleEvent {
   dependencies: ScheduleDependency[];
   /** Date the engine's remaining useful life expires, where a limit applies. */
   rulExpiryAt: Iso | null;
-  /** Days between the slot end and RUL expiry; negative means the engine flies beyond its life. */
+  /** Days between the slot start and RUL expiry; negative means the slot opens after life expiry. */
   slackDays: number | null;
   estimatedCostUsd: number;
   recommendedAction: string;

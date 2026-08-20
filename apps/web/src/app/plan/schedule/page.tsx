@@ -1,3 +1,4 @@
+import type { FacilityMonthLoad } from "@rr/types";
 import { maintenanceSchedule } from "@rr/data";
 import { Panel, PanelHeader, StatTile, StatusPill, cn, formatNumber, formatUsd, statusStyles } from "@rr/ui";
 import { ScheduleWorkspace } from "@/components/schedule/schedule-workspace";
@@ -12,7 +13,10 @@ export default function Page() {
   const utilisationStatus = kpis.slotUtilisationPct > 95 ? "red" : kpis.slotUtilisationPct > 85 ? "amber" : "green";
   const peakMonth = schedule.facilityLoad
     .flatMap((row) => row.months)
-    .reduce((worst, month) => (month.utilisationPct > worst.utilisationPct ? month : worst));
+    .reduce<FacilityMonthLoad | null>(
+      (worst, month) => (worst === null || month.utilisationPct > worst.utilisationPct ? month : worst),
+      null,
+    );
 
   return (
     <div className="space-y-7">
@@ -83,9 +87,12 @@ export default function Page() {
             title="Act now"
             subtitle={`${conflicts.length} plan conflicts, ranked by availability exposure`}
             actions={
-              <span className="rr-numeric text-xs text-rr-slate">
-                Peak shop load {peakMonth.utilisationPct}% at {peakMonth.facilityIcao} in {months[peakMonth.monthIndex]?.label}
-              </span>
+              peakMonth ? (
+                <span className="rr-numeric text-xs text-rr-slate">
+                  Peak shop load {peakMonth.utilisationPct}% at {peakMonth.facilityIcao} in{" "}
+                  {months[peakMonth.monthIndex]?.label}
+                </span>
+              ) : null
             }
           />
           <ul className="grid gap-3 lg:grid-cols-2">
