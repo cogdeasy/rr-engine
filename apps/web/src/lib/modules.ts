@@ -308,7 +308,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Post-overhaul pass-off runs and restored margin verification.",
     decision: "Has this engine met its acceptance criteria for return to service?",
     icon: "zap",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "build-records",
