@@ -37,7 +37,12 @@ export function EscalationPanel({
       Object.fromEntries(
         policies.map((p) => [
           p.severity,
-          { ackSlaMinutes: p.ackSlaMinutes, primaryRoleId: p.primaryRoleId, escalateToRoleId: p.escalateToRoleId, channels: p.channels },
+          {
+            ackSlaMinutes: p.ackSlaMinutes,
+            primaryRoleId: p.primaryRoleId,
+            escalateToRoleId: p.escalateToRoleId,
+            channels: CHANNELS.filter((c) => p.channels.includes(c)),
+          },
         ]),
       ) as Record<string, PolicyState>,
     [policies],
@@ -52,7 +57,9 @@ export function EscalationPanel({
 
   const toggleChannel = (severity: string, channel: string) => {
     const current = state[severity]!.channels;
-    update(severity, { channels: current.includes(channel) ? current.filter((c) => c !== channel) : [...current, channel] });
+    const next = current.includes(channel) ? current.filter((c) => c !== channel) : [...current, channel];
+    // Keep channel order canonical so toggling off and back on is not seen as a change.
+    update(severity, { channels: CHANNELS.filter((c) => next.includes(c)) });
   };
 
   return (
