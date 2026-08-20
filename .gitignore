@@ -1,0 +1,16 @@
+node_modules/
+.next/
+dist/
+out/
+.turbo/
+coverage/
+*.log
+.DS_Store
+.env
+.env.local
+.env*.local
+test-results/
+playwright-report/
+
+# Rolls-Royce GLB assets are proprietary; fetched locally, never committed.
+apps/web/public/models/
