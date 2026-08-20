@@ -446,6 +446,17 @@ export const MODULES: ModuleDefinition[] = [
     icon: "chart-line",
     implemented: true,
   },
+  {
+    id: "parameter-explorer",
+    group: "assure",
+    label: "Parameter explorer",
+    href: "/assure/parameter-explorer",
+    summary:
+      "Sweep the 3,000-parameter continuous strand for the signals that separate a confirmed event from normal.",
+    decision: "Which parameters carry the earliest, cleanest warning of this failure mode?",
+    icon: "search",
+    implemented: true,
+  },
 
   // Platform
   {

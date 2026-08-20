@@ -46,3 +46,4 @@ export * from "./engine-detail";
 export * from "./costs";
 export * from "./change-packs";
 export * from "./ehm-factory";
+export * from "./parameter-explorer";

@@ -22,3 +22,4 @@ export * from "./llp";
 export * from "./simulation";
 export * from "./engine-detail";
 export * from "./costs";
+export * from "./parameter-explorer";
