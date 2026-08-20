@@ -228,7 +228,6 @@ function buildIndex(): ExposureIndex {
     driverTotals: Record<ExposureDriverId, number>;
     harshSectors: number;
     routeSectors: Map<string, number>;
-    groupSectors: Map<string, number>;
   }
   const engineAcc = new Map<string, EngineAccumulator>();
   const enginesByAircraft = new Map<string, string[]>();
@@ -269,8 +268,6 @@ function buildIndex(): ExposureIndex {
       sectorDrivers[driver] = (origin.drivers[driver] + destination.drivers[driver]) / 2;
     }
     const harsh = exposureStatus(origin.severityIndex) === "red" || exposureStatus(destination.severityIndex) === "red";
-    const group =
-      origin.severityIndex >= destination.severityIndex ? origin.profile.routeGroup : destination.profile.routeGroup;
 
     for (const engineId of engineIds) {
       const acc =
@@ -280,13 +277,11 @@ function buildIndex(): ExposureIndex {
           driverTotals: emptyDrivers(),
           harshSectors: 0,
           routeSectors: new Map<string, number>(),
-          groupSectors: new Map<string, number>(),
         };
       acc.sectors += 1;
       for (const driver of DRIVER_IDS) acc.driverTotals[driver] += sectorDrivers[driver];
       if (harsh) acc.harshSectors += 1;
       acc.routeSectors.set(routeId, (acc.routeSectors.get(routeId) ?? 0) + 1);
-      acc.groupSectors.set(group, (acc.groupSectors.get(group) ?? 0) + 1);
       engineAcc.set(engineId, acc);
     }
   }
@@ -517,8 +512,9 @@ export function intervalRecommendations(): IntervalRecommendation[] {
   const groups = new Map<string, EngineExposure[]>();
 
   for (const engine of engines) {
-    const dominantGroup = dominantRouteGroup(engine);
-    const key = `${engine.operatorId}::${dominantGroup}`;
+    /* Engines are filed under the group driving their exposure, not the one
+       they fly most: a concession is justified by the worst environment. */
+    const key = `${engine.operatorId}::${worstExposureRouteGroup(engine)}`;
     const list = groups.get(key) ?? [];
     list.push(engine);
     groups.set(key, list);
@@ -567,7 +563,7 @@ export function intervalRecommendations(): IntervalRecommendation[] {
   return out.sort((a, b) => b.meanSeverityIndex - a.meanSeverityIndex || b.engineCount - a.engineCount);
 }
 
-function dominantRouteGroup(engine: EngineExposure): string {
+function worstExposureRouteGroup(engine: EngineExposure): string {
   const route = exposureIndex().routes.find((r) => r.id === engine.worstRouteId);
   if (!route) return "Unclassified";
   const originGroup = routeGroupForAirport(route.origin);
