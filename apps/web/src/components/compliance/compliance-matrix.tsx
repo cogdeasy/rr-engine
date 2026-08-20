@@ -142,7 +142,7 @@ export function ComplianceMatrix({ matrix, tasks }: { matrix: Matrix; tasks: Com
           <MicroLabel>Legend</MicroLabel>
           <LegendSwatch className="bg-status-red" label="Overdue — act now" />
           <LegendSwatch className="bg-status-amber" label="Due inside 90 days" />
-          <LegendSwatch className="bg-status-green-soft border border-status-green/40" label="Planned or absorbed by a shop visit" />
+          <LegendSwatch className="bg-status-green-soft border border-status-green/40" label="Absorbed by a shop visit, or beyond the horizon" />
           <LegendSwatch className="bg-status-green" label="Embodied" />
           <LegendSwatch className="bg-rr-mist" label="Not applicable" />
         </div>
