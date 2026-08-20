@@ -99,7 +99,7 @@ export interface WorkOrderKpis {
   blocked: number;
   aogLinked: number;
   criticalOpen: number;
-  /** Mean raise-to-completion days across closed orders. */
+  /** Mean raise-to-completion days across the most recently closed half of orders. */
   avgCycleTimeDays: number;
   /** Mean raise-to-completion days across orders closed in the previous period. */
   priorCycleTimeDays: number;
