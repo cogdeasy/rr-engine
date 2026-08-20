@@ -226,7 +226,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Rolling plan of removals, shop visits and checks on one timeline.",
     decision: "Does the plan fit within contractual availability commitments?",
     icon: "calendar",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "workscope",
