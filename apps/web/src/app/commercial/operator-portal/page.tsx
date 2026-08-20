@@ -85,7 +85,7 @@ export default async function OperatorPortalPage({
             </p>
             <h1 className="mt-2 text-3xl font-semibold leading-tight tracking-tight">
               {view.actions.length} decision{view.actions.length === 1 ? "" : "s"} need your response
-              {redActions.length > 0 ? `, ${redActions.length} inside the next week` : ""}
+              {redActions.length > 0 ? `, ${redActions.length} flagged act now` : ""}
             </h1>
             <p className="mt-3 max-w-xl text-sm leading-relaxed text-rr-cloud">
               Your {fleet.engines} covered engines on {fleet.aircraft} aircraft under {contract.kind}. Everything below is your
