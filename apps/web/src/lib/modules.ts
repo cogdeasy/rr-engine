@@ -362,7 +362,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Availability commitments, rates and liquidated damages exposure.",
     decision: "Which contracts are at risk of breaching availability this quarter?",
     icon: "handshake",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "costs",
