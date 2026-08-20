@@ -75,7 +75,7 @@ export function TrendExplorer({
             <MetricReading value={definition.target} unit={definition.unit} decimals={definition.decimals} />
           </div>
           <div>
-            <p className="rr-label text-rr-slate">Vs prior window</p>
+            <p className="rr-label text-rr-slate">Vs 12 months ago</p>
             <p className="rr-numeric mt-1 text-lg font-semibold text-rr-ink">
               <TrendArrow trend={measure.trend} good={measure.trend === "flat" ? undefined : (measure.trend === "up") === better} />{" "}
               {measure.deltaPct > 0 ? "+" : ""}

@@ -43,7 +43,7 @@ export interface ReliabilityMeasure {
   attainmentPct: number;
   status: StatusLevel;
   trend: Trend;
-  /** Percentage change against the preceding 12-month window. */
+  /** Percentage change from the start of the rolling window to the current reading. */
   deltaPct: number;
   /** Rolling 12-month history, oldest first. */
   history: Point[];

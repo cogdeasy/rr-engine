@@ -264,16 +264,26 @@ function attainment(value: number, target: number, direction: MetricDirection): 
  * magnitude of the back-cast are seeded from the population id so the same
  * population always reads the same way across processes.
  */
-function rollingHistory(seed: string, value: number, improving: boolean, decimals: number): Point[] {
+function rollingHistory(
+  seed: string,
+  value: number,
+  improving: boolean,
+  definition: ReliabilityMetricDefinition,
+): Point[] {
   const rng = createRng(`reliability:${seed}`);
-  const swing = Math.abs(value) * rand.float(rng, 0.03, 0.09);
-  const totalDrift = (improving ? -1 : 1) * swing * 2;
+  // Percentages cannot read above 100 in a back-cast, so their swing works in the headroom below it.
+  const ceiling = definition.unit === "%" ? 100 : Number.POSITIVE_INFINITY;
+  const scale = Number.isFinite(ceiling) ? Math.min(Math.abs(value), (ceiling - value) * 3) : Math.abs(value);
+  const swing = scale * rand.float(rng, 0.03, 0.09);
+  // A worse reading is a lower one for higher-is-better metrics and a higher one otherwise.
+  const worseDirection = definition.direction === "higher-is-better" ? -1 : 1;
+  const totalDrift = (improving ? worseDirection : -worseDirection) * swing * 2;
   const points: Point[] = [];
   for (let i = WINDOW_MONTHS - 1; i >= 0; i -= 1) {
     const progress = (WINDOW_MONTHS - 1 - i) / (WINDOW_MONTHS - 1);
     const wobble = rand.gaussian(rng, 0, swing * 0.35);
     const raw = value + totalDrift * (1 - progress) + (i === 0 ? 0 : wobble);
-    points.push({ t: iso(daysAgo(i * 30.44)), v: round(Math.max(0, raw), decimals + 1) });
+    points.push({ t: iso(daysAgo(i * 30.44)), v: round(clamp(raw, 0, ceiling), definition.decimals + 1) });
   }
   return points;
 }
@@ -292,7 +302,7 @@ function makeMeasure(id: ReliabilityMetricId, value: number, seed: string): Reli
   const definition = METRIC_BY_ID.get(id)!;
   const status = statusFor(value, definition);
   const improving = status === "green";
-  const history = rollingHistory(`${seed}:${id}`, value, improving, definition.decimals);
+  const history = rollingHistory(`${seed}:${id}`, value, improving, definition);
   history[history.length - 1] = { t: iso(NOW), v: round(value, definition.decimals + 1) };
   const { trend, deltaPct } = trendOf(history, definition.direction);
   return {
