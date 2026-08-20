@@ -414,7 +414,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Immutable record of decisions, overrides and sign-offs.",
     decision: "Who decided what, when, and on what evidence?",
     icon: "history",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "reports",

@@ -12,6 +12,7 @@ import { registerScheduleRoutes } from "./modules/schedule";
 import { registerOilDebrisRoutes } from "./oil-debris";
 import { registerPerformanceRoutes } from "./performance";
 import { registerRiskRoutes } from "./modules/risk";
+import { registerAuditRoutes } from "./audit";
 
 /**
  * Feature-module routes.
@@ -41,4 +42,5 @@ export async function registerModuleRoutes(app: FastifyInstance): Promise<void> 
   await registerPerformanceRoutes(app);
   void app;
   await registerRiskRoutes(app);
+  await registerAuditRoutes(app);
 }
