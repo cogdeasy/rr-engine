@@ -7,7 +7,20 @@ import {
   recommendScenario,
   sensitivity,
   simulate,
+  WORKSCOPE_LEVELS,
 } from "@rr/data";
+
+/** Query levers are untrusted strings; a bad one must 400 rather than model NaN. */
+function parseNumber(raw: string | undefined, fallback: number): number | undefined {
+  if (raw === undefined) return fallback;
+  const value = Number(raw);
+  return Number.isFinite(value) ? value : undefined;
+}
+
+function parseWorkscope(raw: string | undefined, fallback: WorkscopeLevel): WorkscopeLevel | undefined {
+  if (raw === undefined) return fallback;
+  return WORKSCOPE_LEVELS.some((level) => level.id === raw) ? (raw as WorkscopeLevel) : undefined;
+}
 
 /**
  * Read-only endpoints for the What-if simulation module. The model is pure, so
@@ -33,19 +46,30 @@ export async function registerSimulationRoutes(app: FastifyInstance) {
       deratePct?: string;
       routeSeverity?: string;
       washIntervalDays?: string;
-      workscope?: WorkscopeLevel;
+      workscope?: string;
     };
   }>("/simulation/:engineId/scenario", async (request, reply) => {
     const baseline = getSimulationBaseline(request.params.engineId);
     if (!baseline) return reply.code(404).send({ error: "not_found", message: "Unknown engine", statusCode: 404 });
     const q = request.query;
-    const levers: SimulationLevers = {
-      removalOffsetCycles: Number(q.removalOffsetCycles ?? baseline.levers.removalOffsetCycles),
-      deratePct: Number(q.deratePct ?? baseline.levers.deratePct),
-      routeSeverity: Number(q.routeSeverity ?? baseline.levers.routeSeverity),
-      washIntervalDays: Number(q.washIntervalDays ?? baseline.levers.washIntervalDays),
-      workscope: q.workscope ?? baseline.levers.workscope,
+    const candidate = {
+      removalOffsetCycles: parseNumber(q.removalOffsetCycles, baseline.levers.removalOffsetCycles),
+      deratePct: parseNumber(q.deratePct, baseline.levers.deratePct),
+      routeSeverity: parseNumber(q.routeSeverity, baseline.levers.routeSeverity),
+      washIntervalDays: parseNumber(q.washIntervalDays, baseline.levers.washIntervalDays),
+      workscope: parseWorkscope(q.workscope, baseline.levers.workscope),
     };
+    const invalid = Object.entries(candidate)
+      .filter(([, value]) => value === undefined)
+      .map(([key]) => key);
+    if (invalid.length > 0) {
+      return reply.code(400).send({
+        error: "bad_request",
+        message: `Invalid lever value for: ${invalid.join(", ")}`,
+        statusCode: 400,
+      });
+    }
+    const levers = candidate as SimulationLevers;
     const outcome = simulate(baseline, levers);
     return {
       levers,
