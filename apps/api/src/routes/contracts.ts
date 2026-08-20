@@ -1,16 +1,16 @@
 import type { FastifyInstance } from "fastify";
-import { contractPortfolioSummary, contractPosition, contractPositions } from "@rr/data";
+import { contractPortfolioSummary, contractPosition, contractPositions, contractsAtRisk } from "@rr/data";
 
 /**
  * Contracts & TotalCare. One endpoint for the portfolio roll-up, one for the
- * register and one for a single contract dossier.
+ * derived register and one for a single contract dossier. The raw register
+ * lives on core's `GET /contracts`, so the derived positions sit below it.
  */
 export async function registerContractRoutes(app: FastifyInstance): Promise<void> {
   app.get("/contracts/summary", async () => contractPortfolioSummary());
 
-  app.get<{ Querystring: { risk?: "all" | "exposed" } }>("/contracts", async (request) => {
-    const positions = contractPositions();
-    return request.query.risk === "exposed" ? positions.filter((p) => p.status !== "green") : positions;
+  app.get<{ Querystring: { risk?: "all" | "exposed" } }>("/contracts/positions", async (request) => {
+    return request.query.risk === "exposed" ? contractsAtRisk() : contractPositions();
   });
 
   app.get<{ Params: { contractId: string } }>("/contracts/:contractId", async (request, reply) => {

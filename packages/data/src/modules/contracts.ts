@@ -169,9 +169,9 @@ function financialsFor(contract: Contract, performance: ContractPerformance): Co
   );
 
   const projectedRevenueUsd = Math.round(revenueAccruedUsd + annualEfh * contract.ratePerEfhUsd * yearsRemaining);
-  const projectedCostUsd = Math.round(
-    maintenanceCostUsd + annualCostRunRate * yearsRemaining * 0.55 + forecastShopVisitCostUsd,
-  );
+  // Only line maintenance carries forward as a run rate; the shop-visit component
+  // of the remaining term is the discrete forecast, not the amortised accrual.
+  const projectedCostUsd = Math.round(maintenanceCostUsd + lineCostRunRate * yearsRemaining + forecastShopVisitCostUsd);
   const projectedMarginUsd = projectedRevenueUsd - projectedCostUsd - projectedPenaltiesUsd;
 
   return {
@@ -309,11 +309,11 @@ function breachRiskFor(
       status: "red",
     });
   }
-  if (financials.forecastShopVisits > 0) {
+  if (financials.forecastShopVisits > 3) {
     drivers.push({
       label: "Shop visit bow wave",
-      detail: `${financials.forecastShopVisits} shop visit${financials.forecastShopVisits === 1 ? "" : "s"} due before term end`,
-      status: financials.forecastShopVisits > 3 ? "amber" : "green",
+      detail: `${financials.forecastShopVisits} shop visits due before term end`,
+      status: "amber",
     });
   }
 
@@ -361,6 +361,11 @@ function formatShortUsd(value: number): string {
   return `$${Math.round(value)}`;
 }
 
+/**
+ * Safe to hold for the process lifetime: `getDataset()` is a per-process
+ * singleton and `NOW` is fixed. Add invalidation here if the seed ever becomes
+ * switchable at runtime.
+ */
 let positionsCache: ContractPosition[] | undefined;
 
 /** The full commercial position for every contract in the register. */
@@ -408,7 +413,7 @@ export function contractPosition(contractId: string): ContractPosition | undefin
   return contractPositions().find((p) => p.contract.id === contractId);
 }
 
-/** Contracts whose projected quarter-end availability is at or below commitment. */
+/** Contracts carrying breach exposure this quarter — anything not rated green. */
 export function contractsAtRisk(): ContractPosition[] {
   return contractPositions().filter((p) => p.status !== "green");
 }
