@@ -14,15 +14,20 @@ export function ScheduleTable({ schedules, weekEndIso }: { schedules: ScheduledR
   const [filter, setFilter] = React.useState<Filter>("attention");
   const [query, setQuery] = React.useState("");
 
-  const attention = schedules.filter((s) => s.status !== "green");
+  const attention = schedules.filter((s) => s.status === "red" || s.status === "amber");
   const thisWeek = schedules.filter((s) => s.nextRunAt <= weekEndIso);
 
   const rows = React.useMemo(() => {
-    const base = filter === "attention" ? attention : filter === "week" ? thisWeek : schedules;
+    const base =
+      filter === "attention"
+        ? schedules.filter((s) => s.status === "red" || s.status === "amber")
+        : filter === "week"
+          ? schedules.filter((s) => s.nextRunAt <= weekEndIso)
+          : schedules;
     const needle = query.trim().toLowerCase();
     if (!needle) return base;
     return base.filter((s) => `${s.name} ${s.operatorName} ${s.recipients.join(" ")}`.toLowerCase().includes(needle));
-  }, [filter, query, schedules, attention, thisWeek]);
+  }, [filter, query, schedules, weekEndIso]);
 
   const columns: Column<ScheduledReport>[] = [
     {

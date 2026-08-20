@@ -6,6 +6,7 @@ import {
   defaultReportScope,
   listScheduledReports,
   REPORT_DEFINITIONS,
+  REPORT_PERIOD_IDS,
   reportDocumentToCsv,
   reportFileName,
   reportsOverview,
@@ -33,6 +34,13 @@ export async function registerReportsRoutes(app: FastifyInstance): Promise<void>
       return reply.code(404).send({ error: "not_found", message: "Unknown report", statusCode: 404 });
     }
     const { operatorId = "all", family, period, sections, format } = request.query;
+    if (period && !REPORT_PERIOD_IDS.includes(period as ReportPeriodId)) {
+      return reply.code(400).send({
+        error: "bad_request",
+        message: `Unknown period. Expected one of: ${REPORT_PERIOD_IDS.join(", ")}`,
+        statusCode: 400,
+      });
+    }
     const scope = defaultReportScope(definition.id as ReportId, operatorId);
     if (family) scope.family = family as EngineFamily | "all";
     if (period) scope.periodId = period as ReportPeriodId;

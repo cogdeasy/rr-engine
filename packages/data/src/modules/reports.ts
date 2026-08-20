@@ -367,6 +367,14 @@ function inPeriod(at: string, period: ReportPeriod): boolean {
   return at >= period.fromIso && at <= period.toIso;
 }
 
+/** A calendar month counts towards the period if any day of it falls inside the window. */
+function monthOverlapsPeriod(month: string, period: ReportPeriod): boolean {
+  const [year, index] = month.split("-").map(Number);
+  const start = iso(new Date(Date.UTC(year!, index! - 1, 1)));
+  const end = iso(new Date(Date.UTC(year!, index!, 0, 23, 59, 59, 999)));
+  return end >= period.fromIso && start <= period.toIso;
+}
+
 function scopeFacts(facts: ReportFacts, scope: ReportScope): ScopedFacts {
   const period = resolveReportPeriod(scope.periodId, facts.generatedAt);
   const operators = scope.operatorId === "all" ? facts.operators : facts.operators.filter((o) => o.id === scope.operatorId);
@@ -411,7 +419,7 @@ function scopeFacts(facts: ReportFacts, scope: ReportScope): ScopedFacts {
     workOrdersInPeriod: workOrders.filter((w) => inPeriod(w.raisedAt, period)),
     bulletins,
     llps,
-    flightMonths: facts.flightMonths.filter((m) => operatorIds.has(m.operatorId) && `${m.month}-28T00:00:00.000Z` >= period.fromIso),
+    flightMonths: facts.flightMonths.filter((m) => operatorIds.has(m.operatorId) && monthOverlapsPeriod(m.month, period)),
     audit: facts.audit.filter((a) => inPeriod(a.at, period)),
     scopeLabel,
   };
@@ -1327,8 +1335,9 @@ export function listScheduledReports(facts: ReportFacts = buildReportFacts()): S
       const nextRunAt = addDays(lastRunAt, days);
       const overdue = nextRunAt < now;
       const failed = rand.bool(rng, 0.12);
-      const lastRunStatus: ScheduleRunStatus = failed ? "failed" : overdue ? "late" : sinceLastRun < 2 ? "delivered" : "delivered";
-      const status: StatusLevel = failed ? "red" : overdue ? "amber" : "green";
+      const running = sinceLastRun === 0;
+      const lastRunStatus: ScheduleRunStatus = failed ? "failed" : overdue ? "late" : running ? "pending" : "delivered";
+      const status: StatusLevel = failed ? "red" : overdue ? "amber" : running ? "grey" : "green";
       out.push({
         id: `RS-${String(n).padStart(3, "0")}`,
         reportId: def.id,
@@ -1350,7 +1359,9 @@ export function listScheduledReports(facts: ReportFacts = buildReportFacts()): S
           ? "Delivery failed — recipient mailbox rejected the attachment size."
           : overdue
             ? "Run window missed while the fleet extract was rebuilding."
-            : "Delivered on schedule.",
+            : running
+              ? "Run in progress — delivery not yet confirmed."
+              : "Delivered on schedule.",
       });
     }
   }
