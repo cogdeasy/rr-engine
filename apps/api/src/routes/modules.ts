@@ -1,4 +1,5 @@
 import type { FastifyInstance } from "fastify";
+import { registerRiskRoutes } from "./modules/risk";
 
 /**
  * Feature-module routes.
@@ -9,4 +10,5 @@ import type { FastifyInstance } from "fastify";
  */
 export async function registerModuleRoutes(app: FastifyInstance): Promise<void> {
   void app;
+  await registerRiskRoutes(app);
 }
