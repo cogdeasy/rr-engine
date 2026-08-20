@@ -16,3 +16,4 @@ export * from "./reports";
 export * from "./fleet-map";
 export * from "./workscope";
 export * from "./telemetry-quality";
+export * from "./compliance";
