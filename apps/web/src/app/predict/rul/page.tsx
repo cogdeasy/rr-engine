@@ -86,11 +86,15 @@ export default function PrognosticsPage() {
           caption="Removal predicted before a booked slot exists"
         />
         <StatTile
-          label="Shortest remaining life"
-          value={nextOut ? formatNumber(nextOut.rulCycles) : "—"}
-          unit="cycles"
+          label="Soonest off wing"
+          value={nextOut ? formatNumber(nextOut.rulDays) : "—"}
+          unit="days"
           status={nextOut?.status ?? "grey"}
-          caption={nextOut ? `${nextOut.esn} · ${nextOut.failureMode}` : "No prognostics scored"}
+          caption={
+            nextOut
+              ? `${nextOut.esn} · ${formatNumber(nextOut.rulCycles)} cycles · ${nextOut.failureMode}`
+              : "No prognostics scored"
+          }
         />
         <StatTile
           label="Fleet median RUL"

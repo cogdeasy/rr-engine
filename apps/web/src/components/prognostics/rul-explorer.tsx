@@ -181,7 +181,6 @@ export function RulExplorer({
           rowKey={(row) => row.engineId}
           onRowClick={(row) => setSelectedId(row.engineId)}
           rowAccent={(row) => statusStyles[row.status].border.replace("border-", "border-l-")}
-          initialSortKey="rul"
           dense
           emptyMessage="No engines match this filter."
         />
