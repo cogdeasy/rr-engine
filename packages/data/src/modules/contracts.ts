@@ -26,7 +26,12 @@ import { getDataset } from "../index";
 import { clamp, createRng, daysAgo, iso, NOW, rand, round } from "../rng";
 
 const MS_PER_DAY = 86_400_000;
-const DAYS_SAMPLED = 45;
+/** Window over which the dataset raises work orders; used to annualise observed cost. */
+const WORK_ORDER_WINDOW_DAYS = 120;
+const CYCLES_PER_YEAR = 620;
+/** Plausible band for annual utilisation of a single engine, in flight hours. */
+const MIN_ANNUAL_EFH_PER_ENGINE = 1_500;
+const MAX_ANNUAL_EFH_PER_ENGINE = 5_200;
 
 function statusFromGap(gapPts: number): StatusLevel {
   if (gapPts <= -0.5) return "red";
@@ -44,20 +49,23 @@ function monthlyHistory(seed: string, latest: number, months: number, spread: nu
   return points;
 }
 
-/** Annualised engine flight hours for a contract, from the sampled flight log. */
+/**
+ * Annualised engine flight hours for a contract. Utilisation per engine is its
+ * lifetime hours over the years its airframe has been in service, bounded to a
+ * plausible band (the flight log is a sample of sectors, not the full log).
+ */
 function annualEfhFor(contract: Contract): number {
   const data = getDataset();
   const covered = new Set(contract.coveredEngineIds);
-  const aircraft = data.aircraft.filter((a) => a.engineIds.some((id) => covered.has(id)));
-  const aircraftIds = new Set(aircraft.map((a) => a.id));
-  let efh = 0;
-  for (const flight of data.flights) {
-    if (!aircraftIds.has(flight.aircraftId)) continue;
-    const ac = aircraft.find((a) => a.id === flight.aircraftId);
-    const enginesOnWing = ac ? ac.engineIds.filter((id) => covered.has(id)).length : 2;
-    efh += flight.blockHours * enginesOnWing;
-  }
-  return Math.round((efh / DAYS_SAMPLED) * 365);
+  const engines = data.engines.filter((e) => covered.has(e.id));
+  const efh = engines.reduce((sum, engine) => {
+    const aircraft = data.aircraft.find((a) => a.id === engine.aircraftId);
+    const yearsInService = aircraft
+      ? Math.max(1, (NOW.getTime() - new Date(aircraft.deliveredAt).getTime()) / (MS_PER_DAY * 365))
+      : 6;
+    return sum + clamp(engine.totalFlightHours / yearsInService, MIN_ANNUAL_EFH_PER_ENGINE, MAX_ANNUAL_EFH_PER_ENGINE);
+  }, 0);
+  return Math.round(efh);
 }
 
 function performanceFor(contract: Contract): ContractPerformance {
@@ -125,15 +133,31 @@ function financialsFor(contract: Contract, performance: ContractPerformance): Co
   const yearsRemaining = Math.max(0, (new Date(contract.endsAt).getTime() - NOW.getTime()) / (MS_PER_DAY * 365));
 
   const revenueAccruedUsd = Math.round(annualEfh * contract.ratePerEfhUsd * yearsElapsed);
-  const maintenanceCostUsd = data.workOrders
-    .filter((w) => covered.has(w.engineId) && w.state !== "cancelled")
-    .reduce((s, w) => s + (w.actualCostUsd ?? w.estimatedCostUsd), 0);
+
+  // Cost is put on the same footing as revenue: the dataset only raises work
+  // orders over a short recent window, so line maintenance is annualised from
+  // that window, while shop visits — a once-per-overhaul-interval event — are
+  // amortised across the interval they buy, as a TotalCare accrual would be.
+  const workOrders = data.workOrders.filter((w) => covered.has(w.engineId) && w.state !== "cancelled");
+  const costOf = (w: (typeof workOrders)[number]) => w.actualCostUsd ?? w.estimatedCostUsd;
+  const lineCostRunRate =
+    workOrders.filter((w) => w.type !== "shop-visit").reduce((s, w) => s + costOf(w), 0) /
+    (WORK_ORDER_WINDOW_DAYS / 365);
+  const overhaulIntervalYears =
+    engines.reduce(
+      (s, e) => s + (ENGINE_FAMILIES.find((f) => f.family === e.family)?.overhaulIntervalCycles ?? 5000) / CYCLES_PER_YEAR,
+      0,
+    ) / Math.max(1, engines.length);
+  const shopVisitCostRunRate =
+    workOrders.filter((w) => w.type === "shop-visit").reduce((s, w) => s + costOf(w), 0) /
+    Math.max(1, overhaulIntervalYears);
+  const annualCostRunRate = lineCostRunRate + shopVisitCostRunRate;
+  const maintenanceCostUsd = Math.round(annualCostRunRate * yearsElapsed);
   const marginUsd = revenueAccruedUsd - maintenanceCostUsd;
 
   // Shop visits still to come inside the remaining term: engines whose predicted
   // remaining life is consumed before the contract ends.
-  const cyclesPerYear = engines.length > 0 ? 620 : 0;
-  const forecastShopVisits = engines.filter((e) => e.rulCycles <= cyclesPerYear * yearsRemaining).length;
+  const forecastShopVisits = engines.filter((e) => e.rulCycles <= CYCLES_PER_YEAR * yearsRemaining).length;
   const shopVisitUnitCost = rand.int(rng, 4_200_000, 7_800_000);
   const forecastShopVisitCostUsd = forecastShopVisits * shopVisitUnitCost;
 
@@ -145,7 +169,6 @@ function financialsFor(contract: Contract, performance: ContractPerformance): Co
   );
 
   const projectedRevenueUsd = Math.round(revenueAccruedUsd + annualEfh * contract.ratePerEfhUsd * yearsRemaining);
-  const annualCostRunRate = maintenanceCostUsd / yearsElapsed;
   const projectedCostUsd = Math.round(
     maintenanceCostUsd + annualCostRunRate * yearsRemaining * 0.55 + forecastShopVisitCostUsd,
   );
@@ -187,7 +210,7 @@ function guaranteesFor(contract: Contract, financials: ContractFinancials, perfo
   const engines = data.engines.filter((e) => covered.has(e.id));
 
   const shopVisits = data.workOrders.filter((w) => covered.has(w.engineId) && w.type === "shop-visit").length;
-  const svrActual = round((shopVisits / Math.max(1, financials.annualEfh / 1000)) * 1000, 2);
+  const svrActual = round(shopVisits / Math.max(1, financials.annualEfh / 1000), 2);
   const svrGuaranteed = round(svrActual * rand.float(rng, 0.78, 1.22), 2);
 
   const familySpecs = engines.map((e) => ENGINE_FAMILIES.find((f) => f.family === e.family));
@@ -338,10 +361,13 @@ function formatShortUsd(value: number): string {
   return `$${Math.round(value)}`;
 }
 
+let positionsCache: ContractPosition[] | undefined;
+
 /** The full commercial position for every contract in the register. */
 export function contractPositions(): ContractPosition[] {
+  if (positionsCache) return positionsCache;
   const data = getDataset();
-  return data.contracts
+  positionsCache = data.contracts
     .map((contract) => {
       const operator = data.operators.find((o) => o.id === contract.operatorId)!;
       const covered = new Set(contract.coveredEngineIds);
@@ -375,6 +401,7 @@ export function contractPositions(): ContractPosition[] {
       } satisfies ContractPosition;
     })
     .sort((a, b) => b.breachRisk.score - a.breachRisk.score);
+  return positionsCache;
 }
 
 export function contractPosition(contractId: string): ContractPosition | undefined {

@@ -9,7 +9,7 @@ import { cn, statusStyles } from "../../utils";
 export function CommitmentBar({
   actual,
   target,
-  floor = 95,
+  floor = 88,
   ceiling = 100,
   status,
   className,
