@@ -24,6 +24,7 @@ import { registerEnvironmentRoutes } from "./modules/environment";
 import { registerBorescopeRoutes } from "./borescope";
 import { registerPrognosticsRoutes } from "./prognostics";
 import { registerBuildRecordsRoutes } from "./modules/build-records";
+import { registerWorkforceRoutes } from "./modules/workforce";
 
 /**
  * Feature-module routes.
@@ -65,4 +66,5 @@ export async function registerModuleRoutes(app: FastifyInstance): Promise<void> 
   await registerBorescopeRoutes(app);
   await registerPrognosticsRoutes(app);
   await registerBuildRecordsRoutes(app);
+  await registerWorkforceRoutes(app);
 }

@@ -266,7 +266,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Technician availability, licences and skill coverage by shift.",
     decision: "Do we have certified people to release this work on time?",
     icon: "users",
-    implemented: false,
+    implemented: true,
   },
 
   // Execute
