@@ -29,6 +29,9 @@ export default function HotSectionPage() {
     wash: assessments.filter((a) => a.action.kind === "wash"),
   };
   const earliest = summary.earliestExhaustion;
+  // A queue is "act now" as soon as one of its engines carries a red action.
+  const queueStatus = (rows: HotSectionAssessment[]): "red" | "amber" | "green" =>
+    rows.length === 0 ? "green" : rows.some((r) => r.action.status === "red") ? "red" : "amber";
 
   return (
     <div className="space-y-7">
@@ -81,7 +84,7 @@ export default function HotSectionPage() {
       {/* The action queue: every red thing below resolves to one of these three. */}
       <section className="grid gap-4 lg:grid-cols-3">
         <ActionCard
-          status="red"
+          status={queueStatus(queue.workscope)}
           title="Hot section restoration"
           count={queue.workscope.length}
           lead={queue.workscope[0]}
@@ -90,7 +93,7 @@ export default function HotSectionPage() {
           cta="Build workscope"
         />
         <ActionCard
-          status="amber"
+          status={queueStatus(queue.borescope)}
           title="Borescope confirmation"
           count={queue.borescope.length}
           lead={queue.borescope[0]}
@@ -99,7 +102,7 @@ export default function HotSectionPage() {
           cta="Raise inspection"
         />
         <ActionCard
-          status="amber"
+          status={queueStatus(queue.wash)}
           title="Water wash"
           count={queue.wash.length}
           lead={queue.wash[0]}
@@ -214,7 +217,7 @@ function ActionCard({
   href,
   cta,
 }: {
-  status: "red" | "amber";
+  status: "red" | "amber" | "green";
   title: string;
   count: number;
   lead: HotSectionAssessment | undefined;
@@ -230,7 +233,9 @@ function ActionCard({
             <p className="rr-label text-rr-slate">{title}</p>
             <p className={cn("rr-numeric mt-1 text-3xl font-semibold", statusStyles[status].text)}>{count}</p>
           </div>
-          <StatusPill status={status}>{status === "red" ? "Act now" : "Watchlist"}</StatusPill>
+          <StatusPill status={status}>
+            {status === "red" ? "Act now" : status === "amber" ? "Watchlist" : "Clear"}
+          </StatusPill>
         </div>
         <p className="mt-2 text-[11px] leading-relaxed text-rr-slate">{description}</p>
       </div>
