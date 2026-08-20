@@ -7,6 +7,7 @@ import {
   supplierPerformance,
   supplyChainSummary,
   SUPPLY_CHAIN_HORIZON_DAYS,
+  NOW,
 } from "@rr/data";
 import {
   Badge,
@@ -144,7 +145,7 @@ export default function SupplyChainPage() {
           description="Ranked by net benefit: the delay cost removed less the cost of recovery. Everything here is a red shortage with a credible recovery inside the required-on-dock date."
           actions={<Badge variant="brand">{expedites.length} options evaluated</Badge>}
         />
-        <ExpediteBoard options={recommended} />
+        <ExpediteBoard options={recommended} nowIso={NOW.toISOString()} />
       </section>
 
       <div className="grid gap-5 xl:grid-cols-3">

@@ -339,11 +339,19 @@ export function criticalShortages(horizonDays = SUPPLY_CHAIN_HORIZON_DAYS): Shor
 /* Expedite economics                                                  */
 /* ------------------------------------------------------------------ */
 
-function methodFor(shortage: ShortageRisk, hasOpenPo: boolean): ExpediteMethod {
-  if (shortage.singleSource) return hasOpenPo ? "air-freight" : "supplier-overtime";
+function methodFor(shortage: ShortageRisk, hasOpenPo: boolean, poolStock: boolean): ExpediteMethod {
   if (hasOpenPo) return "air-freight";
-  if (shortage.qtyOnOrder > 0) return "loan-from-pool";
-  return "alternate-source";
+  // Nothing on order: a pool loan is the only recovery fast enough close to the
+  // need date; further out there is time to place the work elsewhere.
+  if (poolStock && shortage.daysToRequired <= 21) return "loan-from-pool";
+  return shortage.singleSource ? "supplier-overtime" : "alternate-source";
+}
+
+/** Free stock of the part held at any other facility in the network. */
+function networkStock(shortage: ShortageRisk): number {
+  return getDataset()
+    .inventory.filter((i) => i.partNumber === shortage.partNumber && i.facilityId !== shortage.facilityId)
+    .reduce((sum, i) => sum + Math.max(0, i.onHand - i.reserved), 0);
 }
 
 /**
@@ -357,7 +365,7 @@ export function expediteOptions(horizonDays = SUPPLY_CHAIN_HORIZON_DAYS): Expedi
       const rng = createRng(`expedite:${shortage.id}`);
       const part = data.parts.find((p) => p.partNumber === shortage.partNumber);
       const unitCost = part?.unitCostUsd ?? 40_000;
-      const method = methodFor(shortage, shortage.coveringPoId !== null);
+      const method = methodFor(shortage, shortage.coveringPoId !== null, networkStock(shortage) >= shortage.qtyRequired);
       const recoverable =
         method === "air-freight"
           ? rand.int(rng, 6, 21)
@@ -492,7 +500,11 @@ export function criticalPartRegister(): CriticalPartRegisterEntry[] {
       const onHand = stock.reduce((s, i) => s + i.onHand, 0);
       const onOrder = stock.reduce((s, i) => s + i.onOrder, 0);
       const demand90d = demand
-        .filter((d) => d.part.partNumber === part.partNumber && daysBetween(NOW, new Date(d.requiredOnDock)) <= SUPPLY_CHAIN_HORIZON_DAYS)
+        .filter((d) => {
+          if (d.part.partNumber !== part.partNumber) return false;
+          const days = daysBetween(NOW, new Date(d.requiredOnDock));
+          return days >= 0 && days <= SUPPLY_CHAIN_HORIZON_DAYS;
+        })
         .reduce((s, d) => s + d.qty, 0);
       const dailyDemand = demand90d / SUPPLY_CHAIN_HORIZON_DAYS;
       const coverDays = dailyDemand > 0 ? Math.round(onHand / dailyDemand) : null;
@@ -548,8 +560,11 @@ export function supplyChainSummary(horizonDays = SUPPLY_CHAIN_HORIZON_DAYS): Sup
     openPoCount: open.length,
     openPoValueUsd: Math.round(open.reduce((s, po) => s + po.valueUsd, 0)),
     latePoCount: open.filter((po) => po.status === "red").length,
+    // Weighted by open order count so a supplier with a single order cannot move
+    // the fleet figure as much as one carrying the book.
     fleetOnTimeDeliveryPct: round(
-      suppliers.reduce((s, x) => s + x.onTimeDeliveryPct, 0) / Math.max(1, suppliers.length),
+      suppliers.reduce((s, x) => s + x.onTimeDeliveryPct * (x.openPoCount + 1), 0) /
+        Math.max(1, suppliers.reduce((s, x) => s + x.openPoCount + 1, 0)),
       1,
     ),
     singleSourceParts: register.filter((r) => r.singleSource).length,

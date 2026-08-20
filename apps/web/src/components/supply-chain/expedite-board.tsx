@@ -21,7 +21,8 @@ const RECOMMENDATION_COPY: Record<ExpediteOption["recommendation"], string> = {
  * The action rail: for each recovery worth buying, the cost of the expedite set
  * against the delay it removes, and a one-click commitment.
  */
-export function ExpediteBoard({ options }: { options: ExpediteOption[] }) {
+export function ExpediteBoard({ options, nowIso }: { options: ExpediteOption[]; nowIso: string }) {
+  const now = new Date(nowIso).getTime();
   const [approved, setApproved] = React.useState<Record<string, boolean>>({});
   const committed = options.filter((o) => approved[o.id]);
   const committedCost = committed.reduce((sum, o) => sum + o.expediteCostUsd, 0);
@@ -33,6 +34,7 @@ export function ExpediteBoard({ options }: { options: ExpediteOption[] }) {
       <div className="grid gap-4 lg:grid-cols-3">
         {options.map((option) => {
           const isApproved = Boolean(approved[option.id]);
+          const decisionOverdue = new Date(option.decideBy).getTime() < now;
           const scale = Math.max(option.expediteCostUsd, option.delayCostUsd, 1);
           return (
             <article
@@ -83,7 +85,10 @@ export function ExpediteBoard({ options }: { options: ExpediteOption[] }) {
               <dl className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-rr-slate">
                 <div className="flex justify-between">
                   <dt>Decide by</dt>
-                  <dd className="rr-numeric font-medium text-rr-ink">{formatDate(option.decideBy)}</dd>
+                  <dd className={cn("rr-numeric font-medium", decisionOverdue ? "text-status-red" : "text-rr-ink")}>
+                    {formatDate(option.decideBy)}
+                    {decisionOverdue ? " · overdue" : ""}
+                  </dd>
                 </div>
                 <div className="flex justify-between">
                   <dt>Confidence</dt>
