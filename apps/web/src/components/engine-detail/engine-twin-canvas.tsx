@@ -4,6 +4,7 @@ import * as React from "react";
 import * as THREE from "three";
 import { Canvas, type ThreeEvent } from "@react-three/fiber";
 import { Bounds, ContactShadows, Html, OrbitControls, useAnimations, useGLTF } from "@react-three/drei";
+import { clone as cloneScene } from "three/examples/jsm/utils/SkeletonUtils.js";
 import type { ModuleCode, ModuleCondition, StatusLevel } from "@rr/types";
 import { moduleCodeForGltfNode } from "@rr/data";
 
@@ -72,6 +73,9 @@ function EngineModel({
   onAnimationsResolved?: (clips: string[]) => void;
 }) {
   const { scene, animations } = useGLTF(src, DRACO_DECODER_PATH);
+  // useGLTF caches one scene per URL and two families can share an asset, so
+  // every mount gets its own clone — tints never leak into the cached original.
+  const model = React.useMemo(() => cloneScene(scene), [scene]);
   const group = React.useRef<THREE.Group>(null);
   const { actions } = useAnimations(animations, group);
   const [bindings, setBindings] = React.useState<MeshBinding[]>([]);
@@ -85,7 +89,7 @@ function EngineModel({
   // Bind meshes to maintenance modules once per asset.
   React.useEffect(() => {
     const next: MeshBinding[] = [];
-    scene.traverse((object) => {
+    model.traverse((object) => {
       if (!(object instanceof THREE.Mesh)) return;
       if (/collision/i.test(object.name)) {
         object.visible = false;
@@ -110,7 +114,7 @@ function EngineModel({
     return () => {
       for (const binding of next) binding.material.dispose();
     };
-  }, [scene, animations, onAnimationsResolved]);
+  }, [model, animations, onAnimationsResolved]);
 
   // Status-coloured emissive tint; selection always wins so the click reads.
   React.useEffect(() => {
@@ -174,7 +178,7 @@ function EngineModel({
 
   return (
     <group ref={group}>
-      <primitive object={scene} onClick={handleClick} />
+      <primitive object={model} onClick={handleClick} />
       {hotspots.map(({ mod, position }) => (
         <Html key={mod.code} position={position} center distanceFactor={9} zIndexRange={[20, 0]}>
           <Hotspot
@@ -262,15 +266,12 @@ export function EngineTwinCanvas({
   const src = sources[sourceIndex];
 
   const handleError = React.useCallback(() => {
-    setSourceIndex((index) => {
-      const next = index + 1;
-      if (next >= sources.length) {
-        onLoadFailed?.();
-        return index;
-      }
-      return next;
-    });
-  }, [sources.length, onLoadFailed]);
+    if (sourceIndex + 1 >= sources.length) {
+      onLoadFailed?.();
+      return;
+    }
+    setSourceIndex(sourceIndex + 1);
+  }, [sourceIndex, sources.length, onLoadFailed]);
 
   if (!src) return null;
 

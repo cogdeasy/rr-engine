@@ -194,7 +194,7 @@ export function engineModuleConditions(engineId: string): ModuleCondition[] {
 }
 
 /** The single decision the dossier leads with. */
-export function engineRecommendedAction(engineId: string): EngineRecommendedAction {
+export function engineRecommendedAction(engineId: string, precomputedModules?: ModuleCondition[]): EngineRecommendedAction {
   const engine = getEngine(engineId);
   if (!engine) {
     return {
@@ -216,8 +216,7 @@ export function engineRecommendedAction(engineId: string): EngineRecommendedActi
         (a.timeToActionHours ?? Number.MAX_SAFE_INTEGER) - (b.timeToActionHours ?? Number.MAX_SAFE_INTEGER),
     );
   const driver = openAlerts[0];
-  const modules = engineModuleConditions(engine.id);
-  const worstModule = modules[0];
+  const worstModule = (precomputedModules ?? engineModuleConditions(engine.id))[0];
 
   if (driver) {
     return {
@@ -296,6 +295,7 @@ export function engineDossier(engineId: string): EngineDossier | null {
     .sort((a, b) => (a.scheduledStart < b.scheduledStart ? 1 : -1));
   const workOrderIds = new Set(workOrders.map((w) => w.id));
   const aircraft = data.aircraft.find((a) => a.id === engine.aircraftId) ?? null;
+  const modules = engineModuleConditions(engine.id);
   const recentFlights: EngineFlightSummary[] = aircraft
     ? data.flights
         .filter((f) => f.aircraftId === aircraft.id)
@@ -329,8 +329,8 @@ export function engineDossier(engineId: string): EngineDossier | null {
       blurb: spec.blurb,
     },
     twin: engineTwinAsset(engine.id),
-    modules: engineModuleConditions(engine.id),
-    recommendedAction: engineRecommendedAction(engine.id),
+    modules,
+    recommendedAction: engineRecommendedAction(engine.id, modules),
     alerts: data.alerts
       .filter((a) => a.engineId === engine.id)
       .sort((a, b) => severityRank(b.severity) - severityRank(a.severity) || (a.raisedAt < b.raisedAt ? 1 : -1)),
