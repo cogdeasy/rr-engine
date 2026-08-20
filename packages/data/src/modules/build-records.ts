@@ -203,6 +203,11 @@ const REPLACEMENT_REASONS = [
   "Foreign object damage",
 ];
 
+/** Date of the last full engine build, shared by the fleet list and the engine record. */
+function engineBuildDate(engine: Engine, rng: () => number): Date {
+  return daysAgo(Math.round(engine.hoursSinceOverhaul / rand.float(rng, 7, 13)));
+}
+
 export function buildHistory(engineId: string): BuildEvent[] {
   const data = getDataset();
   const engine = data.engines.find((e) => e.id === engineId);
@@ -210,7 +215,7 @@ export function buildHistory(engineId: string): BuildEvent[] {
   const installations = moduleInstallations(engine.id);
   const rng = createRng(`build-history:${engine.id}`);
   const events: BuildEvent[] = [];
-  const buildAt = daysAgo(Math.round(engine.hoursSinceOverhaul / rand.float(rng, 7, 13)));
+  const buildAt = engineBuildDate(engine, rng);
   const buildFacility = rand.pick(rng, data.facilities.filter((f) => f.kind === "overhaul-base" || f.kind === "partner-shop"));
 
   events.push({
@@ -487,7 +492,7 @@ function summaryFor(engine: Engine): BuildRecordSummary {
   const overdueBulletinCount = embodimentStatus(engine.id).filter((b) => b.status === "red").length;
   const operator = data.operators.find((o) => o.id === engine.operatorId);
   const aircraft = data.aircraft.find((a) => a.id === engine.aircraftId);
-  const lastBuild = [...modules].sort((a, b) => (a.installedAt < b.installedAt ? 1 : -1))[0];
+  const lastBuildAt = iso(engineBuildDate(engine, createRng(`build-history:${engine.id}`)));
 
   return {
     engineId: engine.id,
@@ -502,7 +507,7 @@ function summaryFor(engine: Engine): BuildRecordSummary {
     nonStandardCount: nonStandard,
     traceGapCount,
     overdueBulletinCount,
-    lastBuildAt: lastBuild?.installedAt ?? engine.installedAt ?? iso(NOW),
+    lastBuildAt,
     configurationStatus: configurationStatusFor(overdueBulletinCount, traceGapCount, superseded, nonStandard),
   };
 }
