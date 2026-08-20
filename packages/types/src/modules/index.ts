@@ -28,3 +28,4 @@ export * from "./supply-chain";
 export * from "./warranty";
 export * from "./capacity";
 export * from "./reliability";
+export * from "./hot-section";
