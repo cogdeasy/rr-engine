@@ -90,7 +90,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "EHM, ACARS and prognostic alerts queued for disposition.",
     decision: "Which alerts are real, and which need action before the next sector?",
     icon: "bell",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "aog",
