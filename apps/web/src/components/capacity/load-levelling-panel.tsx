@@ -136,7 +136,7 @@ export function LoadLevellingPanel({ moves }: { moves: LoadLevellingMove[] }) {
             <span className="rr-numeric text-[11px] text-rr-slate">
               {accepted.length} of {moves.length} accepted
             </span>
-            <Button size="sm" onClick={() => setAccepted(rows.map((m) => m.id))}>
+            <Button size="sm" onClick={() => setAccepted((list) => [...new Set([...list, ...rows.map((m) => m.id)])])}>
               Accept all {rows.length}
             </Button>
           </div>

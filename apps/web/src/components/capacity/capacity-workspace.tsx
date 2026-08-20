@@ -1,7 +1,14 @@
 "use client";
 
 import * as React from "react";
-import type { CapacityCell, CapacityOverview, FacilityCapacityProfile, InductionDemand, StatusLevel } from "@rr/types";
+import type {
+  CapacityCell,
+  CapacityOverview,
+  FacilityCapability,
+  FacilityCapacityProfile,
+  InductionDemand,
+  StatusLevel,
+} from "@rr/types";
 import type { Column } from "@rr/ui";
 import {
   Badge,
@@ -276,36 +283,47 @@ function LegendSwatch({ className, label }: { className: string; label: string }
   );
 }
 
+const CAPABILITY_COLUMNS: Column<FacilityCapability>[] = [
+  {
+    key: "family",
+    header: "Engine family",
+    sortValue: (row) => row.family,
+    render: (row) => <span className="text-[13px] font-medium text-rr-ink">{row.family}</span>,
+  },
+  {
+    key: "certified",
+    header: "Certification",
+    sortValue: (row) => (row.certified ? 1 : 0),
+    render: (row) =>
+      row.certified ? <Badge variant="brand">Certified</Badge> : <span className="text-[12px] text-rr-slate">Not tooled</span>,
+  },
+  {
+    key: "averageTatDays",
+    header: "Mean TAT",
+    align: "right",
+    sortValue: (row) => row.averageTatDays,
+    render: (row) => (
+      <span className="rr-numeric text-[13px] text-rr-ink">{row.certified ? `${row.averageTatDays} d` : "—"}</span>
+    ),
+  },
+  {
+    key: "inductions",
+    header: "In work",
+    align: "right",
+    sortValue: (row) => row.inductions,
+    render: (row) => <span className="rr-numeric text-[13px] text-rr-slate">{row.inductions}</span>,
+  },
+];
+
 function CapabilityTable({ facility }: { facility: FacilityCapacityProfile }) {
   return (
-    <table className="w-full text-sm">
-      <thead>
-        <tr className="border-b border-rr-ink/8">
-          <th className="rr-label py-2 text-left text-rr-slate">Engine family</th>
-          <th className="rr-label py-2 text-left text-rr-slate">Certification</th>
-          <th className="rr-label py-2 text-right text-rr-slate">Mean TAT</th>
-          <th className="rr-label py-2 text-right text-rr-slate">In work</th>
-        </tr>
-      </thead>
-      <tbody>
-        {facility.capabilities.map((capability) => (
-          <tr key={capability.family} className="border-b border-rr-ink/5 last:border-0">
-            <td className="py-2.5 text-[13px] font-medium text-rr-ink">{capability.family}</td>
-            <td className="py-2.5">
-              {capability.certified ? (
-                <Badge variant="brand">Certified</Badge>
-              ) : (
-                <span className="text-[12px] text-rr-slate">Not tooled</span>
-              )}
-            </td>
-            <td className="rr-numeric py-2.5 text-right text-[13px] text-rr-ink">
-              {capability.certified ? `${capability.averageTatDays} d` : "—"}
-            </td>
-            <td className="rr-numeric py-2.5 text-right text-[13px] text-rr-slate">{capability.inductions}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <DataTable
+      columns={CAPABILITY_COLUMNS}
+      rows={facility.capabilities}
+      rowKey={(row) => row.family}
+      dense
+      emptyMessage="No family capability recorded for this shop."
+    />
   );
 }
 
