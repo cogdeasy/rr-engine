@@ -122,7 +122,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "EGT margin and performance parameter trending against limits.",
     decision: "Is deterioration within the expected band for this build standard?",
     icon: "activity",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "vibration",
