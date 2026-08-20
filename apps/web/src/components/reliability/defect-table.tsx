@@ -80,13 +80,6 @@ export function DefectTable({ defects }: { defects: RecurringDefect[] }) {
       render: (row) => <span className="rr-numeric text-rr-ink">{formatNumber(row.mtbfHours)}</span>,
     },
     {
-      key: "repeat",
-      header: "Events / engine",
-      align: "right",
-      sortValue: (row) => row.eventsPerEngine,
-      render: (row) => <span className="rr-numeric text-rr-slate">{row.eventsPerEngine.toFixed(1)}×</span>,
-    },
-    {
       key: "trend",
       header: "Trend",
       align: "center",

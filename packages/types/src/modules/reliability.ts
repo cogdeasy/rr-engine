@@ -96,8 +96,6 @@ export interface RecurringDefect {
   operators: number;
   /** Mean engine flight hours between occurrences of this defect. */
   mtbfHours: number;
-  /** Mean occurrences per affected engine — above 1 means the defect repeats on the same engine. */
-  eventsPerEngine: number;
   lastOccurredAt: Iso;
   trend: Trend;
   status: StatusLevel;

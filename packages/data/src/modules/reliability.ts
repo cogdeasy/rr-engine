@@ -473,7 +473,6 @@ function recurringDefects(ctx: Context): RecurringDefect[] {
       const recent = group.alerts.filter((a) => a.raisedAt >= midpoint).length;
       const older = group.alerts.length - recent;
       const trend: Trend = recent > older ? "up" : recent < older ? "down" : "flat";
-      const eventsPerEngine = round(group.alerts.length / Math.max(1, engineIds.size), 1);
       const openCritical = group.alerts.filter((a) => a.severity === "critical" && a.state !== "closed").length;
       const status: StatusLevel =
         openCritical > 0 && trend === "up" ? "red" : openCritical > 0 || trend === "up" ? "amber" : "green";
@@ -492,7 +491,6 @@ function recurringDefects(ctx: Context): RecurringDefect[] {
         engines: engineIds.size,
         operators: operatorIds.size,
         mtbfHours: Math.round(exposureHours / group.alerts.length),
-        eventsPerEngine,
         lastOccurredAt: group.alerts.reduce((latest, a) => (a.raisedAt > latest ? a.raisedAt : latest), group.alerts[0].raisedAt),
         trend,
         status,
