@@ -202,7 +202,15 @@ export function FleetTabs({
         <div>
           <p className="rr-numeric text-xs text-rr-ink">{formatDate(row.dueAt)}</p>
           <StatusPill status={row.status} className="mt-1">
-            {row.status === "green" ? "Complete" : row.status === "red" ? "Overdue" : row.status === "amber" ? "Plan now" : "Optional"}
+            {row.status === "red"
+              ? "Overdue"
+              : row.status === "amber"
+                ? "Plan now"
+                : row.status === "grey"
+                  ? "Optional"
+                  : row.embodiedEngines >= row.affectedEngines
+                    ? "Complete"
+                    : "On plan"}
           </StatusPill>
         </div>
       ),
