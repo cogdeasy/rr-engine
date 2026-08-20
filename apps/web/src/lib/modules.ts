@@ -288,7 +288,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Task card execution, sign-off and man-hour tracking.",
     decision: "Which tasks are behind estimate and why?",
     icon: "check-square",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "borescope",

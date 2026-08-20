@@ -43,6 +43,8 @@ import { registerWorkOrderRoutes } from "./work-orders";
 
 import { registerVibrationRoutes } from "./vibration";
 
+import { registerTaskCardRoutes } from "./task-cards";
+
 export async function registerModuleRoutes(app: FastifyInstance): Promise<void> {
   await registerAogRoutes(app);
   await registerContractRoutes(app);
@@ -78,4 +80,5 @@ export async function registerModuleRoutes(app: FastifyInstance): Promise<void> 
   await registerLlpRoutes(app);
   await registerSimulationRoutes(app);
   await registerVibrationRoutes(app);
+  await registerTaskCardRoutes(app);
 }
