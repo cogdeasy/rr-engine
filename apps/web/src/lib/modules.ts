@@ -152,7 +152,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "HPT tip clearance, EGT hot spots and combustor distress.",
     decision: "How much hot section life remains before a shop visit is forced?",
     icon: "flame",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "performance",
