@@ -46,7 +46,11 @@ export default async function VibrationPage({ searchParams }: { searchParams: Pr
   const advisoryLimits = Object.fromEntries(selected.shafts.map((s) => [s.shaft, s.amberLimit])) as Record<ShaftId, number>;
   const alerts = vibrationAlerts(selected.engineId).slice(0, 4);
 
-  const pickerOptions = profiles.slice(0, 40).map((profile) => ({
+  const topRanked = profiles.slice(0, 40);
+  const pickerProfiles = topRanked.some((profile) => profile.engineId === selected.engineId)
+    ? topRanked
+    : [selected, ...topRanked];
+  const pickerOptions = pickerProfiles.map((profile) => ({
     engineId: profile.engineId,
     esn: profile.esn,
     operatorCode: profile.operatorCode,
