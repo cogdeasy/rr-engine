@@ -41,3 +41,4 @@ export * from "./llp";
 export * from "./simulation";
 export * from "./vibration";
 export * from "./task-cards";
+export * from "./engine-detail";

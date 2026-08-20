@@ -20,3 +20,4 @@ export * from "./borescope";
 export * from "./workforce";
 export * from "./llp";
 export * from "./simulation";
+export * from "./engine-detail";
