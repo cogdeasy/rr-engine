@@ -17,7 +17,8 @@ export async function registerHotSectionRoutes(app: FastifyInstance): Promise<vo
   app.get<{ Querystring: { status?: string; limit?: string } }>("/hot-section/engines", async (request) => {
     const { status, limit } = request.query;
     const assessments = status ? hotSectionAssessments().filter((a) => a.status === status) : hotSectionAssessments();
-    return limit ? assessments.slice(0, Number(limit)) : assessments;
+    const parsedLimit = Number(limit);
+    return Number.isFinite(parsedLimit) && parsedLimit > 0 ? assessments.slice(0, parsedLimit) : assessments;
   });
 
   app.get<{ Params: { engineId: string } }>("/hot-section/engines/:engineId", async (request, reply) => {
