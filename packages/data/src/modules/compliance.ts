@@ -280,12 +280,16 @@ function computeComplianceTasks(horizonDays: number): ComplianceTask[] {
   return out.sort((a, b) => a.daysRemaining - b.daysRemaining);
 }
 
-/** Outstanding, past-deadline obligations — the immediate-action register. */
-export function complianceOverdueRegister(limit = 12): ComplianceTask[] {
-  return complianceTasks()
+/**
+ * Outstanding, past-deadline obligations — the immediate-action register.
+ * Omit `limit` to get the complete population (needed wherever the caller
+ * filters or searches, so results are not drawn from a pre-cut slice).
+ */
+export function complianceOverdueRegister(limit?: number): ComplianceTask[] {
+  const register = complianceTasks()
     .filter((t) => t.disposition === "overdue")
-    .sort((a, b) => Number(b.mandatory) - Number(a.mandatory) || a.daysRemaining - b.daysRemaining)
-    .slice(0, limit);
+    .sort((a, b) => Number(b.mandatory) - Number(a.mandatory) || a.daysRemaining - b.daysRemaining);
+  return limit === undefined ? register : register.slice(0, limit);
 }
 
 /** Bulletin-level roll-up used by the SB/AD directory. */

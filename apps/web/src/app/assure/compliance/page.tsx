@@ -43,7 +43,7 @@ function bulletinDetailTasks(tasks: ComplianceTask[]): ComplianceTask[] {
 export default function CompliancePage() {
   const summary = complianceSummary();
   const bulletins = complianceBulletins();
-  const overdue = complianceOverdueRegister(14);
+  const overdue = complianceOverdueRegister();
   const operators = complianceByOperator();
   const matrix = complianceMatrix(MATRIX_ENGINES);
   const allTasks = complianceTasks();
