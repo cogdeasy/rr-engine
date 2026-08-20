@@ -10,6 +10,7 @@ import { registerTelemetryQualityRoutes } from "./telemetry-quality";
 import { registerComplianceRoutes } from "./compliance";
 import { registerScheduleRoutes } from "./modules/schedule";
 import { registerOilDebrisRoutes } from "./oil-debris";
+import { registerPerformanceRoutes } from "./performance";
 
 /**
  * Feature-module routes.
@@ -36,4 +37,5 @@ export async function registerModuleRoutes(app: FastifyInstance): Promise<void> 
   await registerScheduleRoutes(app);
   await registerOilDebrisRoutes(app);
   await registerWorkOrderRoutes(app);
+  await registerPerformanceRoutes(app);
 }
