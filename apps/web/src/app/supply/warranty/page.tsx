@@ -91,7 +91,7 @@ export default function WarrantyClaimsPage() {
     .sort((a, b) => b.slaBreachDays - a.slaBreachDays || b.claimedUsd - a.claimedUsd);
   const interventions = atRisk.slice(0, 4);
 
-  const stalled = ageing.find((b) => b.id === "180+");
+  const stalled = ageing.find((b) => b.id === "90+");
   const recoveryStatus = summary.recoveryRatePct < 45 ? "red" : summary.recoveryRatePct < 65 ? "amber" : "green";
 
   return (
@@ -220,7 +220,7 @@ export default function WarrantyClaimsPage() {
           />
           <AgeingChart buckets={ageing} />
           <p className="mt-4 border-t border-rr-ink/8 pt-3 text-[11px] leading-relaxed text-rr-slate">
-            Red is claim value older than 180 days: entitlement evidence degrades with age and time-limited cover can
+            Red is claim value older than 90 days: entitlement evidence degrades with age and time-limited cover can
             lapse before the claim is settled.
           </p>
         </Panel>

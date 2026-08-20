@@ -363,8 +363,7 @@ const AGEING_BUCKETS: { id: string; label: string; minDays: number; maxDays: num
   { id: "0-30", label: "0-30 days", minDays: 0, maxDays: 30, status: "green" },
   { id: "31-60", label: "31-60 days", minDays: 31, maxDays: 60, status: "green" },
   { id: "61-90", label: "61-90 days", minDays: 61, maxDays: 90, status: "amber" },
-  { id: "91-180", label: "91-180 days", minDays: 91, maxDays: 180, status: "amber" },
-  { id: "180+", label: "180+ days", minDays: 181, maxDays: null, status: "red" },
+  { id: "90+", label: "90+ days", minDays: 91, maxDays: null, status: "red" },
 ];
 
 /** Ageing profile of claims that are still open. */

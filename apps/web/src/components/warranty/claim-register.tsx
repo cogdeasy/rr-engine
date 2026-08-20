@@ -260,7 +260,13 @@ export function ClaimRegister({ claims, coverLabels, stateLabels, eventLabels, r
             <Field label="Claimed" value={formatUsd(selected.claimedUsd)} large />
             <Field
               label="Recovered"
-              value={selected.state === "approved" ? formatUsd(selected.approvedUsd) : "Pending"}
+              value={
+                selected.state === "approved"
+                  ? formatUsd(selected.approvedUsd)
+                  : selected.state === "rejected"
+                    ? "Nil — rejected"
+                    : "Pending"
+              }
               large
               tone={selected.state === "approved" ? "green" : selected.state === "rejected" ? "red" : undefined}
             />
