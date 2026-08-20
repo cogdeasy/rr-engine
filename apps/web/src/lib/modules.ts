@@ -372,7 +372,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Maintenance cost per engine flight hour, by driver and fleet.",
     decision: "Where is cost per EFH drifting away from plan?",
     icon: "chart",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "operator-portal",
