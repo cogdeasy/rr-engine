@@ -33,3 +33,4 @@ export * from "./test-cell";
 export * from "./environment";
 export * from "./borescope";
 export * from "./prognostics";
+export * from "./build-records";

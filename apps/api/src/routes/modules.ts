@@ -23,6 +23,7 @@ import { registerTestCellRoutes } from "./modules/test-cell";
 import { registerEnvironmentRoutes } from "./modules/environment";
 import { registerBorescopeRoutes } from "./borescope";
 import { registerPrognosticsRoutes } from "./prognostics";
+import { registerBuildRecordsRoutes } from "./modules/build-records";
 
 /**
  * Feature-module routes.
@@ -63,4 +64,5 @@ export async function registerModuleRoutes(app: FastifyInstance): Promise<void> 
   await registerEnvironmentRoutes(app);
   await registerBorescopeRoutes(app);
   await registerPrognosticsRoutes(app);
+  await registerBuildRecordsRoutes(app);
 }

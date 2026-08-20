@@ -318,7 +318,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Engine configuration, module serial history and traceability.",
     decision: "What is actually installed in this engine right now?",
     icon: "file-text",
-    implemented: false,
+    implemented: true,
   },
 
   // Supply
