@@ -35,13 +35,13 @@ export function windowStatistics(
   let statusReason: string;
   if (breachingRed) {
     status = "red";
-    statusReason = `Current ${round(current, 2)}${unit} is beyond the red limit of ${red}${unit}.`;
+    statusReason = `Current ${current}${unit} is beyond the red limit of ${red}${unit}.`;
   } else if (daysToRed !== null && daysToRed <= 60) {
     status = "red";
     statusReason = `Projected to cross the red limit in ${daysToRed} days at the current rate.`;
   } else if (breachingAmber) {
     status = "amber";
-    statusReason = `Current ${round(current, 2)}${unit} is beyond the amber limit of ${amber}${unit}.`;
+    statusReason = `Current ${current}${unit} is beyond the amber limit of ${amber}${unit}.`;
   } else if (daysToAmber !== null && daysToAmber <= 120) {
     status = "amber";
     statusReason = `Projected to cross the amber limit in ${daysToAmber} days at the current rate.`;
