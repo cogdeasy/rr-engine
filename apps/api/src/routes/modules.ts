@@ -28,6 +28,7 @@ import { registerWorkforceRoutes } from "./modules/workforce";
 import { registerSettingsRoutes } from "./settings";
 import { registerOperatorPortalRoutes } from "./operator-portal";
 import { registerLlpRoutes } from "./llp";
+import { registerSimulationRoutes } from "./modules/simulation";
 
 /**
  * Feature-module routes.
@@ -73,4 +74,5 @@ export async function registerModuleRoutes(app: FastifyInstance): Promise<void> 
   await registerSettingsRoutes(app);
   await registerOperatorPortalRoutes(app);
   await registerLlpRoutes(app);
+  await registerSimulationRoutes(app);
 }

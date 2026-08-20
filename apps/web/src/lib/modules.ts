@@ -204,7 +204,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Digital twin scenarios: derate, routing and wash interventions.",
     decision: "What does changing the operating profile buy us in margin?",
     icon: "sliders",
-    implemented: false,
+    implemented: true,
   },
   {
     id: "environment",
