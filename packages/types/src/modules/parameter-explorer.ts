@@ -94,7 +94,7 @@ export interface ParameterExplorerSummary {
   investigations: number;
   parametersInScope: number;
   dataPointsM: number;
-  /** Signals above the shortlist threshold across all investigations. */
+  /** Shortlisted signals across all investigations: strong, early and non-redundant. */
   candidateSignals: number;
   /** Best lead time found, in days. */
   bestLeadDays: number;
