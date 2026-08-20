@@ -350,7 +350,7 @@ export const MODULES: ModuleDefinition[] = [
     summary: "Claim capture, recovery value and settlement status.",
     decision: "Is this repair recoverable under warranty or campaign cover?",
     icon: "shield",
-    implemented: false,
+    implemented: true,
   },
 
   // Commercial
