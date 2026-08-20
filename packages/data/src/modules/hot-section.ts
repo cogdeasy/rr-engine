@@ -453,8 +453,13 @@ export function hotSectionAssessment(engineId: string): HotSectionAssessment | u
 
 const CURVE_POINTS = 44;
 
+const familyBands = new Map<string, HotSectionBandPoint[]>();
+
 /** Family deterioration band: p10/p50/p90 of the observed rate, projected from new. */
 export function hotSectionFamilyBand(family: string, maxCycles: number): HotSectionBandPoint[] {
+  const cacheKey = `${family}:${maxCycles}`;
+  const cached = familyBands.get(cacheKey);
+  if (cached) return cached;
   const spec = ENGINE_FAMILIES.find((f) => f.family === family) ?? ENGINE_FAMILIES[0]!;
   const rates = getDataset()
     .engines.filter((e) => e.family === family)
@@ -473,6 +478,7 @@ export function hotSectionFamilyBand(family: string, maxCycles: number): HotSect
       p90: round(Math.max(0, spec.newEgtMargin - (slow / 100) * cycles), 1),
     });
   }
+  familyBands.set(cacheKey, points);
   return points;
 }
 
@@ -507,7 +513,9 @@ export function hotSectionMarginCurve(engineId: string): HotSectionMarginCurve |
     engine.cyclesSinceOverhaul,
   );
   const start = Math.max(0, engine.cyclesSinceOverhaul - cyclesBack);
-  const step = (engine.cyclesSinceOverhaul - start) / (CURVE_POINTS - 1) || 1;
+  // A freshly overhauled engine has no history to plot; the curve collapses to
+  // the single point it is at today rather than marching into the future.
+  const step = Math.max(0, engine.cyclesSinceOverhaul - start) / (CURVE_POINTS - 1);
   const offset = engine.egtMargin - modelled(engine.cyclesSinceOverhaul);
 
   const history: HotSectionMarginPoint[] = [];
@@ -583,14 +591,18 @@ const statusRank = (status: StatusLevel): number => ({ red: 3, amber: 2, green: 
 export function hotSectionWashEffectiveness() {
   const assessments = hotSectionAssessments();
   const events = assessments.flatMap((a) => a.wash.events);
+  // Bucketed per wash event, like the headline figures, and only over engines
+  // that actually have a recorded wash — a never-washed engine has no recovery
+  // to average in.
   const byInterval = new Map<number, { intervalDays: number; recovered: number[]; engines: number }>();
   for (const assessment of assessments) {
+    if (assessment.wash.events.length === 0) continue;
     const bucket = byInterval.get(assessment.wash.recommendedIntervalDays) ?? {
       intervalDays: assessment.wash.recommendedIntervalDays,
       recovered: [],
       engines: 0,
     };
-    bucket.recovered.push(assessment.wash.meanRecoveredC);
+    bucket.recovered.push(...assessment.wash.events.map((e) => e.marginRecoveredC));
     bucket.engines += 1;
     byInterval.set(assessment.wash.recommendedIntervalDays, bucket);
   }

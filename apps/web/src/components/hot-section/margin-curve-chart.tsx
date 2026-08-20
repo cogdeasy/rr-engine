@@ -88,6 +88,11 @@ export function MarginCurveChart({ curve }: { curve: HotSectionMarginCurve }) {
   const xTicks = Array.from({ length: 5 }, (_, i) => Math.round(xMin + ((xMax - xMin) / 4) * i));
   const yTicks = Array.from({ length: 5 }, (_, i) => Math.round(yMin + ((yMax - yMin) / 4) * i));
   const exhaustionDate = new Date(exhaustion.at).toLocaleDateString("en-GB", { month: "short", year: "numeric" });
+  // The projection is truncated at a fixed cycle horizon, so a slow-deteriorating
+  // engine ends the projection with margin left: that end point is the limit of
+  // the forecast, not an exhaustion date.
+  const exhausted = exhaustion.margin <= 0;
+  const endColour = exhausted ? "#d81e2b" : "#4b4f77";
 
   return (
     <figure className="w-full">
@@ -95,7 +100,7 @@ export function MarginCurveChart({ curve }: { curve: HotSectionMarginCurve }) {
         viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
         className="w-full"
         role="img"
-        aria-label={`EGT margin for ${curve.esn}: ${current.margin} degrees C at ${current.cycles} cycles since overhaul, projected to zero by ${exhaustionDate}.`}
+        aria-label={`EGT margin for ${curve.esn}: ${current.margin} degrees C at ${current.cycles} cycles since overhaul, ${exhausted ? `projected to zero by ${exhaustionDate}` : `still above zero at the end of the forecast horizon`}.`}
       >
         {/* Operational zones: below the red line the engine must come off wing. */}
         <rect
@@ -150,21 +155,21 @@ export function MarginCurveChart({ curve }: { curve: HotSectionMarginCurve }) {
           {current.margin}°C
         </text>
 
-        <circle cx={x(exhaustion.cycles)} cy={y(exhaustion.margin)} r={4} fill="#d81e2b" />
+        <circle cx={x(exhaustion.cycles)} cy={y(exhaustion.margin)} r={4} fill={endColour} />
         <line
           x1={x(exhaustion.cycles)}
           x2={x(exhaustion.cycles)}
           y1={PAD.top}
           y2={HEIGHT - PAD.bottom}
-          stroke="#d81e2b"
+          stroke={endColour}
           strokeOpacity={0.35}
           strokeDasharray="3 4"
         />
-        <text x={Math.min(WIDTH - 6, x(exhaustion.cycles) + 8)} y={y(exhaustion.margin) - 12} fontSize={10} fill="#d81e2b" fontWeight={600}>
-          Margin exhausted
+        <text x={Math.min(WIDTH - 6, x(exhaustion.cycles) + 8)} y={y(exhaustion.margin) - 12} fontSize={10} fill={endColour} fontWeight={600}>
+          {exhausted ? "Margin exhausted" : "Forecast horizon"}
         </text>
-        <text x={Math.min(WIDTH - 6, x(exhaustion.cycles) + 8)} y={y(exhaustion.margin)} fontSize={10} fill="#d81e2b" className="rr-numeric">
-          {exhaustionDate}
+        <text x={Math.min(WIDTH - 6, x(exhaustion.cycles) + 8)} y={y(exhaustion.margin)} fontSize={10} fill={endColour} className="rr-numeric">
+          {exhausted ? exhaustionDate : `${exhaustion.margin}°C left`}
         </text>
         <text
           x={Math.min(WIDTH - 6, x(exhaustion.cycles) + 8)}
