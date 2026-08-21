@@ -1,0 +1,28 @@
+# One-click hosting on Render: both services build from the monorepo root.
+services:
+  - type: web
+    name: rr-engine-web
+    runtime: docker
+    dockerfilePath: ./apps/web/Dockerfile
+    dockerContext: .
+    healthCheckPath: /
+    envVars:
+      - key: PORT
+        value: "3000"
+      - key: HOSTNAME
+        value: 0.0.0.0
+
+  - type: web
+    name: rr-engine-api
+    runtime: docker
+    dockerfilePath: ./apps/api/Dockerfile
+    dockerContext: .
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: "4000"
+      - key: HOST
+        value: 0.0.0.0
+      # Set to the console URL once rr-engine-web has one, e.g. https://rr-engine-web.onrender.com
+      - key: CORS_ORIGINS
+        sync: false
